@@ -1,55 +1,41 @@
-# RAINS, Another Internet Naming Service
+# SCION-RAINS
 
-This repository contains a reference implementation of a RAINS server,
-supporting authority, intermediary, and query service, as well as associated
-tools for managing the server. It has the following executables:
+RAINS (RAINS, Another Internet Naming Service) is a name resolution protocol that has been designed with the aim to provide an ideal naming service for the SCION Internet architecture.
+The RAINS architecture is simple, and resembles the architecture of DNS. A RAINS server is an entity that provides transient and/or permanent storage for assertions about names, and a
+lookup function that finds assertions for a given query about a name, either by searching local storage or by delegating to another RAINS server.
+The goal of the SCION RAINS project is to enhance and refine the existing RAINS prototype implementation on top of the newest SCION release, and make it available within the SCIONLab
+network for developers and end-users to be able to use it. Additionally, the existing RAINS design will be refined with a principled approach to obtain better security and performance proper-
+ties. At the heart of the redesign is a new authentication architecture for naming systems, where the standard DNSSEC-like authentication infrastructure is replaced with CA-based end-entity
+PKI. Additionally, the project will make use of the DRKey system to develop mechanisms for secure and highly available RAINS communication.
 
-- `rainsd`: A configurable RAINS server
-- `rdig`: A command-line tool for querying RAINS servers
-- `zonepub`: A command-line tool for a naming authority to publish information
-  about its zone(s) to its authoritative RAINS servers
-- `keyManager`: A command-line tool for a naming authority to manage its 
-  key pairs
+## Task 1. Port RAINS to current SCION version
+The first task is to tidy up the RAINS codebase and port a basic working version of RAINS (hereafter, the baseline) to the current SCION release.
 
-In addition to this there is a resolver in `libresolve` which either forwards
-a query to a RAINS server to resolve it or performs a recursive lookup itself
-on the callers behalf before sending the received answer back to the caller.
+### Milestones
+- [x] Identify minor unfinished system components and [pending issues](https://github.com/netsec-ethz/rains/projects/5) in the current code-base, and devise a feasible [implementation and porting plan](./planning/implementation_plan.md).
+- [x] Deliver [executables](https://github.com/netsec-ethz/rains) for end-to-end name resolution and zone management in SCION networks.
 
+## Task 2. Re-design the data authentication architecture of RAINS based on SCION end-entity PKI system
 
-## Understanding RAINS
+The baseline RAINS relies on DNSSEC-style authentication that comes with inherent limitations. We seek to replace it with a new authentication architecture based on SCION end-entity PKI for better security and performance.
 
-The RAINS implementation is based on the RAINS protocol specified in the
-[Internet draft](https://tools.ietf.org/html/draft-trammell-rains-protocol-05).
-The different components necessary to run
-a RAINS infrastructure are described [here](docs/components-overview.md).
-The design of this RAINS server is explained [here](docs/rains-server-design.md) and 
-the [cache folder](docs/cache-design) contains design decisions for all caches. The
-zonefile format, designed to be conveniently readable by a human, is defined in 
-backus normal form [here](docs/zonefile-format.md). Each command line tool has a help
-page which explains all commands and flags that are supported.
+### Milestones
+- [ ] Design documents with rationale and expected properties of the new authentication architecture as well as suggested modifications to the baseline RAINS
+- [ ] Specifications of the modified and new RAINS protocols in formal language
 
-## Installing and using RAINS
+## Task 3. Make use of DRKey system to develop mechanisms for secure and highly available RAINS communication
 
-### On your machine
+Internet naming systems are inviting targets for DoS attacks. This task aims to leverage the DRKey system to develop mechanisms that guarantee availability of RAINS in presence of DoS attacks.
 
-1. Make sure that you are using a clean and recently updated Ubuntu 16.04.
-1. Download the repo e.g. `git clone https://github.com/netsec-ethz/rains`
-1. Create the necessary binaries by calling [make](Makefile)
-1. Use the binaries created in the cmd [folder](cmd/)
+### Milestones
 
-### In SCION lab
+- [ ] Design documents of integrating DRKey into RAINS
+- [ ] Refined protocol specifications
 
-TODO
+## Task 4. Implementation, integration, and testing
 
-## Issues and Test coverage
+Finally, we will implement and test the new features on top of the baseline RAINS, and deploy it to the SCIONLab network.
 
-The RAINS server and tools are under active development. An up to date
-list of issues and bugs can be found [here](https://github.com/netsec-ethz/rains/issues/).
-
-The server and all tools are tested using unit and integration tests.
-A description of the integration test can be found in this [readme](test/integration/README.md)
-To inspect the test coverage of all unit tests together with the integration test,
-perform the following steps:
-1. go test -coverprofile=coverage.out -coverpkg=./internal/pkg/... ./...
-2. go tool cover -html=coverage.out -o coverage.html
-3. firefox coverage.html
+### Milestones
+- [ ] A complete RAINS codebase that implements above-mentioned new features
+- [ ] Design, test, and preliminary evaluation reports of RAINS running in SCIONLab
