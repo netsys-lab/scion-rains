@@ -1,4 +1,8 @@
 # SCION-RAINS
+[![Test](https://github.com/netsys-lab/scion-rains/actions/workflows/test.yml/badge.svg)](https://github.com/netsys-lab/scion-rains/actions/workflows/test.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/netsys-lab/scion-rains)](https://goreportcard.com/report/github.com/netsys-lab/scion-rains) 
+[![Go Reference](https://pkg.go.dev/badge/github.com/netsys-lab/scion-rains.svg)](https://pkg.go.dev/github.com/netsys-lab/scion-rains)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 RAINS (RAINS, Another Internet Naming Service) is a name resolution protocol that has been designed with the aim to provide an ideal naming service for the SCION Internet architecture.
 The RAINS architecture is simple, and resembles the architecture of DNS. A RAINS server is an entity that provides transient and/or permanent storage for assertions about names, and a
@@ -13,7 +17,7 @@ The first task is to tidy up the RAINS codebase and port a basic working version
 
 ### Milestones
 - [x] Identify minor unfinished system components and [pending issues](https://github.com/netsec-ethz/rains/projects/5) in the current code-base, and devise a feasible [implementation and porting plan](./planning/implementation_plan.md).
-- [x] Deliver [executables](https://github.com/netsec-ethz/rains) for end-to-end name resolution and zone management in SCION networks.
+- [x] Deliver [executables](https://github.com/netsys-lab/scion-rains/actions/runs/1535615463#artifacts) for end-to-end name resolution and zone management in SCION networks.
 
 ## Task 2. Re-design the data authentication architecture of RAINS based on SCION end-entity PKI system
 
