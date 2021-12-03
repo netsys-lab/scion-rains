@@ -75,6 +75,7 @@ jobs:
         go tool cover -html=coverage.out -o coverage.html
       env:
         SCION_DAEMON_ADDRESS: "127.0.0.12:30255"
+    - name: Save coverage tests
       uses: actions/upload-artifact@v2
       with:
         name: coverage
