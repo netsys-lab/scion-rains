@@ -59,28 +59,15 @@ jobs:
     - name: Build
       run: |
         make all
+        cd build
+        for F in *; do strip $F; done
       env:
         CGO_ENABLED: "0"
-    - name: Save rainsd
+    - name: Save binaries
       uses: actions/upload-artifact@v2
       with:
-        name: rainsd
-        path: build/rainsd
-    - name: Save keymanager
-      uses: actions/upload-artifact@v2
-      with:
-        name: keymanager
-        path: build/keymanager
-    - name: Save publisher
-      uses: actions/upload-artifact@v2
-      with:
-        name: publisher
-        path: build/publisher
-    - name: Save rdig
-      uses: actions/upload-artifact@v2
-      with:
-        name: rdig
-        path: build/rdig
+        name: binaries
+        path: build/*
     - name: Integration tests
       run: |
         make test
