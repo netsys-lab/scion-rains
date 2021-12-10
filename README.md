@@ -16,7 +16,7 @@ PKI. Additionally, the project will make use of the DRKey system to develop mech
 The first task is to tidy up the RAINS codebase and port a basic working version of RAINS (hereafter, the baseline) to the current SCION release.
 
 ### Milestones
-- [x] Identify minor unfinished system components and [pending issues](https://github.com/netsec-ethz/rains/projects/5) in the current code-base, and devise a feasible [implementation and porting plan](./planning/implementation_plan.md).
+- [x] Identify minor unfinished system components and [pending issues](https://github.com/netsys-lab/scion-rains/projects/2) in the current code-base, and devise a feasible [implementation and porting plan](./planning/implementation_plan.md).
 - [x] Deliver [executables](https://github.com/netsys-lab/scion-rains/actions/runs/1535615463#artifacts) for end-to-end name resolution and zone management in SCION networks.
 
 ## Task 2. Re-design the data authentication architecture of RAINS based on SCION end-entity PKI system
