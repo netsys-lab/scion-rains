@@ -12,14 +12,14 @@ network for developers and end-users to be able to use it. Additionally, the exi
 ties. At the heart of the redesign is a new authentication architecture for naming systems, where the standard DNSSEC-like authentication infrastructure is replaced with CA-based end-entity
 PKI. Additionally, the project will make use of the DRKey system to develop mechanisms for secure and highly available RAINS communication.
 
-## Task 1. Port RAINS to current SCION version
+## [Task 1.](https://github.com/netsys-lab/scion-rains/projects/2) Port RAINS to current SCION version
 The first task is to tidy up the RAINS codebase and port a basic working version of RAINS (hereafter, the baseline) to the current SCION release.
 
 ### Milestones
 - [x] Identify minor unfinished system components and [pending issues](https://github.com/netsys-lab/scion-rains/projects/2) in the current code-base, and devise a feasible [implementation and porting plan](./planning/implementation_plan.md).
 - [x] Deliver [executables](https://github.com/netsys-lab/scion-rains/actions/runs/1535615463#artifacts) for end-to-end name resolution and zone management in SCION networks.
 
-## Task 2. Re-design the data authentication architecture of RAINS based on SCION end-entity PKI system
+## [Task 2.](https://github.com/netsys-lab/scion-rains/projects/3) Re-design the data authentication architecture of RAINS based on SCION end-entity PKI system
 
 The baseline RAINS relies on DNSSEC-style authentication that comes with inherent limitations. We seek to replace it with a new authentication architecture based on SCION end-entity PKI for better security and performance.
 
@@ -27,7 +27,7 @@ The baseline RAINS relies on DNSSEC-style authentication that comes with inheren
 - [ ] Design documents with rationale and expected properties of the new authentication architecture as well as suggested modifications to the baseline RAINS
 - [ ] Specifications of the modified and new RAINS protocols in formal language
 
-## Task 3. Make use of DRKey system to develop mechanisms for secure and highly available RAINS communication
+## [Task 3.](https://github.com/netsys-lab/scion-rains/projects/4) Make use of DRKey system to develop mechanisms for secure and highly available RAINS communication
 
 Internet naming systems are inviting targets for DoS attacks. This task aims to leverage the DRKey system to develop mechanisms that guarantee availability of RAINS in presence of DoS attacks.
 
@@ -36,7 +36,7 @@ Internet naming systems are inviting targets for DoS attacks. This task aims to 
 - [ ] Design documents of integrating DRKey into RAINS
 - [ ] Refined protocol specifications
 
-## Task 4. Implementation, integration, and testing
+## [Task 4.](https://github.com/netsys-lab/scion-rains/projects/5) Implementation, integration, and testing
 
 Finally, we will implement and test the new features on top of the baseline RAINS, and deploy it to the SCIONLab network.
 
