@@ -29,6 +29,7 @@ var insecureTLS = flag.BoolP("insecureTLS", "i", false,
 	"when set it does not check the validity of the server's TLS certificate. (default false)")
 var tok = flag.StringP("token", "t", "",
 	"specifies a token to be used in the query instead of using a randomly generated one.")
+var timeout = flag.Duration("timeout", 10*time.Second, "timeout before query fails")
 
 //Query Options
 var minEE = flag.BoolP("minEE", "1", false, "Query option: Minimize end-to-end latency")
@@ -98,7 +99,7 @@ func main() {
 
 	msg := util.NewQueryMessage(name, *context, *expires, types, parseAllQueryOptions(), t)
 
-	answerMsg, err := util.SendQuery(msg, serverAddr, time.Second)
+	answerMsg, err := util.SendQuery(msg, serverAddr, *timeout)
 	if err != nil {
 		log.Fatalf("was not able to send query: %v", err)
 	}
