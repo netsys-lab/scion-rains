@@ -36,7 +36,7 @@ Folder structure
 
 At this moment, RAINS supports two types of transport: TCP and SCION UDP Sockets. They differ only slightly in configuration. The following procedures use TCP, and the case for SCION connection is similar.
 
-> There are currently some issue with the case for SCION connection, see Issue #20.
+> There are currently some issue with the case for SCION connection, see [Issue #20](https://github.com/netsys-lab/scion-rains/issues/20).
 
 1. Launch authoritative name servers:
 
@@ -50,7 +50,7 @@ At this moment, RAINS supports two types of transport: TCP and SCION UDP Sockets
 
    `./scripts/tcp_publishers.sh`
    
-> Currently, the publishers will report an error message but this does not prevent successful zone publication. See Issue #19.
+> Currently, the publishers will report an error message but this does not prevent successful zone publication. See [Issue #19](https://github.com/netsys-lab/scion-rains/issues/19).
    
 3. Launch a recursive resolver:
 
