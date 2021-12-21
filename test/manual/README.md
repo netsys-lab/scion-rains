@@ -64,5 +64,5 @@ At this moment, RAINS supports two types of transport: TCP and SCION UDP Sockets
    
    `[path_to_rdig] -p 5025 @127.0.0.1 ethz.ch. redir`
    
-   ...
+   Other queries can be formulated in a similar way. Please refer to the man page of `rdig` for all options.
    
