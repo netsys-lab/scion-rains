@@ -41,10 +41,7 @@ trap cleanup SIGINT EXIT STOP
 
 function cleanup() {
     echo "================================================================"
-    for LOG in ${LOGS[*]}
-    do
-        rm -v $LOG
-    done
+    rm -v ${LOGS[*]}
     echo "CLEANUP DONE"
     echo "================================================================"
 }
@@ -283,7 +280,6 @@ echo "Launching Resolver"
 run_bg ${BINDIR}/rainsd ./config/SCION_ns_resolver.conf --rootServerAddress ${SERVADDR}:5022 --id SCIONresolver
 echo "Log messages so far"
 tail -f ${LOGS[*]} &
-PID=$!
 sleep 1
 cat <<EOF
 ================================================================
@@ -297,4 +293,4 @@ Try executing:
 Server log messages will appear below:
 ================================================================
 EOF
-fg $PID
+fg "%$(jobs | tail -n1 | sed -e 's/\[\([0-9]*\)\].*$/\1/g')"
