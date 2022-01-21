@@ -102,7 +102,7 @@ EOF`
     
     cat > config/SCION_ns_${1}.conf <<EOF
 {
-    "RootZonePublicKeyPath":        "./keys/root/selfSignedRootDelegationAssertion.gob",
+    "RootZonePublicKeyPath":        "./config/selfSignedRootDelegationAssertion.gob",
     "AssertionCheckPointInterval": ${INTERVAL},
 	"NegAssertionCheckPointInterval":${INTERVAL},
 	"ZoneKeyCheckPointInterval":${INTERVAL},
@@ -259,11 +259,13 @@ EOF
 }
 
 echo "================================================================"
+echo "==================== STARTUP IN PROGRESS ======================="
+echo "================================================================"
 echo "Generating configs"
 gen_configs
 echo "================================================================"
 echo "Generating self-signed Root Delegation Assertion"
-${BINDIR}/keymanager selfsign ./keys/root/root -s ./keys/root/selfSignedRootDelegationAssertion.gob
+${BINDIR}/keymanager selfsign ./keys/root/root -s ./config/selfSignedRootDelegationAssertion.gob
 echo "================================================================"
 echo "starting root Zone server..."
 #run_bg ${BINDIR}/rainsd ./conf/SCIONnamingServerRoot.conf --id SCIONnameServerRoot
@@ -282,6 +284,8 @@ run_bg ${BINDIR}/rainsd ./config/SCION_ns_resolver.conf --rootServerAddress ${SE
 echo "Log messages so far"
 tail -f ${LOGS[*]} &
 sleep 1
+echo "================================================================"
+echo "====================== STARTUP COMPLETE ========================"
 echo "================================================================"
 echo "Everything should now be up and running, terminate with Ctrl+C"
 echo "New log messages will appear below:"
