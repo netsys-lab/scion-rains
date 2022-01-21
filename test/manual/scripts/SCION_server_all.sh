@@ -271,10 +271,11 @@ echo "starting CH Zone server..."
 run_bg ${BINDIR}/rainsd ./config/SCION_ns_ch.conf --rootServerAddress ${SERVADDR}:5022 --id SCIONnameServerch
 echo "starting ETHZ Zone server..."
 run_bg ${BINDIR}/rainsd ./config/SCION_ns_ethz.ch.conf --rootServerAddress ${SERVADDR}:5022 --id SCIONnameServerethz.ch
-echo "Launching publishers (some timeout warnings may be ignored)"
+echo "Launching publishers"
 ${BINDIR}/publisher ./config/SCION_pub_root.conf
 ${BINDIR}/publisher ./config/SCION_pub_ch.conf
 ${BINDIR}/publisher ./config/SCION_pub_ethz.ch.conf
+echo "(some timeout warnings may be safely ignored)"
 echo "================================================================"
 echo "Launching Resolver"
 run_bg ${BINDIR}/rainsd ./config/SCION_ns_resolver.conf --rootServerAddress ${SERVADDR}:5022 --id SCIONresolver
