@@ -37,7 +37,7 @@ LOGS=()
 
 mkdir -p config
 
-trap cleanup SIGINT EXIT STOP
+trap cleanup SIGINT EXIT
 
 function cleanup() {
     echo "================================================================"
@@ -279,8 +279,7 @@ echo "================================================================"
 echo "Launching Resolver"
 run_bg ${BINDIR}/rainsd ./config/SCION_ns_resolver.conf --rootServerAddress ${SERVADDR}:5022 --id SCIONresolver
 echo "Log messages so far"
-tail -f ${LOGS[*]} &
-sleep 1
+tail ${LOGS[*]}
 cat <<EOF
 ================================================================
 ====================== STARTUP COMPLETE ========================
@@ -293,4 +292,4 @@ Try executing:
 Server log messages will appear below:
 ================================================================
 EOF
-fg "%$(jobs | tail -n1 | sed -e 's/\[\([0-9]*\)\].*$/\1/g')"
+tail -n0 -f ${LOGS[*]}
