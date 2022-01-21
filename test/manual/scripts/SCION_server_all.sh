@@ -1,7 +1,34 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -eumo pipefail
 
-SERVADDR="19-ffaa:1:e9f,[127.0.0.1]"
+if test -z ${1:-}
+then
+    echo
+    cat <<EOF 
+usage: ${0} SERVER_ADDRESS
+       generates a collection of zone files and configurations to 
+       test the RAINS components over SCION. The components are then 
+       executed in the background and their output logged.
+
+       SERVER_ADDRESS should be a valid SCION address of the current
+       machine, where the RAINS components should listen on their
+       respective ports (5022-5025).
+
+       Example for a valid SERVER_ADDRESS: 17-ffaa:0:1107,[127.0.0.1]
+
+       The server can then be tested by executing
+       
+        rdig -p 5025 @SERVER_ADDRESS DOMAIN.
+
+       For example:
+
+        rdig -p 5025 @17-ffaa:0:1107,[127.0.0.1] www.ethz.ch.
+
+EOF
+    exit 1
+fi
+
+SERVADDR="${1}"
 
 BINDIR="../../build"
 WAIT=5
@@ -13,28 +40,36 @@ mkdir -p config
 trap cleanup SIGINT EXIT STOP
 
 function cleanup() {
+    echo "================================================================"
     for LOG in ${LOGS[*]}
     do
         rm -v $LOG
     done
     echo "CLEANUP DONE"
+    echo "================================================================"
 }
 
 function run_bg() {
+    echo "================================================================"
     LOG=$(mktemp $(basename ${1})-XXXX.log)
     $@ >> $LOG &
     PID=$!
+    sleep 1
     echo "Sleeping for ${WAIT} seconds before checking if command is still alive"
     sleep ${WAIT}
     if ! ps -p $PID > /dev/null
     then
+        echo "================================================================"
         echo "ERROR: Executing \"$@\" failed! PID $PID no longer running! Log:"
+        echo "================================================================"
         cat $LOG
+        echo "================================================================"
         echo "ABORTING"
         rm -v $LOG
         exit 1
     else
         LOGS+=($LOG)
+        echo "================================================================"
     fi
 }
 
@@ -223,11 +258,13 @@ EOF
     gen_ns_config $ZONE $ADDR
 }
 
-
+echo "================================================================"
 echo "Generating configs"
 gen_configs
+echo "================================================================"
 echo "Generating self-signed Root Delegation Assertion"
 ${BINDIR}/keymanager selfsign ./keys/root/root -s ./keys/root/selfSignedRootDelegationAssertion.gob
+echo "================================================================"
 echo "starting root Zone server..."
 #run_bg ${BINDIR}/rainsd ./conf/SCIONnamingServerRoot.conf --id SCIONnameServerRoot
 run_bg ${BINDIR}/rainsd ./config/SCION_ns_root.conf --id SCIONnameServerRoot
@@ -239,10 +276,14 @@ echo "Launching publishers (some timeout warnings may be ignored)"
 ${BINDIR}/publisher ./config/SCION_pub_root.conf
 ${BINDIR}/publisher ./config/SCION_pub_ch.conf
 ${BINDIR}/publisher ./config/SCION_pub_ethz.ch.conf
+echo "================================================================"
 echo "Launching Resolver"
 run_bg ${BINDIR}/rainsd ./config/SCION_ns_resolver.conf --rootServerAddress ${SERVADDR}:5022 --id SCIONresolver
 echo "Log messages so far"
-tail ${LOGS[*]}
+tail -f ${LOGS[*]} &
+sleep 1
+echo "================================================================"
 echo "Everything should now be up and running, terminate with Ctrl+C"
 echo "New log messages will appear below:"
-tail -n0 -f ${LOGS[*]}
+echo "================================================================"
+fg
