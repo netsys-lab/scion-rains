@@ -283,11 +283,18 @@ echo "Launching Resolver"
 run_bg ${BINDIR}/rainsd ./config/SCION_ns_resolver.conf --rootServerAddress ${SERVADDR}:5022 --id SCIONresolver
 echo "Log messages so far"
 tail -f ${LOGS[*]} &
+PID=$!
 sleep 1
-echo "================================================================"
-echo "====================== STARTUP COMPLETE ========================"
-echo "================================================================"
-echo "Everything should now be up and running, terminate with Ctrl+C"
-echo "New log messages will appear below:"
-echo "================================================================"
-fg
+cat <<EOF
+================================================================
+====================== STARTUP COMPLETE ========================
+================================================================
+Everything should now be up and running, terminate with Ctrl+C
+Try executing:
+
+  ${BINDIR}/rdig -p 5025 @${SERVADDR} www.ethz.ch.
+
+Server log messages will appear below:
+================================================================
+EOF
+fg $PID
