@@ -8,6 +8,8 @@ WAIT=5
 
 LOGS=()
 
+mkdir -p config
+
 trap cleanup SIGINT EXIT STOP
 
 function cleanup() {
@@ -38,25 +40,44 @@ function run_bg() {
 
 
 
-mkdir -p config
 
 function gen_ns_config() {
+    if test -z ${3:-}
+    then
+        INTERVAL=1
+        AUTHORITIES=""
+        PUBLISHER=""
+    else
+        INTERVAL=3600
+        AUTHORITIES=`cat <<EOF
+
+                                        {
+                                            "Zone": "${3}",
+                                            "Context": "."
+                                        }
+
+EOF`
+        PUBLISHER=`cat <<EOF
+    "PublisherAddress":             {
+                                        "Type":     "SCION",
+                                        "SCIONAddr": "${2}"
+                                    },
+EOF`
+    fi
+    
     cat > config/SCION_ns_${1}.conf <<EOF
 {
     "RootZonePublicKeyPath":        "./keys/root/selfSignedRootDelegationAssertion.gob",
-    "AssertionCheckPointInterval": 3600,
-	"NegAssertionCheckPointInterval":3600,
-	"ZoneKeyCheckPointInterval":3600,
+    "AssertionCheckPointInterval": ${INTERVAL},
+	"NegAssertionCheckPointInterval":${INTERVAL},
+	"ZoneKeyCheckPointInterval":${INTERVAL},
 	"CheckPointPath": "./checkpoint/${1}/",
 	"PreLoadCaches": false,
     "ServerAddress":                {
                                         "Type":     "SCION",
                                         "SCIONAddr": "${2}"
                                     },
-    "PublisherAddress":             {
-                                        "Type":     "SCION",
-                                        "SCIONAddr": "${2}"
-                                    },
+${PUBLISHER}
     "MaxConnections":               1000,
     "KeepAlivePeriod":              60,
     "TCPTimeout":                   300,
@@ -84,12 +105,7 @@ function gen_ns_config() {
     "NegativeAssertionCacheSize":   1000,
     "PendingQueryCacheSize":        100,
     "QueryValidity":                5,
-    "Authorities":                  [
-                                        {
-                                            "Zone": "${3}",
-                                            "Context": "."
-                                        }
-                                    ],
+    "Authorities":                  [${AUTHORITIES}],
     "MaxCacheValidity":             {
                                         "AssertionValidity": 720,
                                         "ShardValidity": 720,
@@ -201,7 +217,12 @@ EOF
     :A: _ftp._udpscion  [ :srv: ftp.ethz.ch. 20 0 ]
 ]
 EOF
+
+    ZONE="resolver"
+    ADDR="${SERVADDR}:5025"
+    gen_ns_config $ZONE $ADDR
 }
+
 
 echo "Generating configs"
 gen_configs
@@ -214,9 +235,14 @@ echo "starting CH Zone server..."
 run_bg ${BINDIR}/rainsd ./config/SCION_ns_ch.conf --rootServerAddress ${SERVADDR}:5022 --id SCIONnameServerch
 echo "starting ETHZ Zone server..."
 run_bg ${BINDIR}/rainsd ./config/SCION_ns_ethz.ch.conf --rootServerAddress ${SERVADDR}:5022 --id SCIONnameServerethz.ch
-echo "launching publishers"
+echo "Launching publishers (some timeout warnings may be ignored)"
 ${BINDIR}/publisher ./config/SCION_pub_root.conf
 ${BINDIR}/publisher ./config/SCION_pub_ch.conf
 ${BINDIR}/publisher ./config/SCION_pub_ethz.ch.conf
-echo "everything should now be up and running, terminate with Ctrl+C"
-tail -f ${LOGS[*]}
+echo "Launching Resolver"
+run_bg ${BINDIR}/rainsd ./config/SCION_ns_resolver.conf --rootServerAddress ${SERVADDR}:5022 --id SCIONresolver
+echo "Log messages so far"
+tail ${LOGS[*]}
+echo "Everything should now be up and running, terminate with Ctrl+C"
+echo "New log messages will appear below:"
+tail -n0 -f ${LOGS[*]}

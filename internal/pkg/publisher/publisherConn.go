@@ -26,7 +26,7 @@ func connectAndSendMsg(msg message.Message, server net.Addr) error {
 	}
 
 	// Wait 1 second for reply
-	deadline := time.Now().Add(10 * time.Second)
+	deadline := time.Now().Add(1 * time.Second)
 	conn.SetReadDeadline(deadline)
 	for deadline.After(time.Now()) {
 		replyMsg, err := connection.ReceiveMessage(conn)
