@@ -71,7 +71,7 @@ EOF
         cat <<EOF
 {
         "Type":     "SCION",
-        "SCIONAddr: "${SERVERADDR}:{$1}
+        "SCIONAddr: "${SERVADDR}:{$1}
 }
 EOF
     fi
