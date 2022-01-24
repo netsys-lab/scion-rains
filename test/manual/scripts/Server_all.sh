@@ -59,8 +59,7 @@ then
     exit 1
 fi
 SERVADDR="${2}"
-
-
+	
 function gen_server_addr() {
     if test ${PROTO} = "tcp"
     then
@@ -314,12 +313,15 @@ EOF
 echo "================================================================"
 echo "==================== STARTUP IN PROGRESS ======================="
 echo "================================================================"
-echo "Generating configs"
-gen_configs
-echo "================================================================"
-echo "Generating self-signed Root Delegation Assertion"
-${BINDIR}/keymanager selfsign ./keys/root/root -s ./config/selfSignedRootDelegationAssertion.gob
-echo "================================================================"
+if [ "${3:-}" != "nogen" ]; 
+then
+	echo "Generating configs"
+	gen_configs
+	echo "================================================================"
+	echo "Generating self-signed Root Delegation Assertion"
+	${BINDIR}/keymanager selfsign ./keys/root/root -s ./config/selfSignedRootDelegationAssertion.gob
+	echo "================================================================"
+fi
 echo "starting root Zone server..."
 run_bg ${BINDIR}/rainsd ./config/${PROTO}_ns_root.conf --id "${PROTO}nameServerRoot"
 echo "starting CH Zone server..."
