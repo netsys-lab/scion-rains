@@ -15,6 +15,8 @@ usage: ${0} scion|tcp SERVER_ADDRESS
 
        Example for a valid SERVER_ADDRESS: 17-ffaa:0:1107,[127.0.0.1]
 
+       For TCP, SERVER_ADDRESS could also be: 127.0.0.1
+
        The server can then be tested by executing
        
         rdig -p 5025 @SERVER_ADDRESS DOMAIN.
@@ -22,6 +24,10 @@ usage: ${0} scion|tcp SERVER_ADDRESS
        For example:
 
         rdig -p 5025 @17-ffaa:0:1107,[127.0.0.1] www.ethz.ch.
+
+       Or
+        
+        rdig -p 5025 @127.0.0.1 www.ethz.ch. cert
 
 EOF
 }
