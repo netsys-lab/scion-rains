@@ -18,6 +18,7 @@ The first task is to tidy up the RAINS codebase and port a basic working version
 ### Milestones
 - [x] Identify minor unfinished system components and [pending issues](https://github.com/netsys-lab/scion-rains/projects/2) in the current code-base, and devise a feasible [implementation and porting plan](./planning/implementation_plan.md).
 - [x] Deliver [executables](https://github.com/netsys-lab/scion-rains/actions/runs/1535615463#artifacts) for end-to-end name resolution and zone management in SCION networks.
+- [x] Provide a convenient, high-level way to [manually verify](https://github.com/netsys-lab/scion-rains/blob/master/test/manual/) that core components work as designed
 
 ## [Task 2.](https://github.com/netsys-lab/scion-rains/projects/3) Re-design the data authentication architecture of RAINS based on SCION end-entity PKI system
 
