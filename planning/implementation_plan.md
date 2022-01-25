@@ -2,7 +2,7 @@
 
 To ensure smooth implementation and integration, we will not squeeze all coding efforts into the last stage of the project. Instead, the implementation of new components and functionality will start as soon as preliminary designs are ready.
 
-We plan to progress in 4 phrase, in line with the project schedule.
+We plan to progress in 4 phases, in line with the project schedule.
 
 ## Phase 1: Preparing the baseline version
 
