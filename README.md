@@ -8,17 +8,16 @@ RAINS (RAINS, Another Internet Naming Service) is a name resolution protocol tha
 The RAINS architecture is simple, and resembles the architecture of DNS. A RAINS server is an entity that provides transient and/or permanent storage for assertions about names, and a
 lookup function that finds assertions for a given query about a name, either by searching local storage or by delegating to another RAINS server.
 The goal of the SCION RAINS project is to enhance and refine the existing RAINS prototype implementation on top of the newest SCION release, and make it available within the SCIONLab
-network for developers and end-users to be able to use it. Additionally, the existing RAINS design will be refined with a principled approach to obtain better security and performance proper-
-ties. At the heart of the redesign is a new authentication architecture for naming systems, where the standard DNSSEC-like authentication infrastructure is replaced with CA-based end-entity
+network for developers and end-users to be able to use it. Additionally, the existing RAINS design will be refined with a principled approach to obtain better security and performance properties. At the heart of the redesign is a new authentication architecture for naming systems, where the standard DNSSEC-like authentication infrastructure is replaced with CA-based end-entity
 PKI. Additionally, the project will make use of the DRKey system to develop mechanisms for secure and highly available RAINS communication.
 
 ## [Task 1.](https://github.com/netsys-lab/scion-rains/projects/2) Port RAINS to current SCION version
 The first task is to tidy up the RAINS codebase and port a basic working version of RAINS (hereafter, the baseline) to the current SCION release.
 
 ### Milestones
-- [x] Identify minor unfinished system components and [pending issues](https://github.com/netsys-lab/scion-rains/projects/2) in the current code-base, and devise a feasible [implementation and porting plan](./planning/implementation_plan.md).
+- [x] Identify minor unfinished system components and [pending issues](https://github.com/netsec-ethz/rains/issues) in the original code-base, and devise a feasible [implementation and porting plan](./planning/implementation_plan.md).
 - [x] Deliver [executables](https://github.com/netsys-lab/scion-rains/actions/runs/1535615463#artifacts) for end-to-end name resolution and zone management in SCION networks.
-- [x] Provide a convenient, high-level way to [manually verify](https://github.com/netsys-lab/scion-rains/blob/master/test/manual/) that core components work as designed
+  - [x] Additionally, [manual test instructions](https://github.com/netsys-lab/scion-rains/blob/master/test/manual/) are provided to setup the core RAINS components and verify that they work as expected
 
 ## [Task 2.](https://github.com/netsys-lab/scion-rains/projects/3) Re-design the data authentication architecture of RAINS based on SCION end-entity PKI system
 
@@ -44,3 +43,4 @@ Finally, we will implement and test the new features on top of the baseline RAIN
 ### Milestones
 - [ ] A complete RAINS codebase that implements above-mentioned new features
 - [ ] Design, test, and preliminary evaluation reports of RAINS running in SCIONLab
+    - [ ] Operate a test RAINS server in SCIONLab
