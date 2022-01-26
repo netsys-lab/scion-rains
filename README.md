@@ -11,7 +11,9 @@ The goal of the SCION RAINS project is to enhance and refine the existing RAINS 
 network for developers and end-users to be able to use it. Additionally, the existing RAINS design will be refined with a principled approach to obtain better security and performance properties. At the heart of the redesign is a new authentication architecture for naming systems, where the standard DNSSEC-like authentication infrastructure is replaced with CA-based end-entity
 PKI. Additionally, the project will make use of the DRKey system to develop mechanisms for secure and highly available RAINS communication.
 
-## [Task 1.](https://github.com/netsys-lab/scion-rains/projects/2) Port RAINS to current SCION version
+## [Task 1.](https://github.com/netsys-lab/scion-rains/projects/2) Port RAINS to current SCION version: [Done](https://github.com/netsys-lab/scion-rains/releases/tag/v0.3.2)
+### Update: Task 1 now has an [official release](https://github.com/netsys-lab/scion-rains/releases/tag/v0.3.2), marking its completion
+
 The first task is to tidy up the RAINS codebase and port a basic working version of RAINS (hereafter, the baseline) to the current SCION release.
 
 ### Milestones
