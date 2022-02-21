@@ -1,6 +1,8 @@
 package util
 
 import (
+	"bytes"
+	"crypto/x509"
 	"encoding/gob"
 	"errors"
 	"fmt"
@@ -176,4 +178,68 @@ func GetOverlapValidityForSignatures(sigs []signature.Sig) (int64, int64) {
 		}
 	}
 	return bySince[0].ValidSince, until
+}
+
+
+func RhineCertVerification(msg message.Message) bool {
+
+	// look for rhine cert
+	var rhinecert *x509.Certificate = nil
+	var pubkey interface{}
+	var zone string
+
+	for _, s := range msg.Content {
+		assertion, ok := s.(*section.Assertion)
+		if ok {
+			objs := assertion.Content 
+			for _, obj := range objs {
+				if obj.Type == object.OTCertInfo {
+					cert, ok := obj.Value.(object.Certificate)
+					if ok {
+						if cert.Type != object.PTRhine {
+							continue
+						}
+						if cert.Usage != object.CURhine {
+							continue
+						}
+						
+						rhinecert, _ = x509.ParseCertificate(cert.Data)
+						zone = assertion.SubjectZone
+						
+					} else {
+						continue
+					}
+				}
+			}
+		} else {
+			continue
+		}
+	}
+	
+	if rhinecert == nil {
+		return false
+	}
+	
+	rhinecert.Verify(x509.VerifyOptions{
+		DNSName: zone,
+	})
+	pubkey = rhinecert.PublicKey
+	
+	// verify assertions 
+	
+	sigs := []signature.Sig{}
+	for _, s := range msg.Content {
+		assertion, ok := s.(*section.Assertion)
+		if ok {
+			sigs = append(sigs, assertion.Signatures...)
+		}
+	}
+	
+	for _, sig := range sigs {
+		if !sig.VerifySignature(pubkey, new(bytes.Buffer).Bytes()) {
+			return false
+		}
+	}
+	
+	return true
 }
