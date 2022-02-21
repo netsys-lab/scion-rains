@@ -661,6 +661,7 @@ type ProtocolType int
 const (
 	PTUnspecified ProtocolType = 0
 	PTTLS         ProtocolType = 1
+	PTRhine       ProtocolType = 4
 )
 
 //CertificateUsage is an identifier for a certificate usage. The ID is chosen according to the RAINS Protocol Specification.
@@ -670,6 +671,7 @@ type CertificateUsage int
 const (
 	CUTrustAnchor CertificateUsage = 2
 	CUEndEntity   CertificateUsage = 3
+	CURhine       CertificateUsage = 5
 )
 
 //ServiceInfo contains information how to access a named service

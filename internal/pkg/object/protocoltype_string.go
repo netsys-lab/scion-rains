@@ -10,15 +10,25 @@ func _() {
 	var x [1]struct{}
 	_ = x[PTUnspecified-0]
 	_ = x[PTTLS-1]
+	_ = x[PTRhine-4]
 }
 
-const _ProtocolType_name = "PTUnspecifiedPTTLS"
+const (
+	_ProtocolType_name_0 = "PTUnspecifiedPTTLS"
+	_ProtocolType_name_1 = "PTRhine"
+)
 
-var _ProtocolType_index = [...]uint8{0, 13, 18}
+var (
+	_ProtocolType_index_0 = [...]uint8{0, 13, 18}
+)
 
 func (i ProtocolType) String() string {
-	if i < 0 || i >= ProtocolType(len(_ProtocolType_index)-1) {
+	switch {
+	case 0 <= i && i <= 1:
+		return _ProtocolType_name_0[_ProtocolType_index_0[i]:_ProtocolType_index_0[i+1]]
+	case i == 4:
+		return _ProtocolType_name_1
+	default:
 		return "ProtocolType(" + strconv.FormatInt(int64(i), 10) + ")"
 	}
-	return _ProtocolType_name[_ProtocolType_index[i]:_ProtocolType_index[i+1]]
 }

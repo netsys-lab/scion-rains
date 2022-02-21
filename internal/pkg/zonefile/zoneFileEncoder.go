@@ -299,6 +299,8 @@ func encodeCertificate(cert object.Certificate) string {
 		pt = TypeUnspecified
 	case object.PTTLS:
 		pt = TypePTTLS
+	case object.PTRhine:
+		pt = TypePTRhine
 	default:
 		log.Warn("Unsupported protocol type", "protocolType", cert.Type)
 		return ""
@@ -308,6 +310,9 @@ func encodeCertificate(cert object.Certificate) string {
 		cu = TypeCUTrustAnchor
 	case object.CUEndEntity:
 		cu = TypeCUEndEntity
+	case object.CURhine:
+		cu = TypeCURhine
+
 	default:
 		log.Warn("Unsupported certificate usage", "certUsage", cert.Usage)
 		return ""
