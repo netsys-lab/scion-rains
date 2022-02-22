@@ -62,6 +62,10 @@ func TestFullCoverage(t *testing.T) {
 	time.Sleep(1000 * time.Millisecond)
 	log.Info("caching server successfully started")
 
+	for {
+
+	}
+
 	//Send queries to client resolver and observe the recursive lookup results.
 	qs, as := loadQueriesAndAnswers(t)
 	queries := decodeQueries([]byte(qs))

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/netsec-ethz/rains/internal/pkg/siglib"
 	"log"
 	"net"
 	"strings"
@@ -124,11 +125,18 @@ func main() {
 	fmt.Println(zonefile.IO{}.Encode(answerMsg.Content))
 
 	if flag.Lookup("rhineVerify").Changed{
-		ok := util.RhineCertVerification(answerMsg)
+		ok := siglib.RhineCertVerification(answerMsg)
+		fmt.Println()
 		if ok {
+			fmt.Println("===================================")
 			fmt.Println("=== RHINE CERT VERIFICATION: OK ===")
+			fmt.Println("===================================")
+
 		} else {
+			fmt.Println("================================================")
 			fmt.Println("=== WARNING: RHINE CERT VERIFICATION FAILED! ===")
+			fmt.Println("================================================")
+
 		}
 	}
 }
