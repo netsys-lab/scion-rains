@@ -27,6 +27,8 @@ var expires = flag.Int64P("expires", "e", time.Now().Add(time.Second).Unix(),
 	"expires sets the valid until timestamp of the query in unix seconds since 1970. (default current timestamp + 1 second)")
 var insecureTLS = flag.BoolP("insecureTLS", "i", false,
 	"when set it does not check the validity of the server's TLS certificate. (default false)")
+var rhineVerification = flag.BoolP("rhineVerify", "r", false,
+	"when set it does validate received assertions with the key in the rhine certificate. Adds type cert to query types. (default false)")
 var tok = flag.StringP("token", "t", "",
 	"specifies a token to be used in the query instead of using a randomly generated one.")
 var timeout = flag.Duration("timeout", 10*time.Second, "timeout before query fails")
@@ -76,6 +78,20 @@ func main() {
 		log.Fatal("Error: default server not yet implemented. Please specify a server addr")
 	}
 
+	// if rhineVerify set but type cert missing, add type cert
+	var foundcert = false
+	if flag.Lookup("rhineVerify").Changed{
+		for _ , qtype := range types {
+			if qtype == object.OTCertInfo {
+				foundcert = true
+				break
+			}
+		}
+		if !foundcert {
+			types = append(types, object.OTCertInfo)
+		}
+	}
+
 	var serverAddr net.Addr
 	serverAddr, err := snet.ParseUDPAddr(fmt.Sprintf("%s:%d", server, *port))
 	if err != nil {
@@ -103,6 +119,16 @@ func main() {
 	if err != nil {
 		log.Fatalf("was not able to send query: %v", err)
 	}
+
+	if flag.Lookup("rhineVerify").Changed{
+		ok := util.RhineCertVerification(answerMsg)
+		if ok {
+			fmt.Println("== RHINE CERT VERIFICATION: OK ==")
+		} else {
+			fmt.Println("== WARNING: RHINE CERT VERIFICATION FAILED! ==")
+		}
+	}
+
 	fmt.Println(zonefile.IO{}.Encode(answerMsg.Content))
 }
 

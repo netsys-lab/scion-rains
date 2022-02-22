@@ -38,6 +38,8 @@ where:
   (default current timestamp + 1 second)
 * `-i`, `--insecureTLS`: when set it does not check the validity of the server's TLS certificate.
   (default false)
+* `-r`, `--rhineVerify`: when set it does validate received assertions with the key in the rhine certificate. Adds type `cert` to query types if not added. 
+  (default false)
 * `-t`, `--token`: specifies a token to be used in the query instead of using a randomly generated
   one.
 
