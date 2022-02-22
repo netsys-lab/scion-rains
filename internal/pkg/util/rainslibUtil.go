@@ -189,40 +189,36 @@ func RhineCertVerification(msg message.Message) bool {
 	var zone string
 
 	for _, s := range msg.Content {
-		assertion, ok := s.(*section.Assertion)
-		if ok {
-			objs := assertion.Content 
-			for _, obj := range objs {
-				if obj.Type == object.OTCertInfo {
-					cert, ok := obj.Value.(object.Certificate)
-					if ok {
-						if cert.Type != object.PTRhine {
-							continue
-						}
-						if cert.Usage != object.CURhine {
-							continue
-						}
-						
-						rhinecert, _ = x509.ParseCertificate(cert.Data)
-						zone = assertion.SubjectZone
-						
-					} else {
-						continue
-					}
+		switch s := s.(type) {
+		case *section.Assertion:
+			rhinecert, zone = GetRhineCertFromAssertion(s)
+			if rhinecert != nil {
+				break
+			}
+		case *section.Zone:
+			assertions := s.Content
+			for _ , a := range assertions {
+				rhinecert, zone = GetRhineCertFromAssertion(a)
+				if rhinecert != nil {
+					break
 				}
 			}
-		} else {
-			continue
 		}
 	}
-	
+
+
 	if rhinecert == nil {
+		log.Warn("No RCert returned")
 		return false
 	}
-	
-	rhinecert.Verify(x509.VerifyOptions{
+
+	_, err := rhinecert.Verify(x509.VerifyOptions{
 		DNSName: zone,
 	})
+	if err != nil {
+		log.Warn("RCert invalid")
+		return false
+	}
 	pubkey = rhinecert.PublicKey
 	
 	// verify assertions 
@@ -237,9 +233,42 @@ func RhineCertVerification(msg message.Message) bool {
 	
 	for _, sig := range sigs {
 		if !sig.VerifySignature(pubkey, new(bytes.Buffer).Bytes()) {
+			log.Warn("Invalid Assertion Signature for RCert")
 			return false
 		}
 	}
 	
 	return true
+}
+
+
+func GetRhineCertFromAssertion(s *section.Assertion) (rhinecert *x509.Certificate, zone string) {
+	objs := s.Content
+
+	for _, obj := range objs {
+		if obj.Type == object.OTCertInfo {
+			cert, ok := obj.Value.(object.Certificate)
+			if ok {
+				if cert.Type != object.PTRhine {
+					continue
+				}
+				if cert.Usage != object.CUZoneAuth {
+					continue
+				}
+				var err error
+				rhinecert, err = x509.ParseCertificate(cert.Data)
+				if err != nil {
+					fmt.Errorf("Rhine Cert Parse error: %s", err.Error())
+				}
+				zone = s.SubjectZone
+				return rhinecert, zone
+
+			} else {
+				continue
+			}
+		}
+	}
+	return nil, ""
+
+
 }

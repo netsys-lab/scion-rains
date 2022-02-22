@@ -310,8 +310,8 @@ func encodeCertificate(cert object.Certificate) string {
 		cu = TypeCUTrustAnchor
 	case object.CUEndEntity:
 		cu = TypeCUEndEntity
-	case object.CURhine:
-		cu = TypeCURhine
+	case object.CUZoneAuth:
+		cu = TypeCUZoneAuth
 
 	default:
 		log.Warn("Unsupported certificate usage", "certUsage", cert.Usage)

@@ -10,12 +10,12 @@ func _() {
 	var x [1]struct{}
 	_ = x[CUTrustAnchor-2]
 	_ = x[CUEndEntity-3]
-	_ = x[CURhine-5]
+	_ = x[CUZoneAuth-5]
 }
 
 const (
 	_CertificateUsage_name_0 = "CUTrustAnchorCUEndEntity"
-	_CertificateUsage_name_1 = "CURhine"
+	_CertificateUsage_name_1 = "CUZoneAuth"
 )
 
 var (

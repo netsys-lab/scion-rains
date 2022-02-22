@@ -37,7 +37,7 @@ const (
 	TypePTRhine       = ":rhine:"
 	TypeCUTrustAnchor = ":trustAnchor:"
 	TypeCUEndEntity   = ":endEntity:"
-	TypeCURhine       = ":rhine:"
+	TypeCUZoneAuth    = ":zoneAuth:"
 	TypeNoHash        = ":noHash:"
 	TypeSha256        = ":sha256:"
 	TypeSha384        = ":sha384:"

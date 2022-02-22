@@ -80,7 +80,7 @@ func main() {
 
 	// if rhineVerify set but type cert missing, add type cert
 	var foundcert = false
-	if flag.Lookup("rhineVerify").Changed{
+	if flag.Lookup("rhineVerify").Changed && len(types) > 0{
 		for _ , qtype := range types {
 			if qtype == object.OTCertInfo {
 				foundcert = true
@@ -120,16 +120,17 @@ func main() {
 		log.Fatalf("was not able to send query: %v", err)
 	}
 
+
+	fmt.Println(zonefile.IO{}.Encode(answerMsg.Content))
+
 	if flag.Lookup("rhineVerify").Changed{
 		ok := util.RhineCertVerification(answerMsg)
 		if ok {
-			fmt.Println("== RHINE CERT VERIFICATION: OK ==")
+			fmt.Println("=== RHINE CERT VERIFICATION: OK ===")
 		} else {
-			fmt.Println("== WARNING: RHINE CERT VERIFICATION FAILED! ==")
+			fmt.Println("=== WARNING: RHINE CERT VERIFICATION FAILED! ===")
 		}
 	}
-
-	fmt.Println(zonefile.IO{}.Encode(answerMsg.Content))
 }
 
 func parseAllQueryOptions() []query.Option {
