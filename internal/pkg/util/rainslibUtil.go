@@ -179,8 +179,6 @@ func GetOverlapValidityForSignatures(sigs []signature.Sig) (int64, int64) {
 	return bySince[0].ValidSince, until
 }
 
-
-
 func GetRhineCertFromAssertion(s *section.Assertion) (rhinecert *x509.Certificate, zone string, id keys.PublicKeyID) {
 	objs := s.Content
 
@@ -197,7 +195,7 @@ func GetRhineCertFromAssertion(s *section.Assertion) (rhinecert *x509.Certificat
 				var err error
 				rhinecert, err = x509.ParseCertificate(cert.Data)
 				if err != nil {
-					fmt.Errorf("Rhine Cert Parse error: %s", err.Error())
+					continue
 				}
 				zone = s.SubjectZone
 				id = s.Signatures[0].PublicKeyID
@@ -209,6 +207,5 @@ func GetRhineCertFromAssertion(s *section.Assertion) (rhinecert *x509.Certificat
 		}
 	}
 	return nil, "", keys.PublicKeyID{}
-
 
 }

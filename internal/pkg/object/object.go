@@ -671,7 +671,7 @@ type CertificateUsage int
 const (
 	CUTrustAnchor CertificateUsage = 2
 	CUEndEntity   CertificateUsage = 3
-	CUZoneAuth       CertificateUsage = 5
+	CUZoneAuth    CertificateUsage = 5
 )
 
 //ServiceInfo contains information how to access a named service

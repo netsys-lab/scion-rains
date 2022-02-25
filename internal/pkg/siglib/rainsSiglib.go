@@ -407,7 +407,7 @@ func RhineCertVerification(msg message.Message) bool {
 			}
 		case *section.Zone:
 			assertions := s.Content
-			for _ , a := range assertions {
+			for _, a := range assertions {
 				rhinecert, zone, id = util.GetRhineCertFromAssertion(a)
 				if rhinecert != nil {
 					break
@@ -456,12 +456,11 @@ func RhineCertVerification(msg message.Message) bool {
 	pkeys[id] = []keys.PublicKey{rainskey}
 	for _, s := range msg.Content {
 		sec := s.(section.WithSigForward)
-		if !CheckSectionSignatures(sec, pkeys, MaxCacheVal ) {
+		if !CheckSectionSignatures(sec, pkeys, MaxCacheVal) {
 			log.Error("Invalid Assertion Signature for RCert")
 			return false
 		}
 	}
-
 
 	return true
 }
