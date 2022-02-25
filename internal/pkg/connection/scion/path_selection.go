@@ -19,16 +19,16 @@ import (
 
 	"github.com/scionproto/scion/go/lib/addr"
 	"github.com/scionproto/scion/go/lib/snet"
-	"github.com/scionproto/scion/go/lib/spath"
+	snetpath "github.com/scionproto/scion/go/lib/snet/path"
 )
 
 // SetPath is a helper function to set the path on an snet.UDPAddr
 func SetPath(addr *snet.UDPAddr, path snet.Path) {
 	if path == nil {
-		addr.Path = spath.Path{}
+		addr.Path = snetpath.SCION{}
 		addr.NextHop = nil
 	} else {
-		addr.Path = path.Path()
+		addr.Path = path.Dataplane()
 		addr.NextHop = path.UnderlayNextHop()
 	}
 }

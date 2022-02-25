@@ -1,0 +1,75 @@
+name: Unstable
+
+on:
+  push:
+    branches: [ unstable ]
+  pull_request:
+    branches: [ unstable ]
+
+jobs:
+  test:
+    #strategy:
+    #  matrix:
+    #    go-version: [1.16.x]
+    #    os: [ubuntu-latest]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Checkout SCION
+      run: |
+            # Get scion version from go modules. The sed command extracts the
+            # replacement if one is specified in the go.mod file.
+            scion_mod_version=$(go list -m github.com/scionproto/scion | sed -s 's/.*\s*=>\s*//')
+            scion_repo=https://${scion_mod_version% *}.git
+            # Extract the commit hash, which is the last part of the go modules version
+            scion_commit=${scion_mod_version##*[ -]}
+            git clone ${scion_repo} ~/scion
+            cd ~/scion
+            git checkout --quiet ${scion_commit} 
+    - name: Build SCION
+      run: |
+            go version
+            python3 --version
+            cd ~/scion
+            for service in "posix-router" "cs" "dispatcher" "scion-pki" "daemon"; do
+              go build -o ./bin/ ./go/${service}/ && echo "Built ${service}";
+            done
+            pip3 install -U wheel setuptools
+            pip3 install -r ~/scion/env/pip3/requirements.txt
+    - name: Configure and start local SCION AS
+      run: |
+            cd ~/scion
+            export PYTHONPATH=python/:.
+            # Generate tiny4.topo
+            printf '#!/bin/bash\necho "0.0.0.0"' > tools/docker-ip # Some hackery to make topo scripts run
+            # Use IPv4 addresses for this test
+            python3 python/topology/generator.py -c ./topology/tiny4.topo
+            # Link the gen directory containing sciond_addresses.json and as_list.json
+            cat ~/scion/gen/sciond_addresses.json
+            # ln -s ~/scion/gen /home/circleci/project/gen
+            mkdir gen-cache
+            # Start all AS tiny4.topo
+            supervisor/supervisor.sh reload
+            supervisor/supervisor.sh start all
+    - name: Build
+      run: |
+        make all
+        cd build
+        for F in *; do strip $F; done
+      env:
+        CGO_ENABLED: "0"
+    - name: Save binaries
+      uses: actions/upload-artifact@v2
+      with:
+        name: binaries
+        path: build/*
+    - name: Integration tests
+      run: |
+        make test
+      env: 
+        SCION_DAEMON_ADDRESS: "127.0.0.12:30255"
