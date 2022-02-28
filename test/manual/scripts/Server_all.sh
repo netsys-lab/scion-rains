@@ -84,7 +84,7 @@ EOF
 
 
 
-BINDIR="../../build"
+BINDIR="./build"
 WAIT=5
 
 LOGS=()
@@ -336,6 +336,7 @@ echo "some timeout warnings may be safely ignored"
 echo "================================================================"
 echo "Launching Resolver"
 run_bg ${BINDIR}/rainsd ./config/${PROTO}_ns_resolver.conf --rootServerAddress ${SERVADDR}:5022 --id "${PROTO}resolver"
+echo ${PIDS[*]} > pids.txt
 echo "Log messages so far"
 tail ${LOGS[*]}
 cat <<EOF
