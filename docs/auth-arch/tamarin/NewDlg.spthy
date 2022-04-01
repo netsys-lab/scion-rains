@@ -1,0 +1,459 @@
+
+// NewDlg protocol 
+
+theory NewDlg
+
+begin
+
+functions: zone/2, csr/4
+builtins:  signing
+
+
+/* Secure channel rules */
+
+rule Secure_send:
+    [ SOut($A, $B, m) ] --[ Send($A, $B, m) ]-> [!Secret($A, $B, m)]
+
+rule Secure_recv:
+    [ !Secret($A, $B, m) ] --[ Recv($B, $A, m) ]-> [ SIn($B, $A, m) ]
+
+/* Compromise Rules */
+
+rule Reveal_ltk:
+    [ !Ltk($A, ~ltk) ] --[ Reveal($A), RevealKey($A, pk(~ltk)),  Attack() ]-> [ Out(~ltk) ]
+
+rule Reveal_channel_outA:
+    [ !Secret($A, $B, m) ] --[ Reveal($A), RevealChannel($A),  Attack() ]-> [ Out(m) ]
+
+rule Reveal_channel_outB:
+    [ !Secret($A, $B, m) ] --[ Reveal($B), RevealChannel($A),  Attack() ]-> [ Out(m) ]
+
+rule Reveal_channel_in:
+    [ In(m) ] --[ Reveal($A), RevealChannel($A),  Attack() ]-> [ !Secret($A, $B, m) ]
+
+
+/* PKI */
+
+rule Register_pk:
+    [ Fr(~ltk) ]
+  --[]->
+    [ !Pk($A, pk(~ltk))
+    , !Ltk($A, ~ltk)
+    ]
+
+rule Get_pk:
+    [ !Pk($A, pkA) ] --> [ Out(pkA) ]
+
+/* Child rules */
+
+rule Child_Init:
+    [ !Ltk($C, ~skC)
+    , !Pk($P, pkP)
+    , !Pk($CA, pkCA)
+    , !LOGPk($LOG, pkLOG)
+    , Fr(~id)
+    ]
+  --[ Init('Child', $C, ~id), NotEq($P, $CA)
+    ]->
+    [ C_St_0($C, ~id, ~skC, $P, pkP, $CA, pkCA, $LOG, pkLOG)
+    ]
+
+rule Child_Send_CSR_To_Parent:
+  let
+    zone = zone($C, $P)    
+    csr = csr(zone, pk(~skC), $CA, pkCA)
+    // zone fct captures identity of child and parent zone therefore uniquely identifying the rains zone / domain
+    req = <'CSR', csr,  sign(csr, ~skC)>
+  
+  in
+    [ C_St_0($C, ~id, ~skC, $P, pkP, $CA, pkCA, $LOG, pkLOG)
+    ]
+  --[ Start('Child', $C, pk(~skC), ~id, <$C, $P, $CA, $LOG, zone>) 
+    // start fact is called whenever an entity sends first message or engages in the protocol for the first time
+    ]->
+    [ C_St_1($C, ~id, ~skC, $P, pkP, $CA, pkCA, $LOG, pkLOG, zone, req)
+    , SOut($C, $P, req)
+    ]
+
+rule Child_Recv_Cert_and_SCT_From_Parent:
+  [ C_St_1($C, ~id, ~skC, $P, pkP, $CA, pkCA, $LOG, pkLOG, zone, req)
+  , SIn($C, $P, <cert, SCT>)
+  ]
+--[ Eq(verify(cert, <'cert', zone, pk(~skC)>, pkCA), true), Eq(verify(SCT, <'SCT', cert>, pkLOG), true), Finished('Child', $C, ~id, <$C, $P, $CA, $LOG, req, zone>, 'Success')
+  ]->
+  [ C_St_2($C, ~id, ~skC, $P, pkP, $CA, pkCA, $LOG, pkLOG, zone, req, cert, SCT)
+  ]
+
+rule Child_Recv_Err_From_Parent:
+  [ C_St_1($C, ~id, ~skC, $P, pkP, $CA, pkCA, $LOG, pkLOG, zone, req)
+  , SIn($C, $P, 'Error_Parent')
+
+  ]
+--[ Finished('Child', $C, ~id, <$C, $P, $CA, $LOG, req, zone>, 'Failed') 
+  // finished fact is called whenever enitity sent last message or finishes an execution of the protocol
+  ]->
+  [
+  ]
+
+
+/* Parent rules */
+rule Parent_Init:
+    [ !Ltk($P, ~skP)
+    , !LOGPk($LOG, pkLOG)
+    , Fr(~id)
+    ]
+  --[ Init('Parent', $P, ~id)
+    ]->
+    [ P_St_0($P, ~id, ~skP, $LOG, pkLOG)
+      , IsParent($P, pk(~skP))
+    ]
+
+rule Parent_Receive_CSR:
+  let
+    zone = zone($C, $P)
+    csr = csr(zone, pkC, $CA, pkCA)
+    req = <'CSR', csr, csrsig>
+  in
+    [ P_St_0($P, ~id, ~skP, $LOG, pkLOG)
+    , !Pk($CA, pkCA)
+    , SIn($P, $C, req)
+    ]
+  --[ Start('Parent', $P, pk(~skP), ~id, <$C, $P, $CA, $LOG, zone>) ]->
+    [ P_St_1($P, ~id, ~skP, $LOG, pkLOG, $C, pkC, $CA, pkCA, req, zone)
+    ]
+
+rule Parent_Send_NewDlg_Request_to_CA:
+  let
+    payload = <req, $P, pk(~skP)>
+    NewDlgReq = <payload, sign(payload, ~skP)>
+  in
+    [ P_St_1($P, ~id, ~skP, $LOG, pkLOG, $C, pkC, $CA, pkCA, req, zone)
+    ]
+  --[
+    ]->
+    [ P_St_2($P, ~id, ~skP, $LOG, pkLOG, $C, pkC, $CA, pkCA, req, zone, NewDlgReq)
+    , SOut($P, $CA, NewDlgReq)
+    ]
+
+rule Parent_Recv_Cert_From_CA_Send_Signed_Cert_To_LOG:
+  let
+    signed_cert = sign(<'PSignedCert', cert>, ~skP)
+  in
+  [ P_St_2($P, ~id, ~skP, $LOG, pkLOG, $C, pkC, $CA, pkCA, req, zone, NewDlgReq)
+  , SIn($P, $CA, cert)
+  ]
+--[ Eq(verify(cert, <'cert', zone($C, $P), pkC>, pkCA), true), ParentSignedCertForZone($P,  zone($C, $P)) // TODO remove verify cert 
+  ]->
+  [ P_St_3($P, ~id, ~skP, $LOG, pkLOG, $C, pkC, $CA, pkCA, req, zone, NewDlgReq, cert, signed_cert)
+  , SOut($P, $LOG, <cert, signed_cert, pk(~skP)>)
+  ]
+
+rule Parent_Recv_Err_From_CA_Forward_To_Child:
+  [ P_St_2($P, ~id, ~skP, $LOG, pkLOG, $C, pkC, $CA, pkCA, req, zone, NewDlgReq)
+  , SIn($P, $CA, 'Error_CA')
+  ]
+--[ Finished('Parent', $P, ~id, <$C, $P, $CA, $LOG, req, zone>, 'Failed')
+  ]->
+  [
+   SOut($P, $C, 'Error_Parent')
+  ]
+
+rule Parent_Recv_SCT_From_LOG_Send_To_Child:
+  [ P_St_3($P, ~id, ~skP, $LOG, pkLOG, $C, pkC, $CA, pkCA, req, zone, NewDlgReq, cert, signed_cert)
+  , SIn($P, $LOG, SCT)
+  ]
+--[ Eq(verify(SCT, <'SCT', cert>, pkLOG), true), Finished('Parent', $P, ~id, <$C, $P, $CA, $LOG, req, zone>, 'Success')
+  ]->
+  [ SOut($P, $C, <cert, SCT>)
+  ]
+
+/* CA rules */
+
+rule CA_Init:
+  [ !Ltk($CA, ~skCA)
+  , !LOGPk($LOG, pkLOG)
+  , Fr(~id)
+  ]
+--[ Init('CA', $CA, ~id)
+    , IsCA(pk(~skCA))
+  ]->
+  [ CA_St_0($CA, ~id, ~skCA, $LOG, pkLOG)
+   , !CA(pk(~skCA))
+  ]
+
+
+rule CA_Receive_Request_From_Parent_And_Check_LOG:
+  let
+    zone = zone($C, $P)
+    csr = csr(zone, pkC, $CA, pkCA)
+    req = <'CSR', csr, csrsig>
+    payload = <req, $P, pkP>
+    NewDlgReq = <payload, sig>
+  in
+  [ CA_St_0($CA, ~id, ~skCA, $LOG, pkLOG)
+  , SIn($CA, $P, NewDlgReq)
+  , !AuthenticParent($P, pkP)
+  ]
+--[Eq(verify(sig, payload, pkP), true), Eq(verify(csrsig, csr, pkC), true), Start('CA', $CA, pk(~skCA), ~id, <$C, $P, $CA, $LOG, zone>)
+  ]->
+  [ CA_St_1($CA, ~id, ~skCA, $LOG, pkLOG, $P, pkP, $C, pkC, req, NewDlgReq, zone)
+  , SOut($CA, $LOG, <'RequestInfo', zone>)
+  ]
+
+
+rule CA_Check_OK_Send_Cert_To_Parent:
+  let
+    cert = sign(<'cert', zone, pkC>, ~skCA)
+  in
+  [ CA_St_1($CA, ~id, ~skCA, $LOG, pkLOG, $P, pkP, $C, pkC, req, NewDlgReq, zone)
+  , SIn($CA, $LOG, <<'OK', zone>, sig>)
+  ]
+--[ Eq(verify(sig, <'OK', zone>, pkLOG), true), Finished('CA', $CA, ~id, <$C, $P, $CA, $LOG, req, zone>, 'Success')
+  ]->
+  [ SOut($CA, $P, cert)
+  ]
+
+rule CA_Check_NOT_OK_Send_Err_To_Parent:
+  [ CA_St_1($CA, ~id, ~skCA, $LOG, pkLOG, $P, pkP, $C, pkC, req, NewDlgReq, zone)
+  , SIn($CA, $LOG, <<'NOTOK', zone>, sig>)
+  ]
+--[ Eq(verify(sig, <'NOTOK', zone>, pkLOG), true), Finished('CA', $CA, ~id, <$C, $P, $CA, $LOG, req, zone>, 'Failed')
+  ]->
+  [ SOut($CA, $P, 'Error_CA')
+  ]
+
+
+
+/* LogServer Rules */
+
+
+rule LOG_Init:
+  [ !Ltk($LOG, ~skLOG)
+  , !Pk($LOG, pkLOG)
+  , Fr(~id)
+  ]
+--[ Init('LOG', $LOG, ~id), Unique($LOG), Unique(~skLOG) , Unique('OneLog')// only one logserver
+  ]->
+  [ !LOG_St_0($LOG, ~id, ~skLOG)
+  , !LOGPk($LOG, pkLOG)
+  ]
+
+rule LOG_Answer_Check_Ok:
+  let 
+    zone = zone($C, $P)
+  in
+  [ !LOG_St_0($LOG, ~id, ~skLOG)
+   , SIn($LOG, $CA, <'RequestInfo', zone>)
+  ]
+  --[NoConflictAtCheck(zone)]->
+    // NoConflictAtCheck(zone) states that a conflict check was performed by a CA and the log responded with OK which means no conflicting
+    // certificates exist for that zone 
+  [
+    SOut($LOG, $CA, <<'OK', zone>, sign(<'OK', zone>, ~skLOG)>)
+  ]
+
+
+rule LOG_Answer_Check_NotOk:
+  let 
+  zone = zone($C, $P)
+  in
+  [ !LOG_St_0($LOG, ~id, ~skLOG)
+   , SIn($LOG, $CA, <'RequestInfo', zone>)
+  ]
+  --[ConflictAtCheck(zone)]->
+    // ConflictAtCheck(zone) states that a conflict check was performed by a CA and the log responded with NOTOK which means a conflicting
+    // certificate exists for that zone 
+  [
+    SOut($LOG, $CA, <<'NOTOK', zone>, sign(<'NOTOK', zone>, ~skLOG)>)
+  ]
+
+
+rule LOG_Process_Request_From_Parent:
+  let
+    cert = sign(<'cert', zone($C, $P), pkC>, ~skCA)
+    SCT = sign(<'SCT', cert>, ~skLOG)
+  in
+  [ !LOG_St_0($LOG, ~id, ~skLOG)
+  , SIn($LOG, $P, <cert, signed_cert, pkP>)
+  , !CA(pk(~skCA))
+  , !AuthenticParent($P, pkP)
+  ]
+--[Eq(verify(signed_cert, <'PSignedCert', cert>, pkP), true), CertForZoneInLog(zone($C, $P)), NotEq(pkP, pk(~skCA))
+  // CertForZoneInLog captures the point where a certificate for some zone was added to the log 
+  ]->
+  [ SOut($LOG, $P, SCT)
+  ]
+
+
+/* Event Rules */ 
+
+rule ExistingCertInLog:
+  [
+    !Pk($C, Ckey)
+  , !Pk($P, Pkey)
+  ]
+  --[Unique('Event'), Event(), Unique($P), ParentAuthenticated($P, Pkey), CertForZoneInLog(zone($C, $P))]->
+  [!AuthenticParent($P, Pkey)]
+
+
+rule ParentAuthentication:
+ [IsParent($P, pkP)]
+ --[Unique($P), ParentAuthenticated($P, pkP)]->  
+ [!AuthenticParent($P, pkP)]
+
+
+
+
+/* Restrictions */
+
+restriction Equality:
+  "All x y #i. Eq(x, y)@i ==> x = y"
+
+restriction InEquality:
+  "All x y #i. NotEq(x, y)@i ==> not(x = y)"
+
+restriction Uniqueness:
+  "All x #i #j. Unique(x)@i & Unique(x)@j ==> #i = #j"
+
+restriction AbsenceCheck1:
+"All zone #i #j. CertForZoneInLog(zone)@i & NoConflictAtCheck(zone)@j & i < j ==> F"
+
+restriction AbsenceCheck2:
+  "All zone #i. ConflictAtCheck(zone)@i ==> (Ex #j. CertForZoneInLog(zone)@j & j < i)"
+
+restriction LogNeverCompromised:
+  "All LOG id #i. Init('LOG', LOG, id)@i & (Ex #c. Reveal(LOG)@c) ==> F"
+
+restriction InvalidZone:
+  "All C P #i. CertForZoneInLog(zone(C, P))@i ==> (not(C = P))"
+
+restriction CACanNotBeAuthenticParent: 
+"All #i #j P key. ParentAuthenticated(P, key)@i & IsCA(key)@j ==> F"
+
+
+// This restriction limits all roles to one Init except the log server. Can be used to make smaller model 
+// restriction LimitModelToOneInitPerRole:
+ //   "All role X Y idX idY #j #k. Init(role, X, idX)@j & Init(role, Y, idY)@k ==> ((#j = #k) | role = 'LOG')"
+
+ // shows successful execution trace of NewDlg 
+ lemma ChildFinishSuccess:
+ exists-trace
+   "Ex C id t #i. Finished('Child', C, id, t, 'Success')@i
+         & (All role X Y idX idY #j #k.
+           Init(role, X, idX)@j & Init(role, Y, idY)@k
+           ==> ((#j = #k))
+         )
+         & (All role #l. Reveal(role)@l ==> F)
+         & not(Ex #e. Event()@e)
+   "
+
+// shows failed execution trace of NewDlg (requires 2 runs of the protocol)
+lemma ChildFinishFailed:
+ exists-trace
+   "Ex C id t #i. Finished('Child', C, id, t, 'Failed')@i
+       & (All role X Y idX idY #j #k.
+             Init(role, X, idX)@j & Init(role, Y, idY)@k
+             ==> (X = Y)
+         )
+       & (All role X idX1 idX2 idX3 #j #k #l.
+             Init(role, X, idX1)@j & Init(role, X, idX2)@k & Init(role, X, idX3)@l
+             ==> ((#j = #k) | (#j = #l) | (#k = #l))
+         )
+       & (All role #l. Reveal(role)@l ==> F)
+       & not(Ex #e. Event()@e)
+   "
+
+
+lemma agreement:
+all-traces
+"All C id P req zone CA LOG #i.
+    Finished('Child', C, id, <C, P, CA, LOG, req, zone>, 'Success')@i
+    & not(Ex #e. Event()@e)
+    ==> (Ex id2 #j. Finished('Parent', P, id2, <C, P, CA, LOG, req, zone>, 'Success')@j) | (Ex #c. Reveal(P)@c) | (Ex #c. Reveal(C)@c)
+"
+
+// Child finishing protocol successfully implies cert has been added to log or child was compromised
+lemma AddedToLog:
+  all-traces
+  "All C id P CA LOG req #i.
+    Finished('Child', C, id, <C, P, CA, LOG, req, zone(C, P)>, 'Success')@i
+    & not(Ex #e. Event()@e)
+    ==> (Ex #j. CertForZoneInLog(zone(C, P))@j)  | (Ex #c. Attack()@c)
+  "
+
+// If a cert for a zone was added to log, parent needs to have signed it or parent was comrpomised. 
+lemma CompromisedParent:
+  all-traces
+    "All C P #i.
+      CertForZoneInLog(zone(C, P))@i
+      & not(Ex #e. Event()@e)
+      ==> (Ex #j. ParentSignedCertForZone(P, zone(C, P))@j) | (Ex #c. Reveal(P)@c)
+      "
+
+// If a cert was added to log, child needs to have started protocol at some point or it was compromised, or parent (channel) was compromised
+lemma MaliciousParent:
+  all-traces
+    "All C P #i.
+      CertForZoneInLog(zone(C, P))@i
+      & not(Ex #e. Event()@e)
+      ==> (Ex idC keyC CA LOG #j. Start('Child', C, keyC, idC, <C, P, CA, LOG, zone(C, P)>)@j)
+       | (Ex #c. Reveal(P)@c) 
+       | (Ex #c. Reveal(C)@c)
+      "
+
+// If cert for zone added to log, child and parent started protocol at some point before or they are compromised
+lemma correctness:
+  all-traces
+    "All C P #i.
+      CertForZoneInLog(zone(C, P))@i
+      & not(Ex #e. Event()@e)
+      ==> (Ex CA LOG idC idP keyC keyP #j #k. Start('Child', C, keyC, idC, <C, P, CA, LOG, zone(C, P)>)@j
+      & Start('Parent', P, keyP, idP, <C, P, CA, LOG, zone(C, P)>)@k)
+      | (Ex #c. Reveal(P)@c) | (Ex #c. Reveal(C)@c)
+      "
+
+lemma NoConflictingCertsInLog:
+// ATTACK: race condition, two overlapping executions of NewDlg protocol , TODO write as exists-trace with only 1 init of child/parent
+  all-traces
+  "All zone #i #j. CertForZoneInLog(zone)@i & CertForZoneInLog(zone)@j  ==> ((#i = #j) | (Ex #e. Event()@e) | (Ex #c. Attack()@c)) "
+
+
+
+// If cert for zone exists and no comprmomise has taken place so far then: 
+// It is not possible to for anyone to obtain a second certificate for that zone while only the parent is compromised
+
+// TODO prove without bound!! 
+
+lemma Property:
+   all-traces
+   "All C P Pkey #i. CertForZoneInLog(zone(C, P))@i & ParentAuthenticated(P, Pkey)@i
+   & not(Ex #c idc. (#c < #i) & Init('Child', C, idc)@c) 
+   & not(Ex #p idp. (#p < #i) & Init('Parent', P, idp)@p)
+   & not(Ex #a. (#a < #i) & Attack()@a) 
+ //  & (All A #r. (#i < #r) & Reveal(A)@r ==> (A = P)) 
+   & (All A Akey #r. (#i < #r) & RevealKey(A, Akey)@r ==> (A = P) & (Akey = Pkey)) 
+   & (All role X Y idX idY #j #k.
+        Init(role, X, idX)@j & Init(role, Y, idY)@k
+        ==> ((#j = #k))
+      )
+   ==>
+   not(Ex #c. (i < c) & CertForZoneInLog(zone(C, P))@c)"
+
+
+// If cert for zone exists and no comprmomise has taken place so far then: 
+// It is not possible to for anyone to obtain a second certificate for that zone while the parent (and log server) are not compromised and
+// the parent is not starting the protocol (due to out of band auth with child) 
+
+lemma Property2:
+all-traces
+  "All C P Pkey #i. CertForZoneInLog(zone(C, P))@i & ParentAuthenticated(P, Pkey)@i 
+  & not(Ex #c idc. (#c < #i) & Init('Child', C, idc)@c) 
+  & not(Ex #p idp. (#p < #i) & Init('Parent', P, idp)@p)
+  & not(Ex #a. (#a < #i) & Attack()@a) 
+  //& (All A #r. (#i < #r) & Reveal(A)@r ==> not(A = P))
+  & (All A Akey #r. (#i < #r) & RevealKey(A, Akey)@r ==> not(A = P) & not(Akey = Pkey)) 
+  & not(Ex idpp CA LOG #s. Start('Parent', P, Pkey, idpp, <C, P, CA, LOG, zone(C, P)>)@s) 
+  ==>
+  not(Ex #c. (i < c) & CertForZoneInLog(zone(C, P))@c)"
+
+end
