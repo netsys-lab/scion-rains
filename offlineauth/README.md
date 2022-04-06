@@ -115,7 +115,7 @@ add ``EXPOSE 8090`` and ``EXPOSE 8094`` to ``Go/Dockerfile``
 
 Run `docker-compose up` in repo folder to start
 
-Access the container: ``docker exec -i -t experiment bash`` and run `make createmap` and `make createtree` and `make map_initial`
+Access the container: ``docker exec -i -t experiment bash`` and run `mkdir data` and `make createmap` and `make createtree` and `make map_initial`
 
 read out `logid1 mapid1 logpk1.pem mapk1.pem` in `/mnt/config/` 
 
