@@ -21,19 +21,16 @@ import (
 	"time"
 )
 
-
-
 const (
-	MAP_ADDRESS = "172.18.0.5:8094"
-	CA_ADDRESS = "localhost:10000"
+	MAP_ADDRESS     = "172.18.0.5:8094"
+	CA_ADDRESS      = "localhost:10000"
 	CHECKER_ADDRESS = "localhost:10001"
-	LOG_ADDRESS = "172.18.0.3:8090"
-	MAP_PK_PATH = "testdata/mappk1.pem"
-	LOG_PK_PATH = "testdata/logpk1.pem"
-	MAP_ID = 3213023363744691885
-	LOG_ID = 8493809986858120401
+	LOG_ADDRESS     = "172.18.0.3:8090"
+	MAP_PK_PATH     = "testdata/mappk1.pem"
+	LOG_PK_PATH     = "testdata/logpk1.pem"
+	MAP_ID          = 2727696932843049039
+	LOG_ID          = 2110187651566808891
 )
-
 
 func TestNewDlgEd25519Keys(t *testing.T) {
 	logger.Root().SetHandler(logger.StreamHandler(os.Stdout, logger.TerminalFormat()))
@@ -51,7 +48,7 @@ func TestNewDlgEd25519Keys(t *testing.T) {
 	_, childPrivKey, _ := ed25519.GenerateKey(rand.Reader)
 	random.Seed(time.Now().UnixNano())
 	testid := fmt.Sprint(random.Intn(10000))
-	csrbytes, _ := child.CreateCSR("test" + testid + "." + parent.Certificate.DNSNames[0], "",  childPrivKey)
+	csrbytes, _ := child.CreateCSR("test"+testid+"."+parent.Certificate.DNSNames[0], "", childPrivKey)
 
 	_, err := parent.NewDlg(csrbytes, true)
 	if err != nil {
@@ -60,7 +57,7 @@ func TestNewDlgEd25519Keys(t *testing.T) {
 
 	time.Sleep(time.Second)
 
-	_ , err = parent.NewDlg(csrbytes, true)
+	_, err = parent.NewDlg(csrbytes, true)
 	if err == nil {
 		t.Errorf("Parent NewDlg not blocked")
 	}
@@ -83,14 +80,14 @@ func TestNewDlgRSAKeys(t *testing.T) {
 	childPrivKey, _ := rsa.GenerateKey(rand.Reader, 2048)
 	random.Seed(time.Now().UnixNano())
 	testid := fmt.Sprint(random.Intn(10000))
-	csrbytes, _ := child.CreateCSR("test" + testid + "." + parent.Certificate.DNSNames[0], "",  childPrivKey)
+	csrbytes, _ := child.CreateCSR("test"+testid+"."+parent.Certificate.DNSNames[0], "", childPrivKey)
 
 	_, err := parent.NewDlg(csrbytes, true)
 	if err != nil {
 		t.Errorf("NewDlg failed")
 	}
 	time.Sleep(time.Second)
-	_ , err = parent.NewDlg(csrbytes, true)
+	_, err = parent.NewDlg(csrbytes, true)
 	if err == nil {
 		t.Errorf("Parent NewDlg not blocked")
 	}
@@ -113,45 +110,42 @@ func TestNewDlgReNewDlgKeyChangeDlg(t *testing.T) {
 	_, childPrivKey, _ := ed25519.GenerateKey(rand.Reader)
 	random.Seed(time.Now().UnixNano())
 	testid := fmt.Sprint(random.Intn(10000))
-	csrbytes, _ := child.CreateCSR("test" + testid + "." + parent.Certificate.DNSNames[0], "",  childPrivKey)
+	csrbytes, _ := child.CreateCSR("test"+testid+"."+parent.Certificate.DNSNames[0], "", childPrivKey)
 
 	childCert, err := parent.NewDlg(csrbytes, true)
 	//common.StoreCertificatePEM("testrun.cert", childCert)
 	if err != nil {
-		t.Errorf("NewDlg failed %s",err)
+		t.Errorf("NewDlg failed %s", err)
 		return
 	}
 
-
-
 	time.Sleep(time.Second)
 
-	_ , err = parent.NewDlg(csrbytes, true)
+	_, err = parent.NewDlg(csrbytes, true)
 	if err == nil {
 		t.Errorf("Parent NewDlg not blocked")
 	}
 
-	childCertParsed, _:= x509.ParseCertificate(childCert)
+	childCertParsed, _ := x509.ParseCertificate(childCert)
 	renewedCert, err := child.ReNewDlg(childCertParsed, childPrivKey, "localhost:10000", "localhost:10001")
 	if err != nil {
 		t.Errorf("Child ReNewDlg failed")
 		return
 	}
 
-	renewedCertParsed, _:= x509.ParseCertificate(renewedCert)
+	renewedCertParsed, _ := x509.ParseCertificate(renewedCert)
 	newKey1, _ := rsa.GenerateKey(rand.Reader, 2048)
 
-	newKey1Cert , err := child.KeyChangeDlg(renewedCertParsed, childPrivKey, newKey1, "localhost:10000", "localhost:10001")
+	newKey1Cert, err := child.KeyChangeDlg(renewedCertParsed, childPrivKey, newKey1, "localhost:10000", "localhost:10001")
 	if err != nil {
 		t.Errorf("Key Change failed")
 		return
 	}
 
-	newKey1CertParsed, _:= x509.ParseCertificate(newKey1Cert)
+	newKey1CertParsed, _ := x509.ParseCertificate(newKey1Cert)
 	_, newKey2, _ := ed25519.GenerateKey(rand.Reader)
 
-
-	_ , err = child.KeyChangeDlg(newKey1CertParsed, newKey1, newKey2, "localhost:10000", "localhost:10001")
+	_, err = child.KeyChangeDlg(newKey1CertParsed, newKey1, newKey2, "localhost:10000", "localhost:10001")
 	if err != nil {
 		t.Errorf("Key Change failed")
 		return
@@ -223,7 +217,7 @@ func TestFull(t *testing.T) {
 	keyManager.CreateEd25519Key(tld_key_path)
 	tld_key, _ := common.LoadPrivateKeyEd25519(tld_key_path)
 
-	tld_zone := "tld"+testid+"."+root_config.Zone
+	tld_zone := "tld" + testid + "." + root_config.Zone
 	tld_csr, _ := child.CreateCSR(tld_zone, "", tld_key)
 
 	common.StoreCertificateRequestPEM("testfulldata/debugcsr.csr", tld_csr)
@@ -253,56 +247,50 @@ func TestFull(t *testing.T) {
 	}
 	TLD := parent.NewParent(tld_config)
 
-
 	_, SLDKey, _ := ed25519.GenerateKey(rand.Reader)
-	SLDcsrbytes, _ := child.CreateCSR("sld" + testid + "." + TLD.Certificate.DNSNames[0], "",  SLDKey)
+	SLDcsrbytes, _ := child.CreateCSR("sld"+testid+"."+TLD.Certificate.DNSNames[0], "", SLDKey)
 
 	SLDcert, err := TLD.NewDlg(SLDcsrbytes, true)
 	if err != nil {
-		t.Errorf("SLD NewDlg failed %s",err)
+		t.Errorf("SLD NewDlg failed %s", err)
 		return
 	}
 	common.StoreCertificatePEM("testfulldata/sld.cert", SLDcert)
 
+	time.Sleep(time.Second * 2)
 
-	time.Sleep(time.Second*2)
-
-	_ , err = TLD.NewDlg(SLDcsrbytes, true)
+	_, err = TLD.NewDlg(SLDcsrbytes, true)
 	if err == nil {
 		t.Errorf("TLD NewDlg for SLD not blocked")
 		return
 	}
 
-	sldCertParsed, _:= x509.ParseCertificate(SLDcert)
+	sldCertParsed, _ := x509.ParseCertificate(SLDcert)
 	renewedCert, err := child.ReNewDlg(sldCertParsed, SLDKey, CA_ADDRESS, CHECKER_ADDRESS)
 	if err != nil {
 		t.Errorf("SLD ReNewDlg failed")
 		return
 	}
 
-	renewedCertParsed, _:= x509.ParseCertificate(renewedCert)
+	renewedCertParsed, _ := x509.ParseCertificate(renewedCert)
 	newKey1, _ := rsa.GenerateKey(rand.Reader, 2048)
 
-	newKey1Cert , err := child.KeyChangeDlg(renewedCertParsed, SLDKey, newKey1, CA_ADDRESS, CHECKER_ADDRESS)
+	newKey1Cert, err := child.KeyChangeDlg(renewedCertParsed, SLDKey, newKey1, CA_ADDRESS, CHECKER_ADDRESS)
 	if err != nil {
 		t.Errorf("Key Change failed")
 		return
 	}
 
-	newKey1CertParsed, _:= x509.ParseCertificate(newKey1Cert)
+	newKey1CertParsed, _ := x509.ParseCertificate(newKey1Cert)
 	_, newKey2, _ := ed25519.GenerateKey(rand.Reader)
 
-
-	_ , err = child.KeyChangeDlg(newKey1CertParsed, newKey1, newKey2, CA_ADDRESS, CHECKER_ADDRESS)
+	_, err = child.KeyChangeDlg(newKey1CertParsed, newKey1, newKey2, CA_ADDRESS, CHECKER_ADDRESS)
 	if err != nil {
 		t.Errorf("Key Change failed")
 		return
 	}
 
-
-
 }
-
 
 func TestRevoke(t *testing.T) {
 	logger.Root().SetHandler(logger.StreamHandler(os.Stdout, logger.TerminalFormat()))
@@ -369,7 +357,7 @@ func TestRevoke(t *testing.T) {
 	keyManager.CreateEd25519Key(tld_key_path)
 	tld_key, _ := common.LoadPrivateKeyEd25519(tld_key_path)
 
-	tld_zone := "tld"+testid+"."+root_config.Zone
+	tld_zone := "tld" + testid + "." + root_config.Zone
 	tld_csr, _ := child.CreateCSR(tld_zone, "", tld_key)
 
 	common.StoreCertificateRequestPEM("testfulldata/debugcsr.csr", tld_csr)
@@ -399,17 +387,15 @@ func TestRevoke(t *testing.T) {
 	}
 	TLD := parent.NewParent(tld_config)
 
-
 	_, SLDKey, _ := ed25519.GenerateKey(rand.Reader)
-	SLDcsrbytes, _ := child.CreateCSR("sld" + testid + "." + TLD.Certificate.DNSNames[0], "",  SLDKey)
+	SLDcsrbytes, _ := child.CreateCSR("sld"+testid+"."+TLD.Certificate.DNSNames[0], "", SLDKey)
 
 	SLDcert, err := TLD.NewDlg(SLDcsrbytes, true)
 	if err != nil {
-		t.Errorf("SLD NewDlg failed %s",err)
+		t.Errorf("SLD NewDlg failed %s", err)
 		return
 	}
 	common.StoreCertificatePEM("testfulldata/sld.cert", SLDcert)
-
 
 	//revoke sld cert
 	SLDCertParsed, _ := x509.ParseCertificate(SLDcert)
@@ -419,20 +405,17 @@ func TestRevoke(t *testing.T) {
 		return
 	}
 
+	time.Sleep(time.Second * 2)
 
-	time.Sleep(time.Second*2)
-
-	_ , err = TLD.NewDlg(SLDcsrbytes, true)
+	_, err = TLD.NewDlg(SLDcsrbytes, true)
 	if err != nil {
 		t.Errorf("TLD NewDlg still blocked (should not because of revocation)")
 		return
 	}
 
-
-
 }
 
-func TestCreateDemoFiles(t *testing.T){
+func TestCreateDemoFiles(t *testing.T) {
 	logger.Root().SetHandler(logger.StreamHandler(os.Stdout, logger.TerminalFormat()))
 
 	var demotld = "ch1"
@@ -482,6 +465,8 @@ func TestCreateDemoFiles(t *testing.T){
 	CHECKER := checkerExtension.NewChecker(checker_config)
 	go CHECKER.RunServer(CHECKER_ADDRESS)
 
+	time.Sleep(time.Second * 2)
+
 	// random test number
 	//random.Seed(time.Now().UnixNano())
 	//testid := fmt.Sprint(random.Intn(10000))
@@ -503,8 +488,6 @@ func TestCreateDemoFiles(t *testing.T){
 
 	root_conf_file, _ := json.MarshalIndent(root_config, "", " ")
 	_ = ioutil.WriteFile("testfulldata/root.conf", root_conf_file, 0644)
-
-
 
 	ROOT := parent.NewParent(root_config)
 
@@ -550,7 +533,124 @@ func TestCreateDemoFiles(t *testing.T){
 
 	//TLD := parent.NewParent(tld_config)
 
+}
 
+func TestCreateDemoFiles2(t *testing.T) {
+	logger.Root().SetHandler(logger.StreamHandler(os.Stdout, logger.TerminalFormat()))
 
+	var demotld = "ch"
+
+	var alg = "Ed25519"
+
+	//create a CA:
+	ca_alg := alg
+	ca_key_path := "demo/ca.key"
+	ca_cert_path := "demo/ca.cert"
+	keyManager.CreateEd25519Key(ca_key_path)
+	keyManager.CreateSelfSignedCACertificate(ca_alg, ca_key_path, ca_cert_path)
+	cert, _ := common.LoadCertificatePEM(ca_cert_path)
+	common.StoreCertificatePEM("demo/roots/ca.cert", cert.Raw)
+
+	ca_config := ca.Config{
+		PrivateKeyAlgorithm:    ca_alg,
+		PrivateKeyPath:         ca_key_path,
+		CertificatePath:        ca_cert_path,
+		MapServerAddress:       MAP_ADDRESS,
+		MapServerPublicKeyPath: MAP_PK_PATH,
+		MapId:                  MAP_ID,
+		ServerAddress:          CA_ADDRESS,
+		RootCertsPath:          "demo/roots/",
+	}
+
+	ca_conf_file, _ := json.MarshalIndent(ca_config, "", " ")
+	_ = ioutil.WriteFile("demo/ca.conf", ca_conf_file, 0644)
+
+	CA := ca.NewCA(ca_config)
+	go CA.RunServer(CA_ADDRESS)
+
+	checker_config := checkerExtension.Config{
+		LogID:         LOG_ID,
+		LogAddress:    LOG_ADDRESS,
+		LogPkeyPath:   LOG_PK_PATH,
+		MapID:         MAP_ID,
+		MapAddress:    MAP_ADDRESS,
+		MapPkeyPath:   MAP_PK_PATH,
+		RootCertsPath: "demo/roots/",
+		ServerAddress: CHECKER_ADDRESS,
+	}
+
+	checker_conf_file, _ := json.MarshalIndent(checker_config, "", " ")
+	_ = ioutil.WriteFile("demo/checker.conf", checker_conf_file, 0644)
+
+	CHECKER := checkerExtension.NewChecker(checker_config)
+	go CHECKER.RunServer(CHECKER_ADDRESS)
+
+	time.Sleep(time.Second * 2)
+
+	// random test number
+	//random.Seed(time.Now().UnixNano())
+	//testid := fmt.Sprint(random.Intn(10000))
+
+	//create root parent zone with no authentication (instead of using dnssec)
+	root_alg := alg
+	root_key_path := "demo/root.key"
+	keyManager.CreateEd25519Key(root_key_path)
+	root_config := parent.Config{
+		Zone:                 "rains",
+		AuthenticationType:   "NOAUTH",
+		LogCheckerExtAddress: CHECKER_ADDRESS,
+		PrivateKeyAlgorithm:  root_alg,
+		PrivateKeyPath:       root_key_path,
+		CertificatePath:      "",
+		CAAddress:            CA_ADDRESS,
+		OutputDir:            "demo/",
+	}
+
+	root_conf_file, _ := json.MarshalIndent(root_config, "", " ")
+	_ = ioutil.WriteFile("demo/root.conf", root_conf_file, 0644)
+
+	ROOT := parent.NewParent(root_config)
+
+	tld_alg := alg
+	tld_key_path := "demo/" + demotld + ".key"
+	keyManager.CreateEd25519Key(tld_key_path)
+	tld_key, _ := common.LoadPrivateKeyEd25519(tld_key_path)
+
+	tld_zone := demotld + ".rains"
+	tld_csr, _ := child.CreateCSR(tld_zone, "", tld_key)
+
+	fmt.Println("len csr", len(tld_csr))
+	common.StoreCertificateRequestPEM("demo/debugcsr.csr", tld_csr)
+
+	tld_cert, err := ROOT.NewDlg(tld_csr, true)
+	if err != nil {
+		fmt.Println(err)
+		t.Errorf("Root NewDlg failed")
+		return
+	}
+
+	fmt.Println("TLD Cert Size Ed25519", len(tld_cert))
+
+	tld_cert_parsed, _ := x509.ParseCertificate(tld_cert)
+	fmt.Println(tld_cert_parsed.Extensions)
+
+	tld_cert_path := "demo/" + demotld + ".cert"
+	common.StoreCertificatePEM(tld_cert_path, tld_cert)
+
+	tld_config := parent.Config{
+		Zone:                 tld_zone,
+		AuthenticationType:   "certificate",
+		LogCheckerExtAddress: CHECKER_ADDRESS,
+		PrivateKeyAlgorithm:  tld_alg,
+		PrivateKeyPath:       tld_key_path,
+		CertificatePath:      tld_cert_path,
+		CAAddress:            CA_ADDRESS,
+		OutputDir:            "demo/",
+	}
+
+	tld_conf_file, _ := json.MarshalIndent(tld_config, "", " ")
+	_ = ioutil.WriteFile("demo/"+demotld+".conf", tld_conf_file, 0644)
+
+	//TLD := parent.NewParent(tld_config)
 
 }
