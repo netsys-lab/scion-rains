@@ -1,4 +1,4 @@
- # Prototype Implementation of RHINE Offline Authentication Protocol. 
+ # Prototype Implementation of RAINS Offline Authentication Protocol. 
 
 **Code in cyrill-k/trustflex directory is copied from https://github.com/cyrill-k/trustflex**
 
