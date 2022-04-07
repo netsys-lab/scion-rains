@@ -119,7 +119,7 @@ Access the container: ``docker exec -i -t experiment bash`` and run `mkdir data`
 
 read out `logid1 mapid1 logpk1.pem mapk1.pem` in `/mnt/config/` 
 
-### Step 3: update and create configs for your F-PKI setup 
+### optional step for testing with go tests: update and create configs for your F-PKI setup 
 
 change at least: 
 
@@ -134,43 +134,49 @@ in `offlineAuth/test/rainsdeleg_test.go` to fit your f-pki setup.
 
 Then run the `TestCreateDemoFiles` function in to create necessary configs for to run a manual toy example. Alternatively use `TestFull` function to test automatically. 
 
-### Step 4 (optional): manual toy example 
+### Step 3: run toy example with demo files 
 
 run `make` to create the binaries in `/build`
+
+
+change `testdata/logpk1.pem` and `testdata/mapk1.pem` to match your f-pki setup
+
+change `LogID` and `MapID` values in `demo/checker.conf` and  `demo/ca.conf` to match your f-pki setup
 
 run ca: 
 
 ``cd test ``
 
-``../build/ca testfulldata/ca.conf``
+``../build/ca demo/ca.conf``
 
 
 run checker: 
 
  ``cd test ``
  
- ``../build/checker testfulldata/checker.conf ``
+ ``../build/checker demo/checker.conf ``
 
 
 child generate key and csr:
 
- ``../build/keyGen Ed25519 testfulldata/ethz_key.pem ``
+ ``../build/keyGen Ed25519 demo/ethz.ch.rains.key ``
  
- ``../build/child NewDlg Ed25519 testfulldata/ethz_key.pem --zone ethz.ch1.rhine --out testfulldata ``
+ ``../build/child NewDlg Ed25519 demo/ethz.ch.rains.key --zone ethz.ch.rains --out demo ``
  
 parse: 
-``openssl req -text -noout -in testfulldata/ethz.ch1.rhine_Csr.pem``
+``openssl req -text -noout -in demo/ethz.ch.rains_Csr.pem``
 
 
 parent run newdlg :
 
 
- `` ../build/parent testfulldata/tld.conf --NewDlg testfulldata/ethz.ch1_Csr.pem ``
+ `` ../build/parent demo/ch.conf --NewDlg demo/ethz.ch.rains_Csr.pem ``
 
-parese: 
- ``openssl x509 -text -noout -in testfulldata/tld.cert `` 
+parse: 
+
+ ``openssl x509 -text -noout -in demo/ch.cert `` 
  
- ``openssl x509 -text -noout -in testfulldata/ethz.ch1.rhine_Cert.pem ``
+ ``openssl x509 -text -noout -in demo/ethz.ch.rains_Cert.pem ``
 
 
 
