@@ -26,7 +26,7 @@ Further information:
 
 ## [Task 2.](https://github.com/netsys-lab/scion-rains/projects/3) Re-design the data authentication architecture of RAINS based on SCION end-entity PKI system
 
-The baseline RAINS relies on DNSSEC-style authentication that comes with inherent limitations. We seek to replace it with a new authentication architecture based on SCION end-entity PKI for better security and performance.
+The baseline RAINS relies on DNSSEC-style authentication that comes with inherent limitations. We seek to replace it with a new authentication architecture based on [SCION end-entity PKI](./offlineauth) for better security and performance.
 
 ### Milestones
 - [x] [Design documents](https://github.com/netsys-lab/scion-rains/tree/master/docs/auth-arch) with rationale and expected properties of the new authentication architecture as well as suggested modifications to the baseline RAINS
