@@ -1,6 +1,7 @@
 package util
 
 import (
+	"crypto/x509"
 	"encoding/gob"
 	"errors"
 	"fmt"
@@ -176,4 +177,35 @@ func GetOverlapValidityForSignatures(sigs []signature.Sig) (int64, int64) {
 		}
 	}
 	return bySince[0].ValidSince, until
+}
+
+func GetRhineCertFromAssertion(s *section.Assertion) (rhinecert *x509.Certificate, zone string, id keys.PublicKeyID) {
+	objs := s.Content
+
+	for _, obj := range objs {
+		if obj.Type == object.OTCertInfo {
+			cert, ok := obj.Value.(object.Certificate)
+			if ok {
+				if cert.Type != object.PTRhine {
+					continue
+				}
+				if cert.Usage != object.CUZoneAuth {
+					continue
+				}
+				var err error
+				rhinecert, err = x509.ParseCertificate(cert.Data)
+				if err != nil {
+					continue
+				}
+				zone = s.SubjectZone
+				id = s.Signatures[0].PublicKeyID
+				return rhinecert, zone, id
+
+			} else {
+				continue
+			}
+		}
+	}
+	return nil, "", keys.PublicKeyID{}
+
 }

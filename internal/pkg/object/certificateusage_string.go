@@ -10,16 +10,26 @@ func _() {
 	var x [1]struct{}
 	_ = x[CUTrustAnchor-2]
 	_ = x[CUEndEntity-3]
+	_ = x[CUZoneAuth-5]
 }
 
-const _CertificateUsage_name = "CUTrustAnchorCUEndEntity"
+const (
+	_CertificateUsage_name_0 = "CUTrustAnchorCUEndEntity"
+	_CertificateUsage_name_1 = "CUZoneAuth"
+)
 
-var _CertificateUsage_index = [...]uint8{0, 13, 24}
+var (
+	_CertificateUsage_index_0 = [...]uint8{0, 13, 24}
+)
 
 func (i CertificateUsage) String() string {
-	i -= 2
-	if i < 0 || i >= CertificateUsage(len(_CertificateUsage_index)-1) {
-		return "CertificateUsage(" + strconv.FormatInt(int64(i+2), 10) + ")"
+	switch {
+	case 2 <= i && i <= 3:
+		i -= 2
+		return _CertificateUsage_name_0[_CertificateUsage_index_0[i]:_CertificateUsage_index_0[i+1]]
+	case i == 5:
+		return _CertificateUsage_name_1
+	default:
+		return "CertificateUsage(" + strconv.FormatInt(int64(i), 10) + ")"
 	}
-	return _CertificateUsage_name[_CertificateUsage_index[i]:_CertificateUsage_index[i+1]]
 }

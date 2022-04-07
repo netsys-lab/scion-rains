@@ -5,6 +5,7 @@ package siglib
 
 import (
 	"bytes"
+	"crypto/x509"
 	"fmt"
 	"regexp"
 	"time"
@@ -387,4 +388,79 @@ func updateSectionValidity(sec section.WithSig, pkeyValidSince, pkeyValidUntil, 
 			}
 		}
 	}
+}
+
+func RhineCertVerification(msg message.Message) bool {
+
+	// look for rhine cert
+	var rhinecert *x509.Certificate = nil
+	var pubkey interface{}
+	var zone string
+	var id keys.PublicKeyID
+
+	for _, s := range msg.Content {
+		switch s := s.(type) {
+		case *section.Assertion:
+			rhinecert, zone, id = util.GetRhineCertFromAssertion(s)
+			if rhinecert != nil {
+				break
+			}
+		case *section.Zone:
+			assertions := s.Content
+			for _, a := range assertions {
+				rhinecert, zone, id = util.GetRhineCertFromAssertion(a)
+				if rhinecert != nil {
+					break
+				}
+			}
+		}
+	}
+
+	if rhinecert == nil {
+		log.Warn("No RCert returned")
+		return false
+	}
+
+	// TODO
+	var CaCertPool *x509.CertPool
+	CaCertPool, _ = x509.SystemCertPool()
+
+	CaCertPool.AppendCertsFromPEM([]byte("-----BEGIN CERTIFICATE-----\nMIIBJjCB2aADAgECAgEBMAUGAytlcDAbMRkwFwYDVQQDExBSSElORSBFWEFNUExF\nIENBMB4XDTIyMDIyMTA5MDI1NVoXDTIzMDIxMjA5MDI1NVowGzEZMBcGA1UEAxMQ\nUkhJTkUgRVhBTVBMRSBDQTAqMAUGAytlcAMhAFq9YoSG/zv2npflvTwmog9Ymijs\nK0NDTDYFgTbGxyrto0IwQDAOBgNVHQ8BAf8EBAMCAoQwDwYDVR0TAQH/BAUwAwEB\n/zAdBgNVHQ4EFgQUXcJH29E2egUuSdhJFoy/kJQDlcwwBQYDK2VwA0EAxB2JHVh+\nN7o3RTBCp7wOWDlGePd0xuhRhU4GEJs4CTxGgLbcyX1iIzF7kJ1qCmp+y180PAJe\nxqM22eY3hKQFAQ==\n-----END CERTIFICATE-----"))
+
+	_, err := rhinecert.Verify(x509.VerifyOptions{
+		DNSName: zone,
+		Roots:   CaCertPool,
+	})
+	if err != nil {
+		log.Warn("RCert invalid")
+		return false
+	}
+	pubkey = rhinecert.PublicKey
+
+	// verify assertions
+
+	MaxCacheVal := util.MaxCacheValidity{
+		AssertionValidity: 3 * time.Hour,
+		ShardValidity:     3 * time.Hour,
+		PshardValidity:    3 * time.Hour,
+		ZoneValidity:      3 * time.Hour,
+	}
+
+	rainskey := keys.PublicKey{
+		PublicKeyID: id,
+		ValidSince:  rhinecert.NotBefore.Unix(),
+		ValidUntil:  time.Now().Add(time.Hour * 3).Unix(),
+		Key:         pubkey,
+	}
+	pkeys := make(map[keys.PublicKeyID][]keys.PublicKey)
+	pkeys[id] = []keys.PublicKey{rainskey}
+	for _, s := range msg.Content {
+		sec := s.(section.WithSigForward)
+		if !CheckSectionSignatures(sec, pkeys, MaxCacheVal) {
+			log.Error("Invalid Assertion Signature for RCert")
+			return false
+		}
+	}
+
+	return true
 }

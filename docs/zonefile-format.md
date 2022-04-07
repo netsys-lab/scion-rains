@@ -56,8 +56,8 @@ comments. There are three special encodings:
                  ":nameset:" | ":cert:" | ":srv:" | ":regr:" | ":regt:" |  
                  ":infra:" | ":extra:" | ":next:" |
 <freeText> ::= <word> | <freeText> <word>
-<protocolType> ::= ":unspecified:" | ":tls:"
-<certificatUsage> ::= ":trustAnchor:" | ":endEntity:"
+<protocolType> ::= ":unspecified:" | ":tls:" | ":rhine:"
+<certificatUsage> ::= ":trustAnchor:" | ":endEntity:" | ":zoneAuth:"
 <hashType> ::= ":noHash:" | ":sha256:" | ":sha384:" | ":sha512:" | ":fnv64:" | ":murmur364:"
 <bfOpMode> ::= ":standard:" | ":km1:" | ":km2:"
 <annotation> ::= "(" <annotationBody> ")"

@@ -295,6 +295,8 @@ EOF
     ZONEFILE=$(zonefile ${ZONE})
     gen_ns_config $ZONE 5024 "ethz.ch."
     gen_pub_config $ZONE 5024 $ZONEFILE "false"
+    HOSTS="$(cat hostnames.txt)"
+    echo "$HOSTS"
     cat > ${ZONEFILE} <<EOF
 :Z: ethz.ch. . [
     :A: www  [ :name: a [ :ip6: :ip4: :scion: ] ]
@@ -303,6 +305,7 @@ EOF
     :A: www  [ :scion: 2-ff00:0:222,[198.175.162.241] ]
     :A: www  [ :cert: :tls: :endEntity: :sha256: e28b1bd3a73882b198dfe4f0fa954c ]
     :A: _ftp.${redir}  [ :srv: ftp.ethz.ch. 20 0 ]
+    ${HOSTS}
 ]
 EOF
 
@@ -336,6 +339,7 @@ echo "some timeout warnings may be safely ignored"
 echo "================================================================"
 echo "Launching Resolver"
 run_bg ${BINDIR}/rainsd ./config/${PROTO}_ns_resolver.conf --rootServerAddress ${SERVADDR}:5022 --id "${PROTO}resolver"
+echo ${PIDS[*]} > pids.txt
 echo "Log messages so far"
 tail ${LOGS[*]}
 cat <<EOF

@@ -169,7 +169,7 @@ var output []section.WithSigForward
 // Signature algorithm types
 %token ed25519Type
 // Certificate types
-%token unspecified tls trustAnchor endEntity 
+%token unspecified tls rhine trustAnchor endEntity zoneAuth
 // Hash algorithm types
 %token noHash sha256 sha384 sha512 shake256 fnv64 fnv128
 // Bloom filter algorithm
@@ -608,6 +608,10 @@ protocolType    : unspecified
                 {
                     $$ = object.PTTLS
                 }
+                | rhine
+                {
+                    $$ = object.PTRhine
+                }
 
 certUsage       : trustAnchor
                 {
@@ -616,6 +620,10 @@ certUsage       : trustAnchor
                 | endEntity
                 {
                     $$ = object.CUEndEntity
+                }
+                | zoneAuth
+                {
+                    $$ = object.CUZoneAuth
                 }
 
 hashType        : noHash
@@ -773,10 +781,14 @@ func (l *ZFPLex) Lex(lval *ZFPSymType) int {
 		return unspecified
 	case TypePTTLS :
 		return tls
+	case TypePTRhine :
+	    return rhine
 	case TypeCUTrustAnchor :
 		return trustAnchor
 	case TypeCUEndEntity :
 		return endEntity
+    case TypeCUZoneAuth:
+        return zoneAuth
 	case TypeNoHash :
 		return noHash
 	case TypeSha256 :
