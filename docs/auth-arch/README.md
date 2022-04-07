@@ -30,15 +30,13 @@ Serving authentic data is the most fundamental security requirement for a naming
 
 We argue that these drawbacks are intrinsic to DNSSEC and they cannot be circumvented without radical architectural changes.
 
-### RAINS to the rescue?
+### The Baseline RAINS
 
-RAINS was not designed to address the problems discussed above. It essentially follows the same security architecture as DNSSEC, except the replacement of the single global root key with per-ISD root keys (which further complicates key management and data validation, especially when coupled with the concept of "assertion context"). Thus, it suffers from the same set of issues. 
+RAINS was not originally designed to address the problems discussed above. The baseline RAINS essentially follows the same security architecture as DNSSEC, except the replacement of the single global root key with per-ISD root key [[SCION2017]](#SCION2017); thus, it suffers from the same set of drawbacks. This motivates us to revisit the authentication architecture of naming systems through a modern lens and to take a principled approach in designing a more robust and performant solution.
 
-In addition, the original RAINS has made some undesirable design choice. For example, the referral data&mdash;`Redirection` (equivalent to DNS `NS` record)&mdash;is not supposed to be signed as an `Assertion`, because it is not authoritative in the residing zone. Treating `Redirection` as `Assertion` offers no additional security but only increases costs and blurs the boundary of zone authorities.
+In addition, the baseline RAINS made some design choices that we find under-optimal in retrospect. For example, RAINS treats referral data&mdash;`Redirection` (equivalent to DNS `NS` record)&mdash;as a type of `Assertion` and signs it in the residing zone. However, referral records at a zone cut should not be authoritative; signing `Redirection` offers no additional security but increases validation costs and blurs the boundary of zone authorities. We will thus also refine RAINS's data model to accommodate our new authentication architecture.
 
-### Our design goals
-
-The insufficiencies of existing solutions motivate us to rethink the authentication for naming systems in a fundamental way. Our design aims for the following goals.
+### Our Design Goals
 
 1. **Robust security architecture**. The authority and security of a zone should not unconditionally hinge on any other entity including its parent and third parties. We aim at a robust system of *checks and balances* where no single entity can exert unlimited power over the namespace and take over a zone without the consent from its owner.
 
@@ -93,7 +91,11 @@ There is also a built-in certificate revocation protocol. Note that since the lo
 <a id="sec-formal"/></a>
 ## Formal Model and Verification
 
-The design of security protocols that meet expected properties is notoriously difficult, because of the complex interactions between parties and rapid exploration of state spaces that cannot be exhausted by hand. To this end, we formally modeled the NewDlg protocol (the most important among all) with a state-of-the-art theorem prover, [Tamarin](https://tamarin-prover.github.io), and successfully verified the claimed security properties. Please refer to [this note](tamarin/README.md) for more detail.
+The design of security protocols that meet expected properties is notoriously difficult, because of the complex interactions between parties and rapid exploration of state spaces that cannot be exhausted by hand. To this end, we formally modeled the NewDlg protocol (the most important among all) with a state-of-the-art theorem prover, [Tamarin](https://tamarin-prover.github.io), and successfully verified the claimed security properties. Unsurprisingly, the co-design with a formal model did help us identify latent flaws in our early hand-crafted protocol, e.g., the lack of necessary certificate verification by the parent zone. 
+
+Note that the modeling and verification of such a protocol already require a significant amount of effort, as also suggested by the design of similar protocols (e.g., the certificate registration process in [[ARPKI]](#ARPKI). The formal analysis of all protocols pertinent to our authentication architecture goes beyond the scope of this project, and we leave this for future work.
+
+Please refer to [this note](tamarin/README.md) for more detail.
 
 <a id="sec-prototype"/></a>
 ## Prototype Implementation
@@ -213,6 +215,12 @@ The RCerts are X.509v3 certificates. An example is shown below:
          38:dd:d3:ac:94:a1:a0:32:9c:41:1d:8a:48:2a:28:08:e3:c1:
          2c:db:1e:05:d4:77:b7:a6:3f:04
 
+### TODO
+
+- The refactoring of RAINS data model with the new `Redirection` and `RCert` types
+- The support of E2E data validation with RCert in the online resolution process
+- Proper tools / interfaces to integrate and test the online part and offline part of RAINS
+
 ## References
 
 <a id="Shulman2017">[Shulman2017]</a> 
@@ -235,6 +243,12 @@ Dnssec targeted in dns reflection, amplification ddos attacks. <https://communit
 
 <a id="Liu2018">[Liu2018]</a>
 Baojun Liu, Chaoyi Lu, Hai-Xin Duan, Ying Liu, Zhou Li, Shuang Hao, Min Yang. Who Is Answering My Queries: Understanding and Characterizing Interception of the DNS Resolution Path. In *Proceedings of the USENIX Security*, 2018.
+
+<a id="SCION2017">[SCION2017]</a>
+A. Perrig, P. Szalachowski, R. M. Reischuk, and L. Chuat. 2017. SCION: A Secure Internet Architecture. Springer Verlag.
+
+<a id="ARPKI">[ARPKI]</a>
+David A. Basin, Cas Cremers, Tiffany Hyun-Jin Kim, Adrian Perrig, Ralf Sasse, Pawel Szalachowski: ARPKI: Attack Resilient Public-Key Infrastructure. In *Proceedings of ACM CCS*, 2014.
 
 <a id="Laurent2022">[Laurent2022]</a>
 Laurent Chuat, Cyrill Krähenbühl, Prateek Mittal, Adrian Perrig. F-PKI: Enabling Innovation and Trust Flexibility in the HTTPS Public-Key Infrastructure. In *Proceedings of NDSS*, 2022.
