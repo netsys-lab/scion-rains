@@ -29,8 +29,8 @@ Further information:
 The baseline RAINS relies on DNSSEC-style authentication that comes with inherent limitations. We seek to replace it with a new authentication architecture based on SCION end-entity PKI for better security and performance.
 
 ### Milestones
-- [x] [Design documents](https://github.com/netsys-lab/scion-rains/tree/ee-pki/docs/auth-arch) with rationale and expected properties of the new authentication architecture as well as suggested modifications to the baseline RAINS
-- [x] [Specifications](https://github.com/netsys-lab/scion-rains/tree/ee-pki/docs/auth-arch/tamarin) of the modified and new RAINS protocols in formal language
+- [x] [Design documents](https://github.com/netsys-lab/scion-rains/tree/master/docs/auth-arch) with rationale and expected properties of the new authentication architecture as well as suggested modifications to the baseline RAINS
+- [x] [Specifications](https://github.com/netsys-lab/scion-rains/tree/master/docs/auth-arch/tamarin) of the modified and new RAINS protocols in formal language
 
 ## [Task 3.](https://github.com/netsys-lab/scion-rains/projects/4) Make use of DRKey system to develop mechanisms for secure and highly available RAINS communication
 

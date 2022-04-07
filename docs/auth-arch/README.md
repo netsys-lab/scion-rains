@@ -116,7 +116,7 @@ TODO (wait until the refactoring is done by Lou): describe the changes we make o
 
 ### Offline Protocols
 
-The offline part of our prototype consists of zone managers for child and parent zones to manage RCerts, a CA server, and a logging infrastructure. The implementation is independent from the existing RAINS codebase. Below is an architectural overview of the prototype:
+The offline part of our prototype consists of zone managers for child and parent zones to manage RCerts, a CA server, and a logging infrastructure. The implementation is independent from the existing RAINS codebase. Please refer to this [manual](https://github.com/netsys-lab/scion-rains/tree/master/offlineauth) for the use and test of these tools. Below is an architectural overview of the prototype:
 
 ![Prototype](figures/Prototype.png)
 

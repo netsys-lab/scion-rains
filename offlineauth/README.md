@@ -1,33 +1,24 @@
- # Prototype Implementation of RAINS Offline Authentication Protocol. 
+ # RAINS Offline Authentication Protocols
 
-**Code in cyrill-k/trustflex directory is copied from https://github.com/cyrill-k/trustflex**
+ This is a prototype implementation of the [offline protocols](https://github.com/netsys-lab/scion-rains/tree/master/docs/auth-arch) of RAINS new authentication architecture.
 
-**Some Code in common/logclient.go is copied from https://github.com/cyrill-k/trustflex/trillian/tmain/main.go**
-
-**Code to handle configs is copied from https://github.com/netsec-ethz/rains**
 
 ## Dependencies: 
-Two packages need to be replaced, change 
 
-```replace github.com/google/trillian => /home/burki/go/src/github.com/cyrill-k/trillian```
+Libraries:
 
-```replace github.com/miekg/dns => /home/burki/go/src/github.com/robinburkhard/dns```
+- Modified Trillian: `https://github.com/cyrill-k/trillian`
 
-to your path in `go.mod`
+- Modified miekg/dns: `https://github.com/robinburkhard/dns`
 
-Clone the repos from here: 
 
-trillian: `github.com/cyrill-k/trillian`
+Notes:
 
-miekg/dns: `github.com/robinburkhard/dns`
+- Code in `cyrill-k/trustflex` directory is copied from https://github.com/cyrill-k/trustflex
 
-## System Components: 
-   - Child: Command line program for child zone authorities to renew their certificates. Sends ReNewDlg and KeyChangeDlg requests to a CA and adds them to the log. 
-   - Parent: Command line program for a parent zone authority to obtain a certificate for a child zone. Parent creates NewDlg Requests using a CSR from one of its child zones and sends them to a CA. It also adds obtained Certificates to the log server.   
-   - CA: Server receiving NewDlg requests from a parent zone and ReNewDlg/KeyChangeDlg requests from a child zone. It contacts the log-server to check for existing certificates. 
-   - CheckerExtension: Checker Extension is the interface for parent and child zones to add certificates to the log. The log server must only accept new certificates from the checker extension.
+- Some code in `common/logclient.go` is copied from https://github.com/cyrill-k/trustflex/trillian/tmain/main.go
 
-## How to run 
+## How to run (see a step-by-step setup below)
 
 ### trustflex-docker 
 trustflex-docker is a container cluster for the log server components. Rainsdeleg uses the map-server to receive information on existing certificates and the log-server  to add certificates. 
@@ -102,9 +93,13 @@ Check your container addresses: \
 
 ### Step 1: setup repo and dependencies 
 
-clone `github.com/cyrill-k/trillian` and `github.com/robinburkhard/dns` into your `/home/user/go/src/github.com/` folder. 
+Clone this repo. Clone `github.com/cyrill-k/trillian` and `github.com/robinburkhard/dns`.
 
-Change paths to replace in `go.mod` 
+In the `go.mod` of this repo, change
+
+```replace github.com/google/trillian => [path to the just cloned Trillian repo]```
+
+```replace github.com/miekg/dns => [path to the just cloned miekg/dns repo]```
 
 
 ### Step 2: setup F-PKI environment 
