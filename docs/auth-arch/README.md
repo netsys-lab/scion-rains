@@ -104,15 +104,7 @@ We implemented a working prototype for the new authentication architecture. It c
 
 ### Online Name Resolution with E2E Authentication 
 
-TODO (wait until the refactoring is done by Lou): describe the changes we make over existing RAINS
-
-- data model: take Redirection out from Assertion, add new RCert type
-
-- validation logic
-
-- zone file parsing
-
-- publisher
+Since enabling the promsied E2E authentication in RAINS requires significant changes (refactoring of data model, caching mechanism, validation logic, etc.) and the current codebase is not yet stable, we postpone the support of E2E data validation during name resolution to [Task 3](https://github.com/netsys-lab/scion-rains#task-3-make-use-of-drkey-system-to-develop-mechanisms-for-secure-and-highly-available-rains-communication), which may be realized in a new codebase.
 
 ### Offline Protocols
 
@@ -214,12 +206,6 @@ The RCerts are X.509v3 certificates. An example is shown below:
          ed:88:2b:fa:f0:40:ab:1b:46:a9:36:f9:ff:08:11:a3:b0:46:
          38:dd:d3:ac:94:a1:a0:32:9c:41:1d:8a:48:2a:28:08:e3:c1:
          2c:db:1e:05:d4:77:b7:a6:3f:04
-
-### TODO
-
-- The refactoring of RAINS data model with the new `Redirection` and `RCert` types
-- The support of E2E data validation with RCert in the online resolution process
-- Proper tools / interfaces to integrate and test the online part and offline part of RAINS
 
 ## References
 
