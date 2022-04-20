@@ -35,20 +35,19 @@ The baseline RAINS relies on DNSSEC-style authentication that comes with inheren
 Further information:
 - [x] [Official release](https://github.com/netsys-lab/scion-rains/releases/tag/v0.4.0), marking the completion of Task 2.
 
-## [Task 3.](https://github.com/netsys-lab/scion-rains/projects/4) Make use of DRKey system to develop mechanisms for secure and highly available RAINS communication
+## [Task 3.](https://github.com/netsys-lab/scion-rains/projects/4) Develop a new prototype for RAINS based on CoreDNS
 
-Internet naming systems are inviting targets for DoS attacks. This task aims to leverage the DRKey system to develop mechanisms that guarantee availability of RAINS in presence of DoS attacks.
+The legacy RAINS codebase was implemented from scratch and in an ad-hoc way. Since DNS and DNSSEC, the authentication archtecture of which is adopted by the baseline RAINS, are very complex protocols with tremendous corner cases to consider, the correct implementation of them is suprisingly [demanding and error-prone](https://ianix.com/pub/dnssec-outages.html). The baseline RAINS is far from complete and functional for real-world naming service. To this end, we decide to rebuild RAINS based on [CoreDNS](https://coredns.io), a mature and extensible framework that allows us to enable the new features of RAINS while readily enjoying the comprhensive DNS functionality.
 
 ### Milestones
 
-- [ ] Design documents of integrating DRKey into RAINS
-- [ ] Refined protocol specifications
+- [ ] Prototype RAINS servers (recursive resolver and authoritative name server) based on CoreDNS
+- [ ] Improved `rdig` tool with E2E data validation option
 
 ## [Task 4.](https://github.com/netsys-lab/scion-rains/projects/5) Implementation, integration, and testing
 
-Finally, we will implement and test the new features on top of the baseline RAINS, and deploy it to the SCIONLab network.
+Finally, we will implement SCION (UDP) transport for RAINS and deploy test name servers to the SCIONLab network.
 
 ### Milestones
-- [ ] A complete RAINS codebase that implements above-mentioned new features
-- [ ] Design, test, and preliminary evaluation reports of RAINS running in SCIONLab
-    - [ ] Operate a test RAINS server in SCIONLab
+- [ ] RAINS servers and `rdig` with SCION transport option
+- [ ] Operate test RAINS servers in SCIONLab
