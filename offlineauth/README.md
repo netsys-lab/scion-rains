@@ -9,20 +9,20 @@ Libraries:
 
 - Modified Trillian: `https://github.com/cyrill-k/trillian`
 
-- Modified miekg/dns: `https://github.com/robinburkhard/dns`
+- Modified miekg/dns: `https://github.com/robinburkhard/dns` or `https://github.com/rhine-team/dns`
 
 
 Notes:
 
-- Code in `cyrill-k/trustflex` directory is copied from https://github.com/cyrill-k/trustflex
+- Code in `cyrill-k/trustflex` directory is copied from https://github.com/cyrill-k/trustflex (new repo: https://github.com/cyrill-k/fpki)
 
 - Some code in `common/logclient.go` is copied from https://github.com/cyrill-k/trustflex/trillian/tmain/main.go
 
 ## How to run (see a step-by-step setup below)
 
-### trustflex-docker 
-trustflex-docker is a container cluster for the log server components. Rainsdeleg uses the map-server to receive information on existing certificates and the log-server  to add certificates. 
-Repo can be found here: ``github.com/cyrill-k/trustflex-docker``
+### fpki-docker 
+fpki-docker is a container cluster for the log server components. Rainsdeleg uses the map-server to receive information on existing certificates and the log-server  to add certificates. 
+Repo can be found here: ``https://github.com/cyrill-k/fpki-docker``
 
 Make sure to add ``EXPOSE 8090`` and ``EXPOSE 8094`` to ``Go/Dockerfile`` so that the map-server and log-server can be accessed. Later the checkerExtension should be a container itself and the log-server should no longer be accessible from the outside. (dont expose 8090)
 
@@ -30,12 +30,12 @@ Run `docker-compose up` to start the log server components
 
 Access the container: ``docker exec -i -t experiment bash``
 
-Check out the `makefile` in `cyrill-k/trustflex` for log server administration.
+Check out the `makefile` in `cyrill-k/fpki` for log server administration.
 Before using it for rainsdeleg  run
 `make createmap` and `make createtree` and `make map_initial`
 
 Update configs of rainsdeleg systems with `logid1 mapid1 logpk1.pem mapk1.pem`. They can be found in 
-the confing folder of the trustflex-docker repo or in `/mnt/config/` in the container. 
+the confing folder of the fpki-docker repo or in `/mnt/config/` in the container. 
 
 ### Makefile
 
@@ -81,7 +81,7 @@ Create NewDlg Request for `ethz.ch` using parent for zone for `ch`
 
 `make test`
 
-trustflex-docker needs to be running. Test configs are set to log-server address `172.18.0.3` and 
+fpki-docker needs to be running. Test configs are set to log-server address `172.18.0.3` and 
 map-server address `172.18.0.5`. 
 
 Check your container addresses: \
@@ -104,7 +104,7 @@ In the `go.mod` of this repo, change
 
 ### Step 2: setup F-PKI environment 
 
-clone ``github.com/cyrill-k/trustflex-docker``
+clone ``github.com/cyrill-k/fpki-docker``
 
 add ``EXPOSE 8090`` and ``EXPOSE 8094`` to ``Go/Dockerfile``
 
@@ -114,7 +114,7 @@ Access the container: ``docker exec -i -t experiment bash`` and run `mkdir data`
 
 read out `logid1 mapid1 logpk1.pem mapk1.pem` in `/mnt/config/` 
 
-### optional step for testing with go tests: update and create configs for your F-PKI setup 
+### Step 3: update and create configs for your F-PKI setup 
 
 change at least: 
 
@@ -125,18 +125,19 @@ MAP_ID          = 3213023363744691885
 LOG_ID          = 8493809986858120401
 ```
 
-in `offlineAuth/test/rainsdeleg_test.go` to fit your f-pki setup. 
+in `offlineAuth/test/rainsdeleg_test.go` to fit your f-pki setup. Also change the keys `testdata/logpk1.pem` and `testdata/mapk1.pem`.
 
-Then run the `TestCreateDemoFiles` function in to create necessary configs for to run a manual toy example. Alternatively use `TestFull` function to test automatically. 
+Then run the `TestCreateDemoFiles2` (run `go test -run TestCreateDemoFiles2` in `/offlineauth/test/`) function to create necessary configs and keys to run a manual toy example. Alternatively use `TestFull` function to test automatically. 
 
-### Step 3: run toy example with demo files 
+Troubleshooting: On Map-Address (or Log-Address) error, use docker inspect command above to check if the map-server is running on `172.18.0.5` as expected. If not, change addresses in `rainsdeleg_test.go`
+
+### Step 4: run toy example with demo files 
 
 run `make` to create the binaries in `/build`
 
+check if `testdata/logpk1.pem` and `testdata/mapk1.pem` match your f-pki setup
 
-change `testdata/logpk1.pem` and `testdata/mapk1.pem` to match your f-pki setup
-
-change `LogID` and `MapID` values in `demo/checker.conf` and  `demo/ca.conf` to match your f-pki setup
+check if `LogID` and `MapID` values in `demo/checker.conf` and  `demo/ca.conf` match your f-pki setup
 
 run ca: 
 
