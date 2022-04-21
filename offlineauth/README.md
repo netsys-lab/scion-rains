@@ -9,14 +9,12 @@ Libraries:
 
 - Modified Trillian: `https://github.com/cyrill-k/trillian`
 
-- Modified miekg/dns: `https://github.com/robinburkhard/dns` or `https://github.com/rhine-team/dns`
+- Modified miekg/dns: `https://github.com/robinburkhard/dns`
 
 
 Notes:
 
-- Code in `cyrill-k/trustflex` directory is copied from https://github.com/cyrill-k/trustflex (new repo: https://github.com/cyrill-k/fpki)
-
-- Some code in `common/logclient.go` is copied from https://github.com/cyrill-k/trustflex/trillian/tmain/main.go
+- Code in `cyrill-k/trustflex` directory is copied from `https://github.com/cyrill-k/fpki`
 
 ## How to run (see a step-by-step setup below)
 
