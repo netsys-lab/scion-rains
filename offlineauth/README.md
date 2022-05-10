@@ -70,7 +70,7 @@ cd testing
 ```
 Create NewDlg Request for `ethz.ch` using parent for zone for `ch`
 ```
-../buld/child NewDlg Ed25519 testdata/keys/ethz.ch_Key.pem --out example/ --zone ethz.ch
+../build/child NewDlg Ed25519 testdata/keys/ethz.ch_Key.pem --out example/ --zone ethz.ch
 ../build/parent testdata/configs/ch_parentconfig.conf --NewDlg example/eth.ch_csr.pem
 ```
 
