@@ -51,3 +51,5 @@ Finally, we will implement SCION (UDP) transport for RAINS and deploy test name 
 ### Milestones
 - [ ] RAINS servers and `rdig` with SCION transport option
 - [ ] Operate test RAINS servers in SCIONLab
+- [ ] Test suite for the new approach based on docker-compose 
+  - [ ] Additionally, source code, specifactions, documentation and other results will be provided
