@@ -37,7 +37,7 @@ Further information:
 
 ## [Task 3.](https://github.com/netsys-lab/scion-rains/projects/4) Develop a new prototype for RAINS based on CoreDNS
 
-The legacy RAINS codebase was implemented from scratch and in an ad-hoc way. Since DNS and DNSSEC, the authentication archtecture of which is adopted by the baseline RAINS, are very complex protocols with tremendous corner cases to consider, the correct implementation of them is suprisingly [demanding and error-prone](https://ianix.com/pub/dnssec-outages.html). The baseline RAINS is far from complete and functional for real-world naming service. To this end, we decide to rebuild RAINS based on [CoreDNS](https://coredns.io), a mature and extensible framework that allows us to enable the new features of RAINS while readily enjoying the comprhensive DNS functionality.
+The legacy RAINS codebase was implemented from scratch and in an ad-hoc way. Since DNS and DNSSEC, the authentication archtecture of which is adopted by the baseline RAINS, are very complex protocols with tremendous corner cases to consider, the correct implementation of them is suprisingly [demanding and error-prone](https://ianix.com/pub/dnssec-outages.html). The baseline RAINS is far from complete and functional for real-world naming service. To this end, we decide to rebuild RAINS based on [CoreDNS](https://coredns.io), a mature and extensible framework that allows us to enable the new features of RAINS while readily enjoying the comprehensive DNS functionality.
 
 ### Milestones
 
