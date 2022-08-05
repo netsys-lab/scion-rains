@@ -24,6 +24,7 @@ jobs:
       run: |
             # Get scion version from go modules. The sed command extracts the
             # replacement if one is specified in the go.mod file.
+            cd attic
             scion_mod_version=$(go list -m github.com/scionproto/scion | sed -s 's/.*\s*=>\s*//')
             scion_repo=https://${scion_mod_version% *}.git
             # Extract the commit hash, which is the last part of the go modules version
@@ -71,6 +72,7 @@ jobs:
         path: build/*
     - name: Integration tests
       run: |
+        cd attic
         make test
       env: 
         SCION_DAEMON_ADDRESS: "127.0.0.12:30255"
