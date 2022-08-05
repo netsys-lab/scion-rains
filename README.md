@@ -18,7 +18,7 @@ The first task is to tidy up the RAINS codebase and port a basic working version
 ### Milestones
 - [x] Identify minor unfinished system components and [pending issues](https://github.com/netsec-ethz/rains/issues) in the original code-base, and devise a feasible [implementation and porting plan](./planning/implementation_plan.md).
 - [x] Deliver [executables](https://github.com/netsys-lab/scion-rains/actions/runs/1535615463#artifacts) for end-to-end name resolution and zone management in SCION networks.
-  - [x] Additionally, [manual test instructions](https://github.com/netsys-lab/scion-rains/blob/master/test/manual/) are provided to setup the core RAINS components and verify that they work as expected.
+  - [x] Additionally, [manual test instructions](https://github.com/netsys-lab/scion-rains/tree/05f121ebe38f6f0dddbe7731a5e50ef34e69e4e0/test/manual) are provided to setup the core RAINS components and verify that they work as expected.
 
 Further information:
 - [x] [Official release](https://github.com/netsys-lab/scion-rains/releases/tag/v0.3.2), marking the completion of Task 1.
@@ -29,8 +29,8 @@ Further information:
 The baseline RAINS relies on DNSSEC-style authentication that comes with inherent limitations. We seek to replace it with a [new authentication architecture](./offlineauth) based on [SCION end-entity PKI](https://github.com/cyrill-k/fpki) for better security and performance.
 
 ### Milestones
-- [x] [Design documents](https://github.com/netsys-lab/scion-rains/tree/master/docs/auth-arch) with rationale and expected properties of the new authentication architecture as well as suggested modifications to the baseline RAINS
-- [x] [Specifications](https://github.com/netsys-lab/scion-rains/tree/master/docs/auth-arch/tamarin) of the modified and new RAINS protocols in formal language
+- [x] [Design documents](https://github.com/netsys-lab/scion-rains/tree/05f121ebe38f6f0dddbe7731a5e50ef34e69e4e0/docs/auth-arch) with rationale and expected properties of the new authentication architecture as well as suggested modifications to the baseline RAINS
+- [x] [Specifications](https://github.com/netsys-lab/scion-rains/tree/05f121ebe38f6f0dddbe7731a5e50ef34e69e4e0/docs/auth-arch/tamarin) of the modified and new RAINS protocols in formal language
 
 Further information:
 - [x] [Official release](https://github.com/netsys-lab/scion-rains/releases/tag/v0.4.0), marking the completion of Task 2.

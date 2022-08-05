@@ -58,6 +58,7 @@ jobs:
             supervisor/supervisor.sh start all
     - name: Build
       run: |
+        cd attic
         make all
         cd build
         for F in *; do strip $F; done
