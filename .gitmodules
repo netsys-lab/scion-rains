@@ -1,0 +1,4 @@
+[submodule "coredns"]
+	path = coredns
+	url = git@github.com:netsys-lab/coredns.git
+	branch = rhine

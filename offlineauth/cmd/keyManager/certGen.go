@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/robinburkhard/rainsdeleg/keyManager"
 	"log"
 	"os"
+
+	"github.com/rhine-team/RHINE-Prototype/offlineAuth/keyManager"
 )
 
 func main() {

@@ -1,121 +1,263 @@
-# RAINS Offline Authentication Protocols
+# RHINE Offline Authentication Protocol
 
- This is a prototype implementation of the [offline protocols](https://github.com/netsys-lab/scion-rains/tree/master/docs/auth-arch) of RAINS new authentication architecture.
+This directory contains a prototype implementation of the RHINE offline autentication protocol
 
+## Architecture
+![RHINEArchitecture](docs/RHINE_offlineAuth_Architecture.png?raw=true "RHINE_Architecture")
 
-## Dependencies: 
+The RHINE offline authentication protocol makes use of four components: Aggregators, Loggers, a Certificate Authority and a Zone Manager. The latter provides functionality to zones to request a delegation as well as for parents to run a parent server allowing its children to be delegated to. 
+Loggers log certificates by using Google's Certificate Transperancy as a backend, they also serve data related to RHINE's Delegation Transperancy, for which the Aggregators are responsible for. 
+gRPC is used to connect all running components and data is marshalled for the gRPC calls using CBOR. 
 
-### Libraries:
+## Code structure
+- *cbor* contains Marshalling/Unmarshalling wrappers for gRPC to use
+- *cmd* contains the command line interfaces for the different parts of the protocol, for example to start a CA or run a parent server as well as directories for test data and data bases
+- *components* contains 1. the service and message specification for our gRPC servers and 2. the servers themselves
+- *keyManager* contains some functionality related to generating keys and test certificates
+- *rhine* is a go package containing data structures related to the offlineAuth protocol as well as methods used in protocol logic
 
-- Modified Trillian: https://github.com/cyrill-k/trillian
-- Modified miekg/dns: https://github.com/robinburkhard/dns
-
-### System Requirements:
-
-- `docker-compose`
-
-## Toy Example (HOWTO)
-
-### Step 1: setup repo and dependencies 
-
-- Clone this repo: `git clone https://github.com/netsys-lab/scion-rains` 
-- Clone dependencies: `git clone https://github.com/cyrill-k/trillian` and `git clone https://github.com/robinburkhard/dns`.
-- Edit the `go.mod` file in this directory (i.e., `offlineauth/go.mod`) and adjust the respective paths pointing to `trillian` and `dns` to the location where you just cloned them:
-
-```
-replace github.com/google/trillian => [path to the just cloned Trillian repo]
-replace github.com/miekg/dns => [path to the just cloned miekg/dns repo]
-```
+The imported merkletree implementation ["github.com/RubFischer/merkletree"](https://github.com/RubFischer/merkletree) is a very slightly changed version of ["github.com/cbergoon/merkletree"](https://github.com/cbergoon/merkletree). We use ["github.com/fxamacker/cbor/v2"](https://github.com/fxamacker/cbor) as our CBOR implementation. Some parts of the code are reused from the old offlineAuth implementation by Robin Burkhard, like some util and modified keyManager functions.
 
 
-### Step 2: setup F-PKI environment 
-[fpki-docker](https://github.com/cyrill-k/fpki-docker) is a container cluster for the log server components. Rainsdeleg uses the map-server to receive information on existing certificates and the log-server  to add certificates. 
+## How to conduct a test run
+This section explains how to conduct a toy example of the offline authentication prototype using one logger and one aggregator. Note that key generation can be skipped if one wants to use the provided example keys.
 
-- `git clone https://github.com/cyrill-k/fpki-docker`
+### Create keys and certificates
+Each of our component needs a key pair, using either RSA+SHA256 or Ed25519 for signing. Create key pairs for the logger, aggregator, ca and parent using the keyManager:
 
-- Append the following lines to the end of `fpki-docker/Go/Dockerfile` 
-```
-EXPOSE 8090
-EXPOSE 8094
-```
-so that the map-server and log-server can be accessed. (Later the checkerExtension should be a container itself and the log-server should no longer be accessible from the outside. Do not expose 8090)
-
-- `cd `into the `fpki-docker` directory
-- Run `docker-compose build`
-- Run `docker-compose up`
-- Access the container using ``docker exec -i -t experiment bash``
-- In the container, run:
-```
-mkdir data
-make createmap
-make createtree
-make map_initial
-```
-- Afterwards, you will find the following generated files in the newly created `fpki-docker/config` directory (or under `/mnt/config` inside the container): `logid1 mapid1 logpk1.pem mapk1.pem`
-
-(Further details about log server administration can be found in the `makefile` in the [`cyrill-k/fpki` repo](https://github.com/cyrill-k/fpki))
-
-
-### Step 3: update and create configs for your F-PKI setup 
-
-- Copy the newly generated `.pem` files to a new directory that you create in the `scion-rains/offlineauth/test/` directory. Suggested name: `sandbox`
-- Edit `scion-rains/offlineauth/test/rainsdeleg_test.go` and change the following lines
-
-```go
-MAP_PK_PATH     = "testdata/mappk1.pem"
-LOG_PK_PATH     = "testdata/logpk1.pem"
-MAP_ID          = 3213023363744691885
-LOG_ID          = 8493809986858120401
-```
-to point to the new directory with their key wiles. Also change `MAP_ID` and `LOG_ID` to reflect the contents of the `mapid1` and `logid1` files that were generated in the previous step.
-
-- From within the `offlineauth/test` directory, execute `go test -run TestCreateDemoFiles2` to generate the necessary configs and keys to run a manual toy example.
-- Alternatively run `go test -run TestFull` to execute the remaining steps automatically. 
-
-#### Troubleshooting: 
-- The fpki-docker container needs to be active. Test configs are set to log-server address `172.18.0.3` and 
-map-server address `172.18.0.5`. 
-
-
-- If the container is up and there is still a Map-Address (or Log-Address) error, use `docker inspect` to check if the servers are running under the correct addresses:
-`docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' map-server` \
-`docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' log-server`
-
-- If there is a mismatch, the addresses can be adjusted by editing `rainsdeleg_test.go`
-
-
-### Step 4: run toy example with demo files 
-
-Existing example configs can be found in `testing/testdata/configs/`. The general invocation pattern of the binaries for the CA and CheckerExtension is `./ca [ConfigPath]` and `./checker [ConfigPath]`. More information about the components and their config can be found in `ca/README.md` and `checkerExtension/README.md`. Here, we will continue with the toy config that we have previously generated.
-
-
-- Run `make all` in the`scion-rains/offlineauth` directory to create the binaries in `/build`
-- Inspect the contents of the `demo/checker.conf` and `demo/ca.conf` files to see if they reflect your changes to `rainsdeleg_test.go` above.
-- Start `../build/ca demo/ca.conf` from within the `scion-rains/offlineauth/test` directory
-- From a second tty (e.g., terminal window) start `../build/checker demo/checker.conf` from within the same directory
-
-The Child Zone Manager handles Creating CSRs for NewDlg or ReNewDlg and KeyChangeDlg requests:
-`./child NewDlg [KeyType] [PathToPrivateKey] --zone DNSZone`
-`./child ReNewDlg [KeyType] [PathToPrivateKey] [PathToCertificate]`
-
-- Generate a key for testing and create NewDlg Request for `ethz.ch` 
-```
-../build/keyGen Ed25519 demo/ethz.ch.rains.key
-../build/child NewDlg Ed25519 demo/ethz.ch.rains.key --zone ethz.ch.rains --out demo
-```
-- Inspect the generated csr using `openssl req -text -noout -in demo/ethz.ch.rains_Csr.pem`
-
-The Parent Zone Manager handles NewDlg requests for a given CSR \
-`./parent [ParentConfigPath] --NewDlg PathToCSR`
-
-- Test parent delegation: `../build/parent demo/ch.conf --NewDlg demo/ethz.ch.rains_Csr.pem`
-- Inspect the results:
-```
-openssl x509 -text -noout -in demo/ch.cert
-openssl x509 -text -noout -in demo/ethz.ch.rains_Cert.pem
+```bash
+cd cmd/keyManager
+go run keyGen.go Ed25519 [KeyOutputPath] --pubkey 
 ```
 
+Instead of creating you own keys, one can also use the provided example keys with the example configuration files.
+We have to also create a self signed certificate for the CA which will serve as a trust root:
 
-## Notes and Remarks
+```bash
+go run certGen.go Ed25519 [PrivateKeyPath] [CertificatePath]
+```
 
-- Code in `cyrill-k/trustflex` directory is copied from `https://github.com/cyrill-k/fpki`
+The parent will need to provide a certificate, which we create for testing purposes:
+
+```bash
+go run certGenByCA.go Ed25519 [PrivateKeyPath] [CAKeyPath] [CACertPath] [CertificatePath] [NAME]
+```
+
+[NAME] should be the parent zone name. Again, the provided example files can be used instead(for a child called example.ethz.ch and a parent ethz.ch)
+
+### Setup Certificate Transperancy infrastructure
+As a first step, we have to generate a key pair for our logger, which can be done using the provided key manager:
+
+``cd cmd/keyManager``
+``go run keyGen.go RSA ../log/data/Logger1.pem --pubkey ``
+
+
+Note that a RSA key has to be used for this step, as CT does not currently support Ed25519. We use the generated key for the Logger server as well as for the CT personality, so copy the printed DER hex string of the key for later use. To setup the CT infrastructure, we start with Trillian (this can be done from where ever):
+```bash
+git clone https://github.com/google/trillian.git
+cd trillian
+
+go build ./...
+```
+Docker is used to deploy trillian for this example, following [this](https://github.com/google/trillian/tree/master/examples/deployment) documentation:
+
+```bash
+# Set a random password
+export MYSQL_ROOT_PASSWORD="$(openssl rand -hex 16)"
+
+# Bring up services defined in this compose file.  This includes:
+# - local MySQL database
+# - container to initialize the database
+# - the trillian server
+docker-compose -f examples/deployment/docker-compose.yml up
+```
+
+A test MySQL should have been created. Check the state of the docker containers with ``docker ps``. The data base container should be available at port 3306 and the log server at 8091. Verify the latter using: 
+``curl localhost:8091/metrics``
+
+As a next step we create a tree which will log our certificates by using the createtree tool:
+
+```bash
+go build github.com/google/trillian/cmd/createtree/
+./createtree --admin_server=localhost:8090
+```
+
+It is important to remember the ID of the created tree for the next step, which is starting the CT personality:
+
+```bash
+git clone https://github.com/google/certificate-transparency-go.git
+```
+
+For that, we need to provide a configuration file which has the following format:
+
+```
+config {
+    log_id: [CREATED TREE ID]
+    prefix: "RHINE"
+    roots_pem_file: [PATH TO CA CERTIFICATE]
+    private_key: {
+        [type.googleapis.com/keyspb.PrivateKey] {
+            der: "[DER HEX STRING]"
+        }
+    }
+    max_merge_delay_sec: 86400
+    expected_merge_delay_sec: 120
+}
+
+```
+In "cmd/log/data/configs" you can also find an example config for the personality. Paste in the log id from the createtree tool, the path to our CA certificate, and the DER hex string representing the logger private key, which will be used to sign Signed Certificate Timestamps. Now start the personality:
+```bash
+# From the certificate-transperancy repo
+cd trillian/ctfe/ct_server
+go run main.go --log_config=[CTConfigPath] --log_rpc_server=127.0.0.1:8090 --http_endpoint=localhost:6966  --logtostderr
+```
+
+Verify that it is working by visiting [http://localhost:6966/RHINE/ct/v1/get-sth](http://localhost:6966/RHINE/ct/v1/get-sth), which should provide the signed hash for our created tree.
+
+### Setup and start the Aggregator
+An example config for the aggregator can be found below and at "cmd/aggregator/configs". "KeyValueDBDirectory" indicates the path where the data base storing our Delegation Transperancy will be located. The Aggregator will initialize it on its own.
+```json
+{
+    "PrivateKeyAlgorithm": "Ed25519",
+    "PrivateKeyPath": "data/Agg1.pem",
+    "ServerAddress" : "localhost:50050",
+    "RootCertsPath" : "data/roots/",
+    
+    "LogsName" :       ["localhost:50016"],
+    "LogsPubKeyPaths" :    ["data/pubkeys/logs/Log1_RSA_pub.pem"],
+    
+    "AggregatorName" :  ["localhost:50050"],
+    "AggPubKeyPaths"  : ["data/pubkeys/aggregators/Agg1_pub.pem"],
+    
+    "CAName" : "localhost:10000",
+    "CAServerAddr" : "localhost:10000",
+    "CAPubKeyPath" : "data/pubkeys/ca/CA_pub.pem",
+    
+    "KeyValueDBDirectory" : "data/badger_database"
+}
+
+```
+
+Note that we need some existing DT data structures for our test run, else the components will not accept our new delegation. Create these the following way:
+```bash
+# From the offlineAuth directory
+cd cmd/aggregator
+go run run_Aggregator.go AddTestDT --config=[PathToConfigFile] --parent=[ExampleParentZone] --certPath=[PathToTheParentsCertificate]
+
+```
+
+It is important that the --parent flag matches the name that was used when creating the parent certificate in the first step, so for example: ethz.ch
+Now we can run our aggregator:
+
+
+```bash
+# From the offlineAuth directory
+cd cmd/aggregator
+go run run_Aggregator.go --config=[PathToConfigFile]
+
+```
+
+### Setup and start the Logger
+To start the Logger, we provide a configuration file with the following format. Fill in the needed values if not using example key data. An example of a config can also be found under "cmd/log/configs". 
+
+```json
+{
+    "PrivateKeyAlgorithm": "RSA",
+    "PrivateKeyPath": "data/Log1_RSA.pem",
+    "ServerAddress" : "localhost:50016",
+    "RootCertsPath" : "data/roots/",
+    
+    "LogsName" :       ["localhost:50016"],
+    "LogsPubKeyPaths" :    ["data/pubkeys/logs/Log1_RSA_pub.pem"],
+    
+    "AggregatorName" :  ["localhost:50050"],
+    "AggPubKeyPaths"  : ["data/pubkeys/aggregators/Agg1_pub.pem"],
+    
+    "CAName" : "localhost:10000",
+   	"CAServerAddr" : "localhost:10000",
+    "CAPubKeyPath" : "data/pubkeys/ca/CA_pub.pem",
+    
+    "CTAddress": "localhost:6966",
+    "CTPrefix": "RHINE",
+    
+    "KeyValueDBDirectory" : "data/badger_database"
+}
+
+```
+
+Important: The logger needs to be run AFTER the aggregator, as it will request some information from it at start-up. To run the logger:
+
+```bash
+# From the offlineAuth directory
+cd cmd/log
+go run run_Log.go --config=[PathToConfigFile]
+
+```
+
+
+### Setup and start the CA
+To run our CA we provide a configuration file that provides information regarding our architecture. An example of a valid config file can be seen below.
+```json
+{
+    "PrivateKeyAlgorithm": "Ed25519",
+    "PrivateKeyPath": "data/CAKey.pem",
+    "CertificatePath": "data/CACert.pem",
+    "ServerAddress" : "localhost:10000",
+    "RootCertsPath" : "data/roots/",
+    
+    "LogsName" :       ["localhost:50016"],
+    "LogsPubKeyPaths" :    ["data/pubkeys/logs/Log1_RSA_pub.pem"],
+    
+    "AggregatorName" :  ["localhost:50050"],
+    "AggPubKeyPaths"  : ["data/pubkeys/aggregators/Agg1_pub.pem"]
+}
+```
+If not using the example data, key paths, aggregator addresses and public keys, etc. need to be set correctly with the previously generated keying material. Note that for this and our other components, the directory described by RootCertsPath, should contain our CA's certificate, indicating that we trust it as a signing authority. To run the CA:
+```bash
+# From the offlineAuth directory
+cd cmd/ca
+go run run_CA.go --config=[PathToConfigFile]
+
+```
+
+
+### Setup and start the parent server
+The parent server is needed to approve of the initial delegation. Again, a configuration file can be found at "cmd/zoneManager/configs".
+Pay attention to the "ChildrenKeyDirectoryPath" json key, it indicates the directory where the parent saves the public keys of its children to be delegated.
+```bash
+# From the offlineAuth directory
+cd cmd/zoneManager
+go run run_zoneManager.go RunParentServer --config=[PathToConfigFile]
+
+```
+
+### Conduct the test run
+As we know that all components are running, we can run the initial delegation from the view of a child zone. 
+First we again create a key pair using the key manager. Next, we place the created public key in the "ChildrenKeyDirectoryPath" directory of the parent server. It is important that the public key is renamed to [ChildZoneName]_pub.pem (example.ethz.ch_pub.pem for example), or the parent server will not find it. 
+This represents the out-of-band authenticated key exchange, which is the first step of our protocol. 
+
+Again we have to use a config to describe the RHINE eco-system, an example of which is provided here: "cmd/zoneManager/configs". We run the initial delegation protocol the following way:
+
+```bash
+# From the offlineAuth directory
+cd cmd/zoneManager
+go run run_zoneManager.go RequestDeleg --config=[PathToConfigFile] --zone=[ZoneName] --ind
+
+```
+
+Other flags can be used to for example provide the parent server address, if not specified in the config file. The zone flag should be set to the child zone name, for example: --zone=example.ethz.ch
+
+You should see a string representation of the received certificate in the terminal and a stored pem encoded certficated in the file system as result from the initial delegation.
+
+### Clearing the DT data bases
+If you want to run the toy example again. The new delegation needs to be cleared from the data bases in the aggregator and logger. Do this following way:
+
+```bash
+# From the offlineAuth directory
+cd cmd/log
+go run run_Log.go WipeDB --config=[PathToConfigFile]
+cd ../aggregator
+go run run_Aggregator.go WipeDB --config=[PathToConfigFile]
+
+```
+
