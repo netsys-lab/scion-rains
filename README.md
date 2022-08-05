@@ -41,8 +41,8 @@ The legacy RAINS codebase was implemented from scratch and in an ad-hoc way. Sin
 
 ### Milestones
 
-- [ ] Prototype RAINS servers (recursive resolver and authoritative name server) based on CoreDNS
-- [ ] Improved `rdig` tool with E2E data validation option
+- [x] Prototype RAINS servers (recursive resolver and authoritative name server) based on CoreDNS
+- [x] Improved `rdig` tool with E2E data validation option
 
 ## [Task 4.](https://github.com/netsys-lab/scion-rains/projects/5) Implementation, integration, and testing
 
