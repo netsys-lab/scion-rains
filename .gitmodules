@@ -5,3 +5,6 @@
 [submodule "scion-rdig"]
 	path = scion-rdig
 	url = git@github.com:netsys-lab/scion-rdig.git
+[submodule "scion-sdns"]
+	path = scion-sdns
+	url = git@github.com:netsys-lab/scion-sdns.git
