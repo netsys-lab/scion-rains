@@ -1,6 +1,6 @@
 [submodule "coredns"]
-	path = coredns
-	url = git@github.com:netsys-lab/coredns.git
+	path = scion-coredns
+	url = git@github.com:netsys-lab/scion-coredns.git
 	branch = rhine
 [submodule "scion-rdig"]
 	path = scion-rdig
