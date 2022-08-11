@@ -1,8 +1,8 @@
-# RAINS, Another Internet Naming Service
+# [Archive] RAINS, Another Internet Naming Service
 
-This repository contains a reference implementation of a RAINS server,
-supporting authority, intermediary, and query service, as well as associated
-tools for managing the server. It has the following executables:
+This directory contains the old reference implementation of a RAINS
+server, supporting authority, intermediary, and query service, as well
+as associated tools for managing the server. It has the following executables:
 
 - `rainsd`: A configurable RAINS server
 - `rdig`: A command-line tool for querying RAINS servers
