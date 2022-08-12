@@ -44,6 +44,8 @@ In addition, the `sdns` recursive resolver is also started in a fourth container
 
 Note: if `docker-compose up` is run without the optional `-d` flag, it will not detach to the background, instead exposing useful log messages from the different services.
 
+![screenshot of docker-compose up output](docker-compose.png)
+
 ## Send query using rdig
 Once the services are running successfully, `rdig` can be used to query the resolver, which is listening on port 10003 of localhost.
 
@@ -52,6 +54,7 @@ A demo CA-certificate is provided in `testdata/resolver/certificates/CACert.pem`
 ```
 ./scion-rdig/rdig -port 10003 -rhine -cert ./testdata/resolver/certificates/CACert.pem @127.0.0.1 www1.rhine-test.com.
 ```
+![screeshot of rdig output](rdig.png)
 
 ## Configuration options for additional tests
 
