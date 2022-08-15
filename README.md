@@ -46,6 +46,8 @@ The legacy RAINS codebase was implemented from scratch and in an ad-hoc way. Sin
 
 Further information:
 - [x] [Documentation](docs/RHINE.md) of a `docker-compose`-based demo setup
+- [x] [Official release](https://github.com/netsys-lab/scion-rains/releases/tag/v0.5.0), marking the completion of Task 3.
+
 
 ## [Task 4.](https://github.com/netsys-lab/scion-rains/projects/5) Implementation, integration, and testing
 
