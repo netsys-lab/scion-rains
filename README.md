@@ -51,10 +51,13 @@ Further information:
 
 ## [Task 4.](https://github.com/netsys-lab/scion-rains/projects/5) Implementation, integration, and testing
 
-Finally, we will implement SCION (UDP) transport for RAINS and deploy test name servers to the SCIONLab network.
+Finally, we will implement SCION ~~(UDP)~~ transport for RAINS and deploy test name servers to the SCIONLab network.
 
 ### Milestones
-- [ ] RAINS servers and `rdig` with SCION transport option
-- [ ] Operate test RAINS servers in SCIONLab
+- [x] RAINS servers and `rdig` with SCION transport option
+  - [X] [recursive resolver](https://github.com/netsys-lab/scion-sdns)
+  - [X] [authoritative name server](https://github.com/netsys-lab/scion-coredns/tree/rhine)
+  - [X] [rdig](https://github.com/netsys-lab/scion-rdig)
+- [X] Operate test RAINS servers in SCIONLab
 - [ ] Test suite for the new approach based on docker-compose 
-  - [ ] Additionally, source code, specifactions, documentation and other results will be provided
+  - [X] Additionally, source code, specifactions, documentation and other results will be provided
