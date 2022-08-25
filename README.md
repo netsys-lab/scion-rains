@@ -51,7 +51,7 @@ Further information:
 
 ## [Task 4.](https://github.com/netsys-lab/scion-rains/projects/5) Implementation, integration, and testing
 
-Finally, we will implement SCION ~~(UDP)~~ transport for RAINS and deploy test name servers to the SCIONLab network.
+Finally, we will implement SCION (~~UDP~~QUIC) transport for RAINS and deploy test name servers to the SCIONLab network.
 
 ### Milestones
 - [x] RAINS servers and `rdig` with SCION transport option
