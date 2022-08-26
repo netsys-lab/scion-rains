@@ -2,7 +2,7 @@
 version = "1.2.0"
 
 # Address to bind to for the DNS server
-bind = "172.20.0.119:1053"
+bind = "0.0.0.0:53"
 
 # Address to bind to for the DNS-over-TLS server
 # bindtls = ":853"

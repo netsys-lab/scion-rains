@@ -1,5 +1,5 @@
 scion://.:53 {
-    root ./
+    root /share/conf/
     rhine zonefile {
         scion on
     }
