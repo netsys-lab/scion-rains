@@ -1,0 +1,450 @@
+networks:
+  scn_000:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.0/29
+      driver: default
+  scn_001:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.8/29
+      driver: default
+  scn_002:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.16/29
+      driver: default
+  scn_003:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.24/29
+      driver: default
+  scn_004:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.32/29
+      driver: default
+  scn_005:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.40/29
+      driver: default
+  scn_006:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.48/29
+      driver: default
+  scn_007:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.56/29
+      driver: default
+  scn_008:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.64/28
+      driver: default
+  scn_009:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.80/28
+      driver: default
+  scn_010:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.96/28
+      driver: default
+  scn_011:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.112/28
+      driver: default
+  scn_012:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.128/28
+      driver: default
+  scn_013:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.144/28
+      driver: default
+services:
+  scion_br1-ff00_0_110-1:
+    command: /root/router --config /share/conf/br1-ff00_0_110-1.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_000:
+        ipv4_address: 172.20.0.2
+      scn_008:
+        ipv4_address: 172.20.0.66
+    volumes:
+    - ./ASff00_0_110:/share/conf:ro
+  scion_br1-ff00_0_110-2:
+    command: /root/router --config /share/conf/br1-ff00_0_110-2.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_001:
+        ipv4_address: 172.20.0.10
+      scn_008:
+        ipv4_address: 172.20.0.67
+    volumes:
+    - ./ASff00_0_110:/share/conf:ro
+  scion_br1-ff00_0_110-3:
+    command: /root/router --config /share/conf/br1-ff00_0_110-3.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_002:
+        ipv4_address: 172.20.0.18
+      scn_008:
+        ipv4_address: 172.20.0.68
+    volumes:
+    - ./ASff00_0_110:/share/conf:ro
+  scion_br1-ff00_0_111-1:
+    command: /root/router --config /share/conf/br1-ff00_0_111-1.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_000:
+        ipv4_address: 172.20.0.3
+      scn_009:
+        ipv4_address: 172.20.0.82
+    volumes:
+    - ./ASff00_0_111:/share/conf:ro
+  scion_br1-ff00_0_111-2:
+    command: /root/router --config /share/conf/br1-ff00_0_111-2.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_003:
+        ipv4_address: 172.20.0.26
+      scn_009:
+        ipv4_address: 172.20.0.83
+    volumes:
+    - ./ASff00_0_111:/share/conf:ro
+  scion_br1-ff00_0_111-3:
+    command: /root/router --config /share/conf/br1-ff00_0_111-3.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_004:
+        ipv4_address: 172.20.0.34
+      scn_009:
+        ipv4_address: 172.20.0.84
+    volumes:
+    - ./ASff00_0_111:/share/conf:ro
+  scion_br1-ff00_0_112-1:
+    command: /root/router --config /share/conf/br1-ff00_0_112-1.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_001:
+        ipv4_address: 172.20.0.11
+      scn_010:
+        ipv4_address: 172.20.0.98
+    volumes:
+    - ./ASff00_0_112:/share/conf:ro
+  scion_br1-ff00_0_112-2:
+    command: /root/router --config /share/conf/br1-ff00_0_112-2.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_003:
+        ipv4_address: 172.20.0.27
+      scn_010:
+        ipv4_address: 172.20.0.99
+    volumes:
+    - ./ASff00_0_112:/share/conf:ro
+  scion_br1-ff00_0_112-3:
+    command: /root/router --config /share/conf/br1-ff00_0_112-3.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_005:
+        ipv4_address: 172.20.0.42
+      scn_010:
+        ipv4_address: 172.20.0.100
+    volumes:
+    - ./ASff00_0_112:/share/conf:ro
+  scion_br1-ff00_0_112-4:
+    command: /root/router --config /share/conf/br1-ff00_0_112-4.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_006:
+        ipv4_address: 172.20.0.50
+      scn_010:
+        ipv4_address: 172.20.0.101
+    volumes:
+    - ./ASff00_0_112:/share/conf:ro
+  scion_br1-ff00_0_113-1:
+    command: /root/router --config /share/conf/br1-ff00_0_113-1.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_002:
+        ipv4_address: 172.20.0.19
+      scn_011:
+        ipv4_address: 172.20.0.114
+    volumes:
+    - ./ASff00_0_113:/share/conf:ro
+  scion_br1-ff00_0_113-2:
+    command: /root/router --config /share/conf/br1-ff00_0_113-2.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_004:
+        ipv4_address: 172.20.0.35
+      scn_011:
+        ipv4_address: 172.20.0.115
+    volumes:
+    - ./ASff00_0_113:/share/conf:ro
+  scion_br1-ff00_0_113-3:
+    command: /root/router --config /share/conf/br1-ff00_0_113-3.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_005:
+        ipv4_address: 172.20.0.43
+      scn_011:
+        ipv4_address: 172.20.0.116
+    volumes:
+    - ./ASff00_0_113:/share/conf:ro
+  scion_br1-ff00_0_113-4:
+    command: /root/router --config /share/conf/br1-ff00_0_113-4.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_007:
+        ipv4_address: 172.20.0.58
+      scn_011:
+        ipv4_address: 172.20.0.117
+    volumes:
+    - ./ASff00_0_113:/share/conf:ro
+  scion_br1-ff00_0_114-1:
+    command: /root/router --config /share/conf/br1-ff00_0_114-1.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_006:
+        ipv4_address: 172.20.0.51
+      scn_012:
+        ipv4_address: 172.20.0.130
+    volumes:
+    - ./ASff00_0_114:/share/conf:ro
+  scion_br1-ff00_0_115-1:
+    command: /root/router --config /share/conf/br1-ff00_0_115-1.toml
+    environment:
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+    image: posix-router
+    networks:
+      scn_007:
+        ipv4_address: 172.20.0.59
+      scn_013:
+        ipv4_address: 172.20.0.146
+    volumes:
+    - ./ASff00_0_115:/share/conf:ro
+  scion_cs1-ff00_0_110-1:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_110-1.toml /share/conf/cs1-ff00_0_110-1.toml
+    container_name: scion_cs1-ff00_0_110-1
+    image: control
+    networks:
+      scn_008:
+        ipv4_address: 172.20.0.69
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_110:/share/conf:ro
+  scion_cs1-ff00_0_111-1:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_111-1.toml /share/conf/cs1-ff00_0_111-1.toml
+    container_name: scion_cs1-ff00_0_111-1
+    image: control
+    networks:
+      scn_009:
+        ipv4_address: 172.20.0.85
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_111:/share/conf:ro
+  scion_cs1-ff00_0_112-1:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_112-1.toml /share/conf/cs1-ff00_0_112-1.toml
+    container_name: scion_cs1-ff00_0_112-1
+    image: control
+    networks:
+      scn_010:
+        ipv4_address: 172.20.0.102
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_112:/share/conf:ro
+  scion_cs1-ff00_0_113-1:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_113-1.toml /share/conf/cs1-ff00_0_113-1.toml
+    container_name: scion_cs1-ff00_0_113-1
+    image: control
+    networks:
+      scn_011:
+        ipv4_address: 172.20.0.118
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_113:/share/conf:ro
+  scion_cs1-ff00_0_114-1:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_114-1.toml /share/conf/cs1-ff00_0_114-1.toml
+    container_name: scion_cs1-ff00_0_114-1
+    image: control
+    networks:
+      scn_012:
+        ipv4_address: 172.20.0.131
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_114:/share/conf:ro
+  scion_cs1-ff00_0_115-1:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_115-1.toml /share/conf/cs1-ff00_0_115-1.toml
+    container_name: scion_cs1-ff00_0_115-1
+    image: control
+    networks:
+      scn_013:
+        ipv4_address: 172.20.0.147
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_115:/share/conf:ro
+  scion_sd1-ff00_0_110:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_110-1.toml /share/conf/sd.toml
+    environment:
+      SCION_DAEMON: 172.20.0.70:30255
+    image: daemon
+    networks:
+      scn_008:
+        ipv4_address: 172.20.0.70
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_110:/share/conf:ro
+  scion_sd1-ff00_0_111:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_111-1.toml /share/conf/sd.toml
+    environment:
+      SCION_DAEMON: 172.20.0.86:30255
+    image: daemon
+    networks:
+      scn_009:
+        ipv4_address: 172.20.0.86
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_111:/share/conf:ro
+  scion_sd1-ff00_0_112:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_112-1.toml /share/conf/sd.toml
+    environment:
+      SCION_DAEMON: 172.20.0.103:30255
+    image: daemon
+    networks:
+      scn_010:
+        ipv4_address: 172.20.0.103
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_112:/share/conf:ro
+  scion_sd1-ff00_0_113:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_113-1.toml /share/conf/sd.toml
+    environment:
+      SCION_DAEMON: 172.20.0.119:30255
+    image: daemon
+    networks:
+      scn_011:
+        ipv4_address: 172.20.0.119
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_113:/share/conf:ro
+  scion_sd1-ff00_0_114:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_114-1.toml /share/conf/sd.toml
+    environment:
+      SCION_DAEMON: 172.20.0.132:30255
+    image: daemon
+    networks:
+      scn_012:
+        ipv4_address: 172.20.0.132
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_114:/share/conf:ro
+  scion_sd1-ff00_0_115:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_115-1.toml /share/conf/sd.toml
+    environment:
+      SCION_DAEMON: 172.20.0.148:30255
+    image: daemon
+    networks:
+      scn_013:
+        ipv4_address: 172.20.0.148
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_115:/share/conf:ro
+version: '2.4'
+volumes: {}

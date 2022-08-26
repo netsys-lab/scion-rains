@@ -1,0 +1,6 @@
+.       604800  IN      SOA     1-ff00-0-110.scion. thkruege.ovgu.de.       2022081901 86400 7200 604800 3600
+.       604800  IN      NS      1-ff00-0-110.scion.
+scion.  604800  IN      NS      1-ff00-0-111.scion.
+
+1-ff00-0-110.scion.      3600    IN      TXT     "scion=1-ff00:0:110,172.20.0.70"
+1-ff00-0-111.scion.      3600    IN      TXT     "scion=1-ff00:0:111,172.20.0.86"

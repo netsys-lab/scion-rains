@@ -1,0 +1,11 @@
+[dispatcher]
+id = "disp_tester_1-ff00_0_111"
+
+[metrics]
+
+[features]
+
+[api]
+
+[log.console]
+level = "debug"

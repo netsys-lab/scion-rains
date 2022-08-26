@@ -1,0 +1,13 @@
+[dispatcher]
+id = "disp_br1-ff00_0_113-4"
+
+[metrics]
+prometheus = "[172.20.0.117]:30441"
+
+[features]
+
+[api]
+addr = "[172.20.0.117]:31141"
+
+[log.console]
+level = "debug"
