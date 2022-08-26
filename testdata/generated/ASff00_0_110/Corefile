@@ -1,0 +1,8 @@
+scion://.:53 {
+    root ./
+    rhine zonefile {
+        scion on
+    }
+    log
+}
+
