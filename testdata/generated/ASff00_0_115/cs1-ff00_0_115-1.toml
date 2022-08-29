@@ -26,4 +26,4 @@ addr = "172.20.0.147:31152"
 [features]
 
 [log.console]
-level = "debug"
+level = "info"

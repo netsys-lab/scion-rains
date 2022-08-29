@@ -34,7 +34,7 @@ root6servers = [
 
 # Root zone ipv6 servers
 rootscionservers = [
-"1-ff00:0:110,[172.20.0.70]:53"
+"1-ff00:0:110,[172.20.0.71]:53"
 ]
 
 

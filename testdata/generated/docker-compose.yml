@@ -90,7 +90,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_000:
         ipv4_address: 172.20.0.2
@@ -104,7 +104,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_001:
         ipv4_address: 172.20.0.10
@@ -118,7 +118,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_002:
         ipv4_address: 172.20.0.18
@@ -132,7 +132,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_000:
         ipv4_address: 172.20.0.3
@@ -146,7 +146,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_003:
         ipv4_address: 172.20.0.26
@@ -160,7 +160,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_004:
         ipv4_address: 172.20.0.34
@@ -174,7 +174,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_001:
         ipv4_address: 172.20.0.11
@@ -188,7 +188,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_003:
         ipv4_address: 172.20.0.27
@@ -202,7 +202,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_005:
         ipv4_address: 172.20.0.42
@@ -216,7 +216,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_006:
         ipv4_address: 172.20.0.50
@@ -230,7 +230,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_002:
         ipv4_address: 172.20.0.19
@@ -244,7 +244,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_004:
         ipv4_address: 172.20.0.35
@@ -258,7 +258,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_005:
         ipv4_address: 172.20.0.43
@@ -272,7 +272,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_007:
         ipv4_address: 172.20.0.58
@@ -286,7 +286,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_006:
         ipv4_address: 172.20.0.51
@@ -300,7 +300,7 @@ services:
       SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
       SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
       SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
-    image: posix-router
+    image: netsys-lab/scion-router
     networks:
       scn_007:
         ipv4_address: 172.20.0.59
@@ -311,7 +311,7 @@ services:
   scion_cs1-ff00_0_110-1:
     command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_110-1.toml /share/conf/cs1-ff00_0_110-1.toml
     container_name: scion_cs1-ff00_0_110-1
-    image: control
+    image: netsys-lab/scion-control
     networks:
       scn_008:
         ipv4_address: 172.20.0.69
@@ -322,7 +322,7 @@ services:
   scion_cs1-ff00_0_111-1:
     command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_111-1.toml /share/conf/cs1-ff00_0_111-1.toml
     container_name: scion_cs1-ff00_0_111-1
-    image: control
+    image: netsys-lab/scion-control
     networks:
       scn_009:
         ipv4_address: 172.20.0.85
@@ -333,7 +333,7 @@ services:
   scion_cs1-ff00_0_112-1:
     command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_112-1.toml /share/conf/cs1-ff00_0_112-1.toml
     container_name: scion_cs1-ff00_0_112-1
-    image: control
+    image: netsys-lab/scion-control
     networks:
       scn_010:
         ipv4_address: 172.20.0.102
@@ -344,7 +344,7 @@ services:
   scion_cs1-ff00_0_113-1:
     command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_113-1.toml /share/conf/cs1-ff00_0_113-1.toml
     container_name: scion_cs1-ff00_0_113-1
-    image: control
+    image: netsys-lab/scion-control
     networks:
       scn_011:
         ipv4_address: 172.20.0.118
@@ -355,7 +355,7 @@ services:
   scion_cs1-ff00_0_114-1:
     command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_114-1.toml /share/conf/cs1-ff00_0_114-1.toml
     container_name: scion_cs1-ff00_0_114-1
-    image: control
+    image: netsys-lab/scion-control
     networks:
       scn_012:
         ipv4_address: 172.20.0.131
@@ -366,7 +366,7 @@ services:
   scion_cs1-ff00_0_115-1:
     command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_115-1.toml /share/conf/cs1-ff00_0_115-1.toml
     container_name: scion_cs1-ff00_0_115-1
-    image: control
+    image: netsys-lab/scion-control
     networks:
       scn_013:
         ipv4_address: 172.20.0.147
@@ -375,10 +375,11 @@ services:
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_115:/share/conf:ro
   scion_sd1-ff00_0_110:
-    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_110-1.toml /share/conf/sd.toml
+    command: /root/daemon --config /share/conf/sd.toml 
     environment:
       SCION_DAEMON: 172.20.0.70:30255
-    image: daemon
+      SCION_DAEMON_ADDRESS: 172.20.0.70:30255
+    image: netsys-lab/scion-daemon
     networks:
       scn_008:
         ipv4_address: 172.20.0.70
@@ -386,11 +387,39 @@ services:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_110:/share/conf:ro
+  scion_coredns-ff00_0_110:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_110-1.toml /share/conf/Corefile
+    environment:
+      SCION_DAEMON: 172.20.0.70:30255
+      SCION_DAEMON_ADDRESS: 172.20.0.70:30255
+    image: netsys-lab/scion-coredns
+    networks:
+      scn_008:
+        ipv4_address: 172.20.0.71
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_110:/share/conf:ro
+  scion_sdns-ff00_0_110:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_110-1.toml /share/sdns.yml
+    environment:
+      SCION_DAEMON: 172.20.0.70:30255
+      SCION_DAEMON_ADDRESS: 172.20.0.70:30255
+    image: netsys-lab/scion-sdns
+    networks:
+      scn_008:
+        ipv4_address: 172.20.0.72
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_110:/share/conf:ro
+    - ./sdns.yml:/share/sdns.yml
   scion_sd1-ff00_0_111:
-    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_111-1.toml /share/conf/sd.toml
+    command: /root/daemon --config /share/conf/sd.toml
     environment:
       SCION_DAEMON: 172.20.0.86:30255
-    image: daemon
+      SCION_DAEMON_ADDRESS: 172.20.0.86:30255
+    image: netsys-lab/scion-daemon
     networks:
       scn_009:
         ipv4_address: 172.20.0.86
@@ -398,11 +427,38 @@ services:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_111:/share/conf:ro
+  scion_coredns-ff00_0_111:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_111-1.toml /share/conf/Corefile
+    environment:
+      SCION_DAEMON: 172.20.0.86:30255
+      SCION_DAEMON_ADDRESS: 172.20.0.86:30255
+    image: netsys-lab/scion-coredns
+    networks:
+      scn_009:
+        ipv4_address: 172.20.0.87
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_111:/share/conf:ro
+  scion_sdns-ff00_0_111:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_111-1.toml /share/conf/sd.toml /share/conf/Corefile
+    environment:
+      SCION_DAEMON: 172.20.0.86:30255
+      SCION_DAEMON_ADDRESS: 172.20.0.86:30255
+    image: netsys-lab/scion-sdns
+    networks:
+      scn_009:
+        ipv4_address: 172.20.0.88
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_111:/share/conf:ro
   scion_sd1-ff00_0_112:
-    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_112-1.toml /share/conf/sd.toml
+    command: /root/daemon --config /share/conf/sd.toml
     environment:
       SCION_DAEMON: 172.20.0.103:30255
-    image: daemon
+      SCION_DAEMON_ADDRESS: 172.20.0.103:30255
+    image: netsys-lab/scion-daemon
     networks:
       scn_010:
         ipv4_address: 172.20.0.103
@@ -410,11 +466,40 @@ services:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_112:/share/conf:ro
+    - ./sdns.yml:/share/sdns.yml
+  scion_coredns-ff00_0_112:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_112-1.toml /share/conf/Corefile
+    environment:
+      SCION_DAEMON: 172.20.0.103:30255
+      SCION_DAEMON_ADDRESS: 172.20.0.103:30255
+    image: netsys-lab/scion-coredns
+    networks:
+      scn_010:
+        ipv4_address: 172.20.0.104
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_112:/share/conf:ro
+    - ./sdns.yml:/share/sdns.yml
+  scion_sdns-ff00_0_112:
+    command: bash /root/run.sh --config /share/conf/disp_cs1-ff00_0_112-1.toml /share/sdns.yml
+    environment:
+      SCION_DAEMON: 172.20.0.103:30255
+      SCION_DAEMON_ADDRESS: 172.20.0.103:30255
+    image: netsys-lab/scion-sdns
+    networks:
+      scn_010:
+        ipv4_address: 172.20.0.105
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_112:/share/conf:ro
+    - ./sdns.yml:/share/sdns.yml
   scion_sd1-ff00_0_113:
     command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_113-1.toml /share/conf/sd.toml
     environment:
       SCION_DAEMON: 172.20.0.119:30255
-    image: daemon
+    image: netsys-lab/scion-daemon
     networks:
       scn_011:
         ipv4_address: 172.20.0.119
@@ -426,7 +511,7 @@ services:
     command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_114-1.toml /share/conf/sd.toml
     environment:
       SCION_DAEMON: 172.20.0.132:30255
-    image: daemon
+    image: netsys-lab/scion-daemon
     networks:
       scn_012:
         ipv4_address: 172.20.0.132
@@ -438,7 +523,7 @@ services:
     command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_115-1.toml /share/conf/sd.toml
     environment:
       SCION_DAEMON: 172.20.0.148:30255
-    image: daemon
+    image: netsys-lab/scion-daemon
     networks:
       scn_013:
         ipv4_address: 172.20.0.148

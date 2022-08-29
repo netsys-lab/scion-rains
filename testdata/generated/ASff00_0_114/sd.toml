@@ -26,4 +26,4 @@ prometheus = "172.20.0.132:30455"
 addr = "172.20.0.132:30955"
 
 [log.console]
-level = "debug"
+level = "info"

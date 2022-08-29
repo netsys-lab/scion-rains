@@ -8,4 +8,4 @@ id = "disp_sig_1-ff00_0_110"
 [api]
 
 [log.console]
-level = "debug"
+level = "info"

@@ -29,4 +29,4 @@ addr = "172.20.0.69:31152"
 mode = "in-process"
 
 [log.console]
-level = "debug"
+level = "info"
