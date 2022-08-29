@@ -1,27 +1,17 @@
-scion.  604800  IN      SOA     1-ff00-0-111.scion. thkruege.ovgu.de.       2022081901 86400 7200 604800 3600
-scion.  604800  IN      NS      1-ff00-0-111.scion.
+scion.          604800  IN      SOA     eleven.scion. thkruege.ovgu.de.       2022081901 86400 7200 604800 3600
+scion.          604800  IN      NS      eleven.scion.
+twelve.scion.   604800  IN      NS      twelve.scion.
+thirteen.scion. 604800  IN      NS      thirteen.scion.
+fourteen.scion. 604800  IN      NS      fourteen.scion.
+fifteen.scion.  604800  IN      NS      fifteen.scion.
 
-1-ff00-0-110.scion.      3600    IN      TXT     "scion=1-ff00:0:110,172.20.0.70"
-1-ff00-0-111.scion.      3600    IN      TXT     "scion=1-ff00:0:111,172.20.0.86"
+ten.scion.              3600    IN      TXT     "scion=1-ff00:0:110,172.20.0.71"
+eleven.scion.           3600    IN      TXT     "scion=1-ff00:0:111,172.20.0.87"
+twelve.scion.           3600    IN      TXT     "scion=1-ff00:0:112,172.20.0.104"
+thirteen.scion.         3600    IN      TXT     "scion=1-ff00:0:113,172.20.0.120"
+fourteen.scion.         3600    IN      TXT     "scion=1-ff00:0:114,172.20.0.133"
+fifteen.scion.          3600    IN      TXT     "scion=1-ff00:0:115,172.20.0.149"
 
-1-ff00-0-112.scion.      3600    IN      TXT     "scion=1-ff00:0:112,172.20.0.103"
-1-ff00-0-113.scion.      3600    IN      TXT     "scion=1-ff00:0:113,172.20.0.119"
-1-ff00-0-114.scion.      3600    IN      TXT     "scion=1-ff00:0:114,172.20.0.132"
-
-hosta.scion.      3600    IN      TXT     "scion=1-ff00:0:112,172.20.0.103"
-hostb.scion.      3600    IN      TXT     "scion=1-ff00:0:113,172.20.0.119"
-hostc.scion.      3600    IN      TXT     "scion=1-ff00:0:114,172.20.0.132"
+resolver.scion.         3600    IN      TXT     "scion=1-ff00:0:111,172.20.0.88"
 
 
-
-scion.	604800	IN	RRSIG	SOA 15 1 604800 20220905084120 20220731140355 567 com. Xt7no5+F45RK5itAODCg4WIGcBlQUN1+UEjiGBKkD75h/NbI1eeBLTQFqs4qL82ySyDH8K1/eaiy+Bnj6rtYDQ==
-scion.	604800	IN	RRSIG	NS 15 1 604800 20220905084120 20220731140355 567 com. pB0j07DpgY1KPKw6uwe9QqrFa9HrA5RdN/wISKuQjQ06yE3rHGRPbQcIdQ0AJ6JQIt+1kLrcxE4vg2Sepu0eBw==
-scion.	604800	IN	DNSKEY	257 3 15 M9L+x0S5J/VSJ437cKue1pgoSIZC3f+f8epLw2sgoz4=
-scion.  604800  IN  RRSIG   DNSKEY 15 1 604800 20220909110028 20220803041546 9991 com. G0TQFxLvGISlaojluR8y8CF4xhI99jQKriRXlsPHfWK279s5cry1kKMM6rgaZFzxKvko+cjW2irIzYJ2gWhxCg==
-
-hosta.scion.	604800	IN	RRSIG	A 15 2 604800 20220905084120 20220731140355 567 com. IXp/ycZMMdCnzitZnhHm8RCm8K5evJ9NDoC/PQybXWj9Ljfq9Hp2DwHcQ6Pt4vgmcgO35GSNLBShVT5n1InXCQ==
-hostb.scion.	604800	IN	RRSIG	A 15 2 604800 20220905084120 20220731140355 567 com. IXp/ycZMMdCnzitZnhHm8RCm8K5evJ9NDoC/PQybXWj9Ljfq9Hp2DwHcQ6Pt4vgmcgO35GSNLBShVT5n1InXCQ==
-hostc.scion.	604800	IN	RRSIG	A 15 2 604800 20220905084120 20220731140355 567 com. IXp/ycZMMdCnzitZnhHm8RCm8K5evJ9NDoC/PQybXWj9Ljfq9Hp2DwHcQ6Pt4vgmcgO35GSNLBShVT5n1InXCQ==
-
-_dsp.scion.	604800	IN	TXT	"rhine-test"
-_rhinecert.scion. 604800  IN      TXT     "rhineCert Ed25519 MIIBCzCBvqADAgECAgIMRzAFBgMrZXAwGzEZMBcGA1UEAxMQUkhJTkUgRVhBTVBMRSBDQTAeFw0yMjA3MjUxNDM3MjdaFw0yMzA3MTYxNDM3MjdaMB8xHTAbBgNVBAMMFFJISU5FX1pPTkVfT1dORVI6Y29tMCowBQYDK2VwAyEAZ1hvjaFTO/jNIIycxK+gREMxOUdk+lpWUx+3Px/i15KjIjAgMA4GA1UdDwEB/wQEA" "wIHgDAOBgNVHREEBzAFggNjb20wBQYDK2VwA0EAfbVuziMn7Rxym83A8ChNWTyYRTJC9BpYjBQ6DjGE9QXFanEBW0E3VsYKT3wyFfiDIiToemVejdSQwQl46CqFDg=="

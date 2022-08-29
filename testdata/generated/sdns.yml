@@ -59,7 +59,7 @@ forwarderservers = [
 ]
 
 # Address to bind to for the http API server, left blank for disabled
-api = "127.0.0.1:8080"
+api = ""
 
 # What kind of information should be logged, Log verbosity level [crit,error,warn,info,debug]
 loglevel = "debug"
@@ -100,7 +100,7 @@ accesslist = [
 hostsfile = ""
 
 # Network timeout for each dns lookups in duration
-timeout = "3s"
+timeout = "5s"
 
 # Default error cache TTL in seconds
 expire = 600

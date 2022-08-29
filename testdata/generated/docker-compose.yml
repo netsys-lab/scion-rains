@@ -87,9 +87,9 @@ services:
   scion_br1-ff00_0_110-1:
     command: /root/router --config /share/conf/br1-ff00_0_110-1.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_000:
@@ -101,9 +101,9 @@ services:
   scion_br1-ff00_0_110-2:
     command: /root/router --config /share/conf/br1-ff00_0_110-2.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_001:
@@ -115,9 +115,9 @@ services:
   scion_br1-ff00_0_110-3:
     command: /root/router --config /share/conf/br1-ff00_0_110-3.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_002:
@@ -129,9 +129,9 @@ services:
   scion_br1-ff00_0_111-1:
     command: /root/router --config /share/conf/br1-ff00_0_111-1.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_000:
@@ -143,9 +143,9 @@ services:
   scion_br1-ff00_0_111-2:
     command: /root/router --config /share/conf/br1-ff00_0_111-2.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_003:
@@ -157,9 +157,9 @@ services:
   scion_br1-ff00_0_111-3:
     command: /root/router --config /share/conf/br1-ff00_0_111-3.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_004:
@@ -171,9 +171,9 @@ services:
   scion_br1-ff00_0_112-1:
     command: /root/router --config /share/conf/br1-ff00_0_112-1.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_001:
@@ -185,9 +185,9 @@ services:
   scion_br1-ff00_0_112-2:
     command: /root/router --config /share/conf/br1-ff00_0_112-2.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_003:
@@ -199,9 +199,9 @@ services:
   scion_br1-ff00_0_112-3:
     command: /root/router --config /share/conf/br1-ff00_0_112-3.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_005:
@@ -213,9 +213,9 @@ services:
   scion_br1-ff00_0_112-4:
     command: /root/router --config /share/conf/br1-ff00_0_112-4.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_006:
@@ -227,9 +227,9 @@ services:
   scion_br1-ff00_0_113-1:
     command: /root/router --config /share/conf/br1-ff00_0_113-1.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_002:
@@ -241,9 +241,9 @@ services:
   scion_br1-ff00_0_113-2:
     command: /root/router --config /share/conf/br1-ff00_0_113-2.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_004:
@@ -255,9 +255,9 @@ services:
   scion_br1-ff00_0_113-3:
     command: /root/router --config /share/conf/br1-ff00_0_113-3.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_005:
@@ -269,9 +269,9 @@ services:
   scion_br1-ff00_0_113-4:
     command: /root/router --config /share/conf/br1-ff00_0_113-4.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_007:
@@ -283,9 +283,9 @@ services:
   scion_br1-ff00_0_114-1:
     command: /root/router --config /share/conf/br1-ff00_0_114-1.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_006:
@@ -297,9 +297,9 @@ services:
   scion_br1-ff00_0_115-1:
     command: /root/router --config /share/conf/br1-ff00_0_115-1.toml
     environment:
-      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: 5s
-      SCION_EXPERIMENTAL_BFD_DETECT_MULT: 5s
-      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: 5s
+      SCION_EXPERIMENTAL_BFD_DESIRED_MIN_TX: "5s"
+      SCION_EXPERIMENTAL_BFD_DETECT_MULT: "5"
+      SCION_EXPERIMENTAL_BFD_REQUIRED_MIN_RX: "5s"
     image: netsys-lab/scion-router
     networks:
       scn_007:
@@ -441,7 +441,7 @@ services:
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_111:/share/conf:ro
   scion_sdns-ff00_0_111:
-    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_111-1.toml /share/conf/sd.toml /share/conf/Corefile
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_111-1.toml /share/sdns.yml
     environment:
       SCION_DAEMON: 172.20.0.86:30255
       SCION_DAEMON_ADDRESS: 172.20.0.86:30255
@@ -453,6 +453,7 @@ services:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_111:/share/conf:ro
+    - ./sdns.yml:/share/sdns.yml
   scion_sd1-ff00_0_112:
     command: /root/daemon --config /share/conf/sd.toml
     environment:
@@ -482,7 +483,7 @@ services:
     - ./ASff00_0_112:/share/conf:ro
     - ./sdns.yml:/share/sdns.yml
   scion_sdns-ff00_0_112:
-    command: bash /root/run.sh --config /share/conf/disp_cs1-ff00_0_112-1.toml /share/sdns.yml
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_112-1.toml /share/sdns.yml
     environment:
       SCION_DAEMON: 172.20.0.103:30255
       SCION_DAEMON_ADDRESS: 172.20.0.103:30255
@@ -496,7 +497,7 @@ services:
     - ./ASff00_0_112:/share/conf:ro
     - ./sdns.yml:/share/sdns.yml
   scion_sd1-ff00_0_113:
-    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_113-1.toml /share/conf/sd.toml
+    command: /root/daemon --config /share/conf/sd.toml
     environment:
       SCION_DAEMON: 172.20.0.119:30255
     image: netsys-lab/scion-daemon
@@ -507,10 +508,38 @@ services:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_113:/share/conf:ro
+  scion_scoredns-ff00_0_113:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_113-1.toml /share/conf/Corefile
+    environment:
+      SCION_DAEMON: 172.20.0.119:30255
+      SCION_DAEMON_ADDRESS: 172.20.0.119:30255
+    image: netsys-lab/scion-coredns
+    networks:
+      scn_011:
+        ipv4_address: 172.20.0.120
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_113:/share/conf:ro
+  scion_sdns-ff00_0_113:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_113-1.toml /share/sdns.yml
+    environment:
+      SCION_DAEMON: 172.20.0.119:30255
+      SCION_DAEMON_ADDRESS: 172.20.0.119:30255
+    image: netsys-lab/scion-sdns
+    networks:
+      scn_011:
+        ipv4_address: 172.20.0.121
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_113:/share/conf:ro
+    - ./sdns.yml:/share/sdns.yml
   scion_sd1-ff00_0_114:
-    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_114-1.toml /share/conf/sd.toml
+    command: /root/daemon --config /share/conf/sd.toml
     environment:
       SCION_DAEMON: 172.20.0.132:30255
+      SCION_DAEMON_ADDRESS: 172.20.0.132:30255
     image: netsys-lab/scion-daemon
     networks:
       scn_012:
@@ -519,6 +548,33 @@ services:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_114:/share/conf:ro
+  scion_coredns-ff00_0_114:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_114-1.toml /share/conf/Corefile
+    environment:
+      SCION_DAEMON: 172.20.0.132:30255
+      SCION_DAEMON_ADDRESS: 172.20.0.132:30255
+    image: netsys-lab/scion-coredns
+    networks:
+      scn_012:
+        ipv4_address: 172.20.0.133
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_114:/share/conf:ro
+  scion_sdns-ff00_0_114:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_114-1.toml /share/sdns.yml
+    environment:
+      SCION_DAEMON: 172.20.0.132:30255
+      SCION_DAEMON_ADDRESS: 172.20.0.132:30255
+    image: netsys-lab/scion-daemon
+    networks:
+      scn_012:
+        ipv4_address: 172.20.0.134
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_114:/share/conf:ro
+    - ./sdns.yml:/share/sdns.yml
   scion_sd1-ff00_0_115:
     command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_115-1.toml /share/conf/sd.toml
     environment:

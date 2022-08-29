@@ -1,0 +1,12 @@
+twelve.scion.  604800  IN      SOA     twelve.scion. thkruege.ovgu.de.       2022081901 86400 7200 604800 3600
+twelve.scion.  604800  IN      NS      twelve.scion.
+
+twelve.scion.          3600    IN      TXT     "scion=1-ff00:0:112,172.20.0.104"
+resolver.twelve.scion. 3600    IN      TXT     "scion=1-ff00:0:112,172.20.0.105" 
+
+ten.twelve.scion.      3600    IN      TXT     "scion=1-ff00:0:110,172.20.0.71"
+eleven.twelve.scion.   3600    IN      TXT     "scion=1-ff00:0:111,172.20.0.87"
+thirteen.twelve.scion. 3600    IN      TXT     "scion=1-ff00:0:113,172.20.0.120"
+fourteen.twelve.scion. 3600    IN      TXT     "scion=1-ff00:0:114,172.20.0.133"
+fifteen.twelve.scion.  3600    IN      TXT     "scion=1-ff00:0:115,172.20.0.149"
+

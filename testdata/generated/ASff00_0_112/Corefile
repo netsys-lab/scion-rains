@@ -1,0 +1,8 @@
+scion://twelve.scion.:53 {
+    root /share/conf/
+    rhine zonefile twelve.scion. {
+        scion on
+    }
+    log
+}
+
