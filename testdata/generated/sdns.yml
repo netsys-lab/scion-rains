@@ -124,7 +124,7 @@ blocklist = []
 whitelist = []
 
 # DNS server identifier (RFC 5001), it's useful while operating multiple sdns. left blank for disabled
-nsid = ""
+# nsid = ""
 
 # Enable to answer version.server, version.bind, hostname.bind, id.server chaos queries.
 chaos = true

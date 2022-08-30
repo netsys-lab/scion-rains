@@ -1,0 +1,13 @@
+fourteen.scion.  604800  IN      SOA     fourteen.scion. thkruege.ovgu.de.       2022081901 86400 7200 604800 3600
+fourteen.scion.  604800  IN      NS      fourteen.scion.
+fourteen.scion.  3600    IN      TXT     "scion=1-ff00:0:114,172.20.0.133"
+
+resolver.fourteen.scion. 3600    IN      TXT     "scion=1-ff00:0:114,172.20.0.134" 
+
+ten.fourteen.scion.      3600    IN      TXT     "scion=1-ff00:0:110,172.20.0.71"
+eleven.fourteen.scion.   3600    IN      TXT     "scion=1-ff00:0:111,172.20.0.87"
+twelve.fourteen.scion.   3600    IN      TXT     "scion=1-ff00:0:112,172.20.0.104"
+thirteen.fourteen.scion. 3600    IN      TXT     "scion=1-ff00:0:113,172.20.0.120"
+fourteen.fourteen.scion. 3600    IN      TXT     "scion=1-ff00:0:114,172.20.0.133"
+fifteen.fourteen.scion.  3600    IN      TXT     "scion=1-ff00:0:115,172.20.0.149"
+

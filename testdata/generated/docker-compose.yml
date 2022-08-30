@@ -375,7 +375,7 @@ services:
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_115:/share/conf:ro
   scion_sd1-ff00_0_110:
-    command: /root/daemon --config /share/conf/sd.toml 
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_110-1.toml /share/conf/sd.toml 
     environment:
       SCION_DAEMON: 172.20.0.70:30255
       SCION_DAEMON_ADDRESS: 172.20.0.70:30255
@@ -383,6 +383,8 @@ services:
     networks:
       scn_008:
         ipv4_address: 172.20.0.70
+    dns:
+      - 172.20.0.72
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
@@ -396,6 +398,8 @@ services:
     networks:
       scn_008:
         ipv4_address: 172.20.0.71
+    dns:
+      - 172.20.0.72
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
@@ -409,13 +413,15 @@ services:
     networks:
       scn_008:
         ipv4_address: 172.20.0.72
+    dns:
+      - 172.20.0.72
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_110:/share/conf:ro
     - ./sdns.yml:/share/sdns.yml
   scion_sd1-ff00_0_111:
-    command: /root/daemon --config /share/conf/sd.toml
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_111-1.toml /share/conf/sd.toml
     environment:
       SCION_DAEMON: 172.20.0.86:30255
       SCION_DAEMON_ADDRESS: 172.20.0.86:30255
@@ -423,6 +429,8 @@ services:
     networks:
       scn_009:
         ipv4_address: 172.20.0.86
+    dns:
+      - 172.20.0.88
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
@@ -436,6 +444,8 @@ services:
     networks:
       scn_009:
         ipv4_address: 172.20.0.87
+    dns:
+      - 172.20.0.88
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
@@ -449,13 +459,15 @@ services:
     networks:
       scn_009:
         ipv4_address: 172.20.0.88
+    dns:
+      - 172.20.0.88
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_111:/share/conf:ro
     - ./sdns.yml:/share/sdns.yml
   scion_sd1-ff00_0_112:
-    command: /root/daemon --config /share/conf/sd.toml
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_112-1.toml /share/conf/sd.toml
     environment:
       SCION_DAEMON: 172.20.0.103:30255
       SCION_DAEMON_ADDRESS: 172.20.0.103:30255
@@ -463,11 +475,12 @@ services:
     networks:
       scn_010:
         ipv4_address: 172.20.0.103
+    dns:
+      - 172.20.0.105
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_112:/share/conf:ro
-    - ./sdns.yml:/share/sdns.yml
   scion_coredns-ff00_0_112:
     command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_112-1.toml /share/conf/Corefile
     environment:
@@ -477,11 +490,12 @@ services:
     networks:
       scn_010:
         ipv4_address: 172.20.0.104
+    dns:
+      - 172.20.0.105
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_112:/share/conf:ro
-    - ./sdns.yml:/share/sdns.yml
   scion_sdns-ff00_0_112:
     command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_112-1.toml /share/sdns.yml
     environment:
@@ -491,19 +505,23 @@ services:
     networks:
       scn_010:
         ipv4_address: 172.20.0.105
+    dns:
+      - 172.20.0.105
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_112:/share/conf:ro
     - ./sdns.yml:/share/sdns.yml
   scion_sd1-ff00_0_113:
-    command: /root/daemon --config /share/conf/sd.toml
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_113-1.toml /share/conf/sd.toml
     environment:
       SCION_DAEMON: 172.20.0.119:30255
     image: netsys-lab/scion-daemon
     networks:
       scn_011:
         ipv4_address: 172.20.0.119
+    dns:
+      - 172.20.0.121
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
@@ -517,6 +535,8 @@ services:
     networks:
       scn_011:
         ipv4_address: 172.20.0.120
+    dns:
+      - 172.20.0.121
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
@@ -530,13 +550,15 @@ services:
     networks:
       scn_011:
         ipv4_address: 172.20.0.121
+    dns:
+      - 172.20.0.121
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_113:/share/conf:ro
     - ./sdns.yml:/share/sdns.yml
   scion_sd1-ff00_0_114:
-    command: /root/daemon --config /share/conf/sd.toml
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_114-1.toml /share/conf/sd.toml
     environment:
       SCION_DAEMON: 172.20.0.132:30255
       SCION_DAEMON_ADDRESS: 172.20.0.132:30255
@@ -544,6 +566,8 @@ services:
     networks:
       scn_012:
         ipv4_address: 172.20.0.132
+    dns:
+      - 172.20.0.134
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
@@ -557,6 +581,8 @@ services:
     networks:
       scn_012:
         ipv4_address: 172.20.0.133
+    dns:
+      - 172.20.0.134
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
@@ -566,10 +592,12 @@ services:
     environment:
       SCION_DAEMON: 172.20.0.132:30255
       SCION_DAEMON_ADDRESS: 172.20.0.132:30255
-    image: netsys-lab/scion-daemon
+    image: netsys-lab/scion-sdns
     networks:
       scn_012:
         ipv4_address: 172.20.0.134
+    dns:
+      - 172.20.0.134
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
@@ -579,13 +607,47 @@ services:
     command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_115-1.toml /share/conf/sd.toml
     environment:
       SCION_DAEMON: 172.20.0.148:30255
+      SCION_DAEMON_ADDRESS: 172.20.0.148:30255
     image: netsys-lab/scion-daemon
     networks:
       scn_013:
         ipv4_address: 172.20.0.148
+    dns:
+      - 172.20.0.150
     volumes:
     - ./gen-cache:/share/cache:rw
     - ./gen-certs:/share/crypto:rw
     - ./ASff00_0_115:/share/conf:ro
+  scion_coredns-ff00_0_115:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_115-1.toml /share/conf/Corefile
+    environment:
+      SCION_DAEMON: 172.20.0.148:30255
+      SCION_DAEMON_ADDRESS: 172.20.0.148:30255
+    dns:
+      - 172.20.0.150
+    image: netsys-lab/scion-coredns
+    networks:
+      scn_013:
+        ipv4_address: 172.20.0.149
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_115:/share/conf:ro
+  scion_sdns-ff00_0_115:
+    command: bash /root/run.sh /share/conf/disp_cs1-ff00_0_115-1.toml /share/sdns.yml
+    environment:
+      SCION_DAEMON: 172.20.0.148:30255
+      SCION_DAEMON_ADDRESS: 172.20.0.148:30255
+    image: netsys-lab/scion-sdns
+    networks:
+      scn_013:
+        ipv4_address: 172.20.0.150
+    dns:
+      - 172.20.0.150
+    volumes:
+    - ./gen-cache:/share/cache:rw
+    - ./gen-certs:/share/crypto:rw
+    - ./ASff00_0_115:/share/conf:ro
+    - ./sdns.yml:/share/sdns.yml
 version: '2.4'
 volumes: {}
