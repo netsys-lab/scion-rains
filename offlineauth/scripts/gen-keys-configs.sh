@@ -73,7 +73,7 @@ cat > ${AGGCONF} << EOF
       "PrivateKeyAlgorithm" : "Ed25519",
       "PrivateKeyPath"      : "${AGGKEY}",
       "ServerAddress"       : "localhost:50050",
-      "RootCertsPath"       : "${PARENTCERTDIR}/",
+      "RootCertsPath"       : "${CERTDIR}/",
 
       "LogsName"            : ["localhost:50016"],
       "LogsPubKeyPaths"     : ["${LOGGPUB}"],
@@ -96,7 +96,7 @@ cat > ${LOGGCONF} <<EOF
     "PrivateKeyAlgorithm" : "RSA",
     "PrivateKeyPath"      : "${LOGGKEY}",
     "ServerAddress"       : "localhost:50016",
-    "RootCertsPath"       : "${PARENTCERTDIR}/",
+    "RootCertsPath"       : "${CERTDIR}/",
     
     "LogsName"            : ["localhost:50016"],
     "LogsPubKeyPaths"     : ["${LOGGPUB}"],
