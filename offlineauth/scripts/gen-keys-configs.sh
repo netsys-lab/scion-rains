@@ -26,7 +26,7 @@ mkdir -pv ${ROOTDIR}
 ROOTKEY="${ROOTDIR}/ROOT.pem"
 ROOTCERT="${ROOTCERTDIR}/ROOT.pem"
 bin/keyGen Ed25519 ${ROOTKEY} --pubkey | tail -n 1
-bin/certGenByCA Ed25519 ${ROOTKEY} ${CAKEY} ${CACERT} ${ROOTCERT} ${ROOT} | tail -n 1
+bin/certGenByCA Ed25519 ${ROOTKEY} ${CAKEY} ${CACERT} ${ROOTCERT} "" | tail -n 1
 
 PARENT="scion"
 PARENTDIR="${OUTDIR}/${PARENT}"
