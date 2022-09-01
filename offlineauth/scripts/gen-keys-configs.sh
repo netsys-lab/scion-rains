@@ -195,6 +195,7 @@ cat > ${PARENTCONF} <<EOF
 }
 EOF
 
+PARENTCHILDCONF="${PARENTDIR}/parentchild.json"
 cat > ${PARENTCHILDCONF} <<EOF
 {
     "PrivateKeyAlgorithm": "Ed25519",
