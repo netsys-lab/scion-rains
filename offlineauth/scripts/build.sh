@@ -6,7 +6,7 @@ pushd cmd/keyManager
 go build -v keyGen.go
 go build -v certGen.go
 go build -v certGenByCA.go
-mkdir -p ./bin
+mkdir -p ../../bin
 cp certGen certGenByCA keyGen ../../bin/
 popd
 
