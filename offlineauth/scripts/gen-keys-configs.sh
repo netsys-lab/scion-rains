@@ -35,10 +35,13 @@ mkdir -pv ${LOGGDIR}
 LOGGKEY="${LOGGDIR}/Logger1.pem"
 LOGGPUB=$(key2pub ${LOGGKEY})
 DER=$(bin/keyGen RSA ${LOGGKEY} --pubkey | grep DER | grep -Eo "[^ ]*$") 
+LOGSERVER="localhost:8090"
 
-TREE_ID=$(bin/createtree --admin_server=localhost:8090)
+TREE_ID=$(bin/createtree --admin_server=${LOGSERVER})
 
-CTCONF="./test/CTConfig.conf"
+CTDIR="./test/ct"
+mkdir -pv ${CTDIR}
+CTCONF="${CTDIR}/ct.conf"
 cat > ${CTCONF} << EOF
 config {
       log_id: ${TREE_ID}
@@ -53,6 +56,7 @@ config {
       expected_merge_delay_sec: 120
 }
 EOF
+CTSERVER="localhost:6966"
 
 ROOTS="./test/roots"
 DBDIR="./test/database"
@@ -98,7 +102,7 @@ cat > ${LOGGCONF} <<EOF
     "CAServerAddr"        : "localhost:10000",
     "CAPubKeyPath"        : "${CAPUBKEY}",
     
-    "CTAddress"           : "localhost:6966",
+    "CTAddress"           : "${CTSERVER}",
     "CTPrefix"            : "RHINE",
     
     "KeyValueDBDirectory" : "${DBDIR}/logger"
@@ -122,8 +126,13 @@ cat > ${CACONF} <<EOF
 }
 EOF
 
+echo "Launching CT Server"
+bin/ct_server -log_config=${CTCONF} -log_rpc_server=${LOGSERVER} -http_endpoint=${CTSERVER} -logtostderr &
+CTPID=$!
+sleep 3
 echo "Creating a DT data structure"
 bin/aggregator AddTestDT --config=${AGGCONF} --parent=${PARENT} --certPath=${PARENTCERT}
+sleep 3
 echo "Launching Aggregator"
 bin/aggregator --config=${AGGCONF} &
 AGGPID=$!
@@ -136,7 +145,7 @@ echo "Launching CA"
 bin/ca --config=${CACONF} &
 CAPID=$!
 sleep 3
-for PID in $AGGPID $LOGGPID $CAPID
+for PID in $CTPID $AGGPID $LOGGPID $CAPID
 do
     ps --no-headers -p ${PID} > /dev/null
 done
@@ -146,6 +155,7 @@ SETUP COMPLETE
 EOF
 
 
-wait -n $AGGPID $LOGGPID $CAPID
-kill $AGGPID $LOGGPID $CAPID
+wait -n $CTPID $AGGPID $LOGGPID $CAPID
+echo "ERROR: a backpround process died"
+kill $CTPID $AGGPID $LOGGPID $CAPID
 
