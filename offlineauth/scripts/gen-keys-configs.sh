@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-#
-#
 set -euo pipefail
+
+/usr/bin/env bash --version | grep -E "version [456789]" || echo "need at least bash version 4" && exit 1
 
 function key2pub { echo "$(dirname ${1})/$(basename -s '.pem' ${1})_pub.pem"; }
 
@@ -12,10 +12,10 @@ mkdir -p ${CERTDIR}
 
 CADIR="${OUTDIR}/ca"
 mkdir -pv ${CADIR}
-CAKEY="${CADIR}/ROOT_private.pem"
+CAKEY="${CERTDIR}/ROOT_private.pem"
 CAPUBKEY=$(key2pub ${CAKEY})
 bin/keyGen Ed25519 ${CAKEY} --pubkey | tail -n 1
-mv -v "${CAPUBKEY}" "${CADIR}/ROOT_public.pem"
+mv -v "${CAPUBKEY}" "${CERTDIR}/ROOT_public.pem"
 CACERT="${CERTDIR}/ROOT_cert.pem"
 bin/certGen Ed25519 ${CAKEY} ${CACERT} | tail -n 1
 
@@ -136,28 +136,26 @@ CHILDDIR="${PARENTDIR}/children"
 PARENTCONF="${PARENTDIR}/parent.json"
 cat > ${PARENTCONF} <<EOF
 {
-    "PrivateKeyAlgorithm": "Ed25519",
-    "PrivateKeyPath": "${PARENTKEY}",
-    "ZoneName":  "${PARENT}",
-    "CertificatePath": "${PARENTCERT}",
-    "ServerAddress" : "localhost:10005",
+    "PrivateKeyAlgorithm"      : "Ed25519",
+    "PrivateKeyPath"           : "${PARENTKEY}",
+    "ZoneName"                 : "${PARENT}",
+    "CertificatePath"          : "${PARENTCERT}",
+    "ServerAddress"            : "localhost:10005",
     
-    "LogsName" :       ["localhost:50016"],
-    "LogsPubKeyPaths" :    ["${LOGGPUB}"],
+    "LogsName"                 : ["localhost:50016"],
+    "LogsPubKeyPaths"          : ["${LOGGPUB}"],
     
-    "AggregatorName" :  ["localhost:50050"],
-    "AggPubKeyPaths"  : ["${AGGPUB}"],
+    "AggregatorName"           : ["localhost:50050"],
+    "AggPubKeyPaths"           : ["${AGGPUB}"],
     
-    "CAName" : "localhost:10000",
-    "CAServerAddr" : "localhost:10000",
-    "CACertificatePath" : "${CACERT}",
+    "CAName"                   : "localhost:10000",
+    "CAServerAddr"             : "localhost:10000",
+    "CACertificatePath"        : "${CACERT}",
     
     "ChildrenKeyDirectoryPath" : "${CHILDDIR}",
-    "ParentDataBaseDirectory" : "${DBDIR}/zoneManager"
+    "ParentDataBaseDirectory"  : "${DBDIR}/zoneManager"
 }
 EOF
-
-
 
 echo "Launching CT Server"
 bin/ct_server -log_config=${CTCONF} -log_rpc_server=${LOGSERVER} -http_endpoint=${CTSERVER} -logtostderr &
