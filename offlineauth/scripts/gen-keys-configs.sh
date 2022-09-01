@@ -22,6 +22,7 @@ bin/certGen Ed25519 ${CAKEY} ${CACERT} | tail -n 1
 PARENT="scion"
 PARENTDIR="${OUTDIR}/${PARENT}"
 mkdir -pv ${PARENTDIR}
+
 PARENTKEY="${CERTDIR}/${PARENT}_private.pem"
 PARENTCERT="${CERTDIR}/${PARENT}_cert.pem"
 bin/keyGen Ed25519 ${PARENTKEY} | tail -n 1
@@ -72,7 +73,7 @@ cat > ${AGGCONF} << EOF
       "PrivateKeyAlgorithm" : "Ed25519",
       "PrivateKeyPath"      : "${AGGKEY}",
       "ServerAddress"       : "localhost:50050",
-      "RootCertsPath"       : "${CERTDIR}/",
+      "RootCertsPath"       : "${PARENTCERTDIR}/",
 
       "LogsName"            : ["localhost:50016"],
       "LogsPubKeyPaths"     : ["${LOGGPUB}"],
@@ -95,7 +96,7 @@ cat > ${LOGGCONF} <<EOF
     "PrivateKeyAlgorithm" : "RSA",
     "PrivateKeyPath"      : "${LOGGKEY}",
     "ServerAddress"       : "localhost:50016",
-    "RootCertsPath"       : "${CERTDIR}/",
+    "RootCertsPath"       : "${PARENTCERTDIR}/",
     
     "LogsName"            : ["localhost:50016"],
     "LogsPubKeyPaths"     : ["${LOGGPUB}"],
@@ -138,7 +139,7 @@ cat > ${PARENTCONF} <<EOF
     "PrivateKeyAlgorithm": "Ed25519",
     "PrivateKeyPath": "${PARENTKEY}",
     "ZoneName":  "${PARENT}",
-    "CertificatePath": "${CERTDIR}",
+    "CertificatePath": "${PARENTCERT}",
     "ServerAddress" : "localhost:10005",
     
     "LogsName" :       ["localhost:50016"],
@@ -151,7 +152,7 @@ cat > ${PARENTCONF} <<EOF
     "CAServerAddr" : "localhost:10000",
     "CACertificatePath" : "${CACERT}",
     
-    "ChildrenKeyDirectoryPath" : "${CERTDIR}",
+    "ChildrenKeyDirectoryPath" : "${CHILDDIR}",
     "ParentDataBaseDirectory" : "${DBDIR}/zoneManager"
 }
 EOF
