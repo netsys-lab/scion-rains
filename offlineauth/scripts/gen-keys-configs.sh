@@ -184,6 +184,7 @@ bin/ct_server -log_config=${CTCONF} -log_rpc_server=${LOGSERVER} -http_endpoint=
 CTPID=$!
 sleep 3
 echo "Creating a DT data structure"
+echo bin/aggregator AddTestDT --config=${AGGCONF} --parent=${PARENT} --certPath=${PARENTCERT}
 bin/aggregator AddTestDT --config=${AGGCONF} --parent=${PARENT} --certPath=${PARENTCERT}
 sleep 3
 echo "Launching Aggregator"
