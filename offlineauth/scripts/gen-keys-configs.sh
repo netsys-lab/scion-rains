@@ -15,7 +15,7 @@ bin/keyGen Ed25519 ${CAKEY} --pubkey | tail -n 1
 CACERT="${CADIR}/CACert.pem"
 bin/certGen Ed25519 ${CAKEY} ${CACERT} | tail -n 1
 
-PARENT="parent"
+PARENT="parent.com"
 PARENTDIR="${OUTDIR}/${PARENT}"
 PARENTCERTDIR="${PARENTDIR}/certs"
 mkdir -pv ${PARENTCERTDIR} 
@@ -23,6 +23,7 @@ PARENTKEY="${PARENTDIR}/PARENTSK_${PARENT}.pem"
 PARENTCERT="${PARENTCERTDIR}/PARENTCERT_${PARENT}.pem"
 bin/keyGen Ed25519 ${PARENTKEY} --pubkey | tail -n 1
 bin/certGenByCA Ed25519 ${PARENTKEY} ${CAKEY} ${CACERT} ${PARENTCERT} ${PARENT} | tail -n 1
+cp -v ${CACERT} ${PARENTCERTDIR}
 
 CHILD="child.${PARENT}"
 CHILDDIR="${PARENTDIR}/children"
