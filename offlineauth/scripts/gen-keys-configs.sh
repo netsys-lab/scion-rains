@@ -169,7 +169,7 @@ cat > ${CHILDCONF} <<EOF
     "LogsPubKeyPaths"     : ["${LOGGPUB}"],
     
     "AggregatorName" :  ["localhost:50050"],
-    "AggPubKeyPaths"      : ["${AGGPUB}"]
+    "AggPubKeyPaths"      : ["${AGGPUB}"],
     
     "CAName" : "localhost:10000",
     "CAServerAddr" : "localhost:10000",
@@ -209,7 +209,9 @@ sleep 3
 
 echo "SETUP COMPLETE"
 
-wait -n $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID
-echo "ERROR: a backpround process died"
+if ! wait -n $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID
+then
+    echo "ERROR: a backpround process died"
+fi
 kill $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID
 
