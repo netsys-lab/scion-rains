@@ -48,7 +48,7 @@ AGGCONF="./test/Aggregator1.conf"
 cat > ${AGGCONF} << EOF
 {
       "PrivateKeyAlgorithm" : "Ed25519",
-      "PrivateKeyPath"      : "${AGG1}",
+      "PrivateKeyPath"      : "${AGG}",
       "ServerAddress"       : "localhost:50050",
       "RootCertsPath"       : "${ROOTS}",
 
