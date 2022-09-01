@@ -220,7 +220,7 @@ func (zm *ZoneManager) VerifyChildCSR(rawcsr []byte) (*Csr, *Psr, []byte, error)
 	childName := csr.zone.Name
 	parentName = GetParentZone(childName)
 
-	if parentName == "scion" && strings.HasSuffix(childName, "."+parentName) {
+	if parentName == "" || strings.HasSuffix(childName, "."+parentName) {
 		// TODO This is a shortcut to keep the toy example test runnable
 		// Generate PSR
 		psr := zm.CreatePSR(csr, zm.privkey)
@@ -250,19 +250,19 @@ func (zm *ZoneManager) VerifyChildCSR(rawcsr []byte) (*Csr, *Psr, []byte, error)
 		log.Printf("looking up %s", parentCertPrefix+parentName)
 		pcerti, err = GetValueFromDB(zm.DB, []byte(parentCertPrefix+parentName))
 		if err != nil {
-			return nil, nil, nil, err
+			return nil, nil, nil, errors.New("Not a child zone of this parent")
 		}
 		// Get parent key
 		log.Printf("looking up %s", parentKeyPrefix+parentName)
 		privatekeyparent, err = GetValueFromDB(zm.DB, []byte(parentKeyPrefix+parentName))
 		if err != nil {
-			return nil, nil, nil, err
+			return nil, nil, nil, errors.New("Not a child zone of this parent")
 		}
 		// Get child key
 		log.Printf("looking up %s", childkeyPrefix+childName)
 		pKey, err = GetValueFromDB(zm.DB, []byte(childkeyPrefix+childName))
 		if err != nil {
-			return nil, nil, nil, err
+			return nil, nil, nil, errors.New("Not a child zone of this parent")
 		}
 	}
 

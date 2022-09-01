@@ -7,30 +7,39 @@ function key2pub { echo "$(dirname ${1})/$(basename -s '.pem' ${1})_pub.pem"; }
 
 OUTDIR="./test" # TODO, change to $1 or something
 
+CERTDIR="${OUTDIR}/certificates"
+mkdir -pv ${CERTDIR}
+
 CADIR="${OUTDIR}/ca"
 mkdir -pv ${CADIR}
 CAKEY="${CADIR}/CAKey.pem"
 CAPUBKEY=$(key2pub ${CAKEY})
 bin/keyGen Ed25519 ${CAKEY} --pubkey | tail -n 1
-CACERT="${CADIR}/CACert.pem"
+CACERT="${CERTDIR}/CACert.pem"
 bin/certGen Ed25519 ${CAKEY} ${CACERT} | tail -n 1
+
+ROOT=""
+ROOTDIR="${OUTDIR}/ROOT"
+#ROOTCERTDIR="${ROOTDIR}/certs"
+ROOTCERTDIR=${CERTDIR}
+mkdir -pv ${ROOTCERTDIR} 
+ROOTKEY="${ROOTDIR}/ROOT.pem"
+ROOTCERT="${ROOTCERTDIR}/ROOT.pem"
+bin/keyGen Ed25519 ${ROOTKEY} --pubkey | tail -n 1
+bin/certGenByCA Ed25519 ${ROOTKEY} ${CAKEY} ${CACERT} ${ROOTCERT} ${ROOT} | tail -n 1
 
 PARENT="scion"
 PARENTDIR="${OUTDIR}/${PARENT}"
-PARENTCERTDIR="${PARENTDIR}/certs"
-mkdir -pv ${PARENTCERTDIR} 
+#PARENTCERTDIR="${PARENTDIR}/certs"
+PARENTCERTDIR=${CERTDIR}
+mkdir -pv ${PARENTDIR} 
 PARENTKEY="${PARENTDIR}/${PARENT}.pem"
 PARENTCERT="${PARENTCERTDIR}/${PARENT}.pem"
 bin/keyGen Ed25519 ${PARENTKEY} --pubkey | tail -n 1
 bin/certGenByCA Ed25519 ${PARENTKEY} ${CAKEY} ${CACERT} ${PARENTCERT} ${PARENT} | tail -n 1
 cp -v ${CACERT} ${PARENTCERTDIR}
 
-CHILD="eleven.${PARENT}"
-CHILDDIR="${PARENTDIR}/children"
-CHILDCERTDIR="${CHILDDIR}/certs"
-mkdir -pv ${CHILDCERTDIR}
-CHILDKEY="${CHILDDIR}/${CHILD}.pem"
-bin/keyGen Ed25519 ${CHILDKEY} --pubkey | tail -n 1
+CHILDREN="eleven.${PARENT} twelve.${PARENT} thirteen.${PARENT} fourteen.${PARENT} fifteen.${PARENT}"
 
 AGGDIR="${OUTDIR}/aggregator"
 mkdir -pv ${AGGDIR}
@@ -134,6 +143,35 @@ cat > ${CACONF} <<EOF
 }
 EOF
 
+CHILDDIR="${ROOTDIR}/children"
+ROOTCONF="${ROOTDIR}/ROOT.json"
+cat > ${ROOTCONF} <<EOF
+{
+    "PrivateKeyAlgorithm": "Ed25519",
+    "PrivateKeyPath": "${ROOTKEY}",
+    "ZoneName":  "${ROOT}",
+    "CertificatePath": "${ROOTCERT}",
+    "ServerAddress" : "localhost:10005",
+    
+    "LogsName" :       ["localhost:50016"],
+    "LogsPubKeyPaths" :    ["${LOGGPUB}"],
+    
+    "AggregatorName" :  ["localhost:50050"],
+    "AggPubKeyPaths"  : ["${AGGPUB}"],
+    
+    "CAName" : "localhost:10000",
+    "CAServerAddr" : "localhost:10000",
+    "CACertificatePath" : "${CACERT}",
+    
+    "ChildrenKeyDirectoryPath" : "${CHILDDIR}",
+    "ParentDataBaseDirectory" : "${DBDIR}/zoneManager"
+}
+EOF
+
+
+
+
+CHILDDIR="${PARENTDIR}/children"
 PARENTCONF="${PARENTDIR}/parent.json"
 cat > ${PARENTCONF} <<EOF
 {
@@ -158,13 +196,12 @@ cat > ${PARENTCONF} <<EOF
 }
 EOF
 
-CHILDCONF="${CHILDDIR}/child.json"
-cat > ${CHILDCONF} <<EOF
+cat > ${PARENTCHILDCONF} <<EOF
 {
     "PrivateKeyAlgorithm": "Ed25519",
-    "PrivateKeyPath": "${CHILDKEY}",
+    "PrivateKeyPath": "${PARENTKEY}",
     "ParentServerAddr": "localhost:10005",
-    "ZoneName":  "${CHILD}",
+    "ZoneName":  "${PARENT}",
     
     "LogsName" :       ["localhost:50016"],
     "LogsPubKeyPaths"     : ["${LOGGPUB}"],
@@ -178,7 +215,6 @@ cat > ${CHILDCONF} <<EOF
 }
 
 EOF
-
 
 echo "Launching CT Server"
 bin/ct_server -log_config=${CTCONF} -log_rpc_server=${LOGSERVER} -http_endpoint=${CTSERVER} -logtostderr &
@@ -200,20 +236,60 @@ echo "Launching CA"
 bin/ca --config=${CACONF} &
 CAPID=$!
 sleep 3
+echo "Launching root zone Manager"
+bin/zoneManager RunParentServer --config=${ROOTCONF} &
+RZPID=$!
+sleep 3
+echo "Running delegation Request for parent"
+bin/zoneManager RequestDeleg --config=${PARENTCONF} --zone=${PARENT} --output="${PARENTCERTDIR}/${PARENT}.RHINE.pem" &
+PZPID1=$!
+sleep 3
 echo "Launching parent zone Manager"
 bin/zoneManager RunParentServer --config=${PARENTCONF} &
-PZPID=$!
+PZPID2=$!
 sleep 3
-echo "Running delegation Request"
-bin/zoneManager RequestDeleg --config=${CHILDCONF} --zone=${CHILD} --output="${CHILDCERTDIR}/${CHILD}.RHINE.pem" &
+
+for CHILD in ${CHILDREN}
+do
+    CHILDCERTDIR="${CERTDIR}"
+    #CHILDCERTDIR="${CHILDDIR}/certs"
+    #mkdir -pv ${CHILDCERTDIR}
+    CHILDKEY="${CHILDDIR}/${CHILD}.pem"
+    bin/keyGen Ed25519 ${CHILDKEY} --pubkey | tail -n 1
+
+    CHILDCONF="${CHILDDIR}/${CHILD}.json"
+    cat > ${CHILDCONF} <<EOF
+{
+    "PrivateKeyAlgorithm": "Ed25519",
+    "PrivateKeyPath": "${CHILDKEY}",
+    "ParentServerAddr": "localhost:10005",
+    "ZoneName":  "${CHILD}",
+    
+    "LogsName" :       ["localhost:50016"],
+    "LogsPubKeyPaths"     : ["${LOGGPUB}"],
+    
+    "AggregatorName" :  ["localhost:50050"],
+    "AggPubKeyPaths"      : ["${AGGPUB}"],
+    
+    "CAName" : "localhost:10000",
+    "CAServerAddr" : "localhost:10000",
+    "CACertificatePath" : "${CACERT}"
+}
+
+EOF
+
+    echo "Running delegation Request for ${CHILD}"
+    bin/zoneManager RequestDeleg --config=${CHILDCONF} --zone=${CHILD} --output="${CHILDCERTDIR}/${CHILD}.RHINE.pem"
+done
+
+sleep 3&
 CZPID=$!
-sleep 3
 
-echo "SETUP COMPLETE"
-
-if ! wait -n $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID
+if ! wait -n $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID $RZPID $PZPID1 $PZPID2
 then
     echo "ERROR: a backpround process died"
+else
+    echo "SETUP COMPLETE"
 fi
-kill $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID
+kill $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID $RZPID $PZPID1 $PZPID2
 
