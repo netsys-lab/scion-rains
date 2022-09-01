@@ -25,6 +25,11 @@ go build -v .
 cp zoneManager ../../bin
 popd
 
+pushd cmd/ca
+go build -v .
+cp ca ../../bin
+popd
+
 CTDIR="certificate-transparency-go/trillian/ctfe/ct_server/"
 if [ ! -d ${CTDIR} ]
 then

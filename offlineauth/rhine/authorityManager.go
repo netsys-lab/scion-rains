@@ -124,7 +124,7 @@ func NewCA(config CaConfig) *Ca {
 	}
 
 	files, err := ioutil.ReadDir(config.RootCertsPath)
-	//log.Println("Files for trust root: ", files)
+	log.Printf("Files for trust root: %v", files)
 	if err != nil {
 		log.Fatal("Error reading roots directory: ", err)
 	}
@@ -134,6 +134,8 @@ func NewCA(config CaConfig) *Ca {
 
 		if myca.CertPool.AppendCertsFromPEM(pemfile) {
 			log.Println("Added " + file.Name() + " to trust root")
+		} else {
+			log.Println("Didn't add " + file.Name() + " to trust root")
 		}
 	}
 
