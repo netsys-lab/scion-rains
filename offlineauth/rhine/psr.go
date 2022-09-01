@@ -72,6 +72,7 @@ func CheckRCertNameAndValid(pcert *x509.Certificate, pzone string, roots *x509.C
 		log.Println("Wrong parent Cert/ Parent Name", err)
 		log.Println("DSNNames then pzone: ", pcert.DNSNames, pzone)
 		log.Printf("Cert %+v", pcert)
+		log.Printf("Roots %+v", roots)
 		return err
 	}
 	return nil
