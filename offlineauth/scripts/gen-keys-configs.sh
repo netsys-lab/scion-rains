@@ -37,7 +37,6 @@ PARENTKEY="${PARENTDIR}/${PARENT}.pem"
 PARENTCERT="${PARENTCERTDIR}/${PARENT}.pem"
 bin/keyGen Ed25519 ${PARENTKEY} --pubkey | tail -n 1
 bin/certGenByCA Ed25519 ${PARENTKEY} ${CAKEY} ${CACERT} ${PARENTCERT} ${PARENT} | tail -n 1
-cp -v ${CACERT} ${PARENTCERTDIR}
 
 CHILDREN="eleven.${PARENT} twelve.${PARENT} thirteen.${PARENT} fourteen.${PARENT} fifteen.${PARENT}"
 
