@@ -76,7 +76,7 @@ CTSERVER="localhost:6966"
 
 ROOTS="${OUTDIR}/roots"
 DBDIR="${OUTDIR}/database"
-mkdir -pv ${ROOTS} "${DBDIR}/aggregator" "${DBDIR}/logger" "${DBDIR}/zoneManager"
+mkdir -pv ${ROOTS} "${DBDIR}/aggregator" "${DBDIR}/logger" "${DBDIR}/zoneManager1" "${DBDIR}/zoneManager2"
 AGGCONF="${AGGDIR}/aggregator.json"
 cat > ${AGGCONF} << EOF
 {
@@ -163,7 +163,7 @@ cat > ${ROOTCONF} <<EOF
     "CACertificatePath" : "${CACERT}",
     
     "ChildrenKeyDirectoryPath" : "${CHILDDIR}",
-    "ParentDataBaseDirectory" : "${DBDIR}/zoneManager"
+    "ParentDataBaseDirectory" : "${DBDIR}/zoneManager1"
 }
 EOF
 
@@ -191,7 +191,7 @@ cat > ${PARENTCONF} <<EOF
     "CACertificatePath" : "${CACERT}",
     
     "ChildrenKeyDirectoryPath" : "${CHILDDIR}",
-    "ParentDataBaseDirectory" : "${DBDIR}/zoneManager"
+    "ParentDataBaseDirectory" : "${DBDIR}/zoneManager2"
 }
 EOF
 
