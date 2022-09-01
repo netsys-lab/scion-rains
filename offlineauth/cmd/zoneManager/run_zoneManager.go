@@ -266,6 +266,7 @@ func init() {
 }
 
 func main() {
+	log.SetFlags(log.Llongfile)
 	rootCmd.AddCommand(RequestDelegCmd)
 	rootCmd.AddCommand(RunParentServer)
 	err := rootCmd.Execute()

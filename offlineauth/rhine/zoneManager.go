@@ -244,17 +244,17 @@ func (zm *ZoneManager) VerifyChildCSR(rawcsr []byte) (*Csr, *Psr, []byte, error)
 		// Get pcert
 		pcerti, err = GetValueFromDB(zm.DB, []byte(parentCertPrefix+parentName))
 		if err != nil {
-			return nil, nil, nil, errors.New("Not a child zone of this parent!")
+			return nil, nil, nil, err
 		}
 		// Get parent key
 		privatekeyparent, err = GetValueFromDB(zm.DB, []byte(parentKeyPrefix+parentName))
 		if err != nil {
-			return nil, nil, nil, errors.New("Not a child zone of this parent!")
+			return nil, nil, nil, err
 		}
 		// Get child key
 		pKey, err = GetValueFromDB(zm.DB, []byte(childkeyPrefix+childName))
 		if err != nil {
-			return nil, nil, nil, errors.New("Not a child zone of this parent!")
+			return nil, nil, nil, err
 		}
 	}
 
