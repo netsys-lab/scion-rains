@@ -27,7 +27,7 @@ cp -v ${CACERT} ${PARENTCERTDIR}
 
 CHILD="eleven.${PARENT}"
 CHILDDIR="${PARENTDIR}/children"
-CHILDCERTDIR="${CHILDREN}/certs"
+CHILDCERTDIR="${CHILDDIR}/certs"
 mkdir -pv ${CHILDCERTDIR}
 CHILDKEY="${CHILDDIR}/${CHILD}.pem"
 bin/keyGen Ed25519 ${CHILDKEY} --pubkey | tail -n 1
