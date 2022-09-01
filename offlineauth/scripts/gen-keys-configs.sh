@@ -8,6 +8,7 @@ function key2pub { echo "$(dirname ${1})/$(basename -s '.pem' ${1})_pub.pem"; }
 OUTDIR="./test" # TODO, change to $1 or something
 
 CERTDIR="${OUTDIR}/certificates"
+mkdir -p ${CERTDIR}
 
 CADIR="${OUTDIR}/ca"
 mkdir -pv ${CADIR}
