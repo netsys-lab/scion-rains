@@ -242,16 +242,19 @@ func (zm *ZoneManager) VerifyChildCSR(rawcsr []byte) (*Csr, *Psr, []byte, error)
 		var err error
 		parentName = GetParentZone(childName)
 		// Get pcert
+		log.Printf("looking up %s", parentCertPrefix+parentName)
 		pcerti, err = GetValueFromDB(zm.DB, []byte(parentCertPrefix+parentName))
 		if err != nil {
 			return nil, nil, nil, err
 		}
 		// Get parent key
+		log.Printf("looking up %s", parentKeyPrefix+parentName)
 		privatekeyparent, err = GetValueFromDB(zm.DB, []byte(parentKeyPrefix+parentName))
 		if err != nil {
 			return nil, nil, nil, err
 		}
 		// Get child key
+		log.Printf("looking up %s", childkeyPrefix+childName)
 		pKey, err = GetValueFromDB(zm.DB, []byte(childkeyPrefix+childName))
 		if err != nil {
 			return nil, nil, nil, err
