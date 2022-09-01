@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-/usr/bin/env bash --version | grep -E "version [456789]" || echo "need at least bash version 4" && exit 1
+/usr/bin/env bash --version | grep -E "version [456789]" || echo "need at least bash version 4" 
 
 function key2pub { echo "$(dirname ${1})/$(basename -s '.pem' ${1})_pub.pem"; }
 
