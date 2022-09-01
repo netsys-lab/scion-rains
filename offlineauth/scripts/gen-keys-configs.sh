@@ -212,7 +212,7 @@ do
 EOF
 
     echo "Running delegation Request for ${CHILD}"
-    bin/zoneManager RequestDeleg --config=${CHILDCONF} --zone=${CHILD} --output="${CHILDCERTDIR}/${CHILD}.RHINE.pem"
+    bin/zoneManager RequestDeleg --config=${CHILDCONF} --zone=${CHILD} --output="${CERTDIR}/${CHILD}.RHINE.pem"
 done
 
 sleep 3&
