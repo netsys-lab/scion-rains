@@ -5,6 +5,7 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"crypto/rsa"
+	"path/filepath"
 
 	"encoding/json"
 
@@ -130,7 +131,7 @@ func NewCA(config CaConfig) *Ca {
 	}
 
 	for _, file := range files {
-		pemfile, err := ioutil.ReadFile(config.RootCertsPath + file.Name())
+		pemfile, err := ioutil.ReadFile(filepath.Join(config.RootCertsPath + file.Name()))
 		if err != nil {
 			log.Printf("Skipping %s: %s", file.Name(), err)
 		}
