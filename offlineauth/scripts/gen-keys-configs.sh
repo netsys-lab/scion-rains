@@ -22,7 +22,7 @@ ROOT=""
 ROOTDIR="${OUTDIR}/ROOT"
 #ROOTCERTDIR="${ROOTDIR}/certs"
 ROOTCERTDIR=${CERTDIR}
-mkdir -pv ${ROOTCERTDIR} 
+mkdir -pv ${ROOTDIR} 
 ROOTKEY="${ROOTDIR}/ROOT.pem"
 ROOTCERT="${ROOTCERTDIR}/ROOT.pem"
 bin/keyGen Ed25519 ${ROOTKEY} --pubkey | tail -n 1
