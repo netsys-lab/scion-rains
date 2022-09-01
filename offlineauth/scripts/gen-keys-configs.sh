@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 #
 #
-
 set -euo pipefail
 
 function key2pub { echo "$(dirname ${1})/$(basename -s '.pem' ${1})_pub.pem"; }
 
-CADIR="./test/ca"
+OUTDIR="./test" # TODO, change to $1 or something
+
+CADIR="${OUTDIR}/ca"
 mkdir -pv ${CADIR}
 CAKEY="${CADIR}/CAKey.pem"
 CAPUBKEY=$(key2pub ${CAKEY})
@@ -15,22 +16,28 @@ CACERT="${CADIR}/CACert.pem"
 bin/certGen Ed25519 ${CAKEY} ${CACERT} | tail -n 1
 
 PARENT="parent"
-PARENTDIR="./test/${PARENT}"
+PARENTDIR="${OUTDIR}/${PARENT}"
 PARENTCERTDIR="${PARENTDIR}/certs"
-mkdir -pv ${PARENTCERTDIR}
+mkdir -pv ${PARENTCERTDIR} 
 PARENTKEY="${PARENTDIR}/${PARENT}key.pem"
 PARENTPUB=$(key2pub ${PARENTKEY})
 PARENTCERT="${PARENTCERTDIR}/${PARENT}cert.pem"
 bin/keyGen Ed25519 ${PARENTKEY} --pubkey | tail -n 1
 bin/certGenByCA Ed25519 ${PARENTKEY} ${CAKEY} ${CACERT} ${PARENTCERT} ${PARENT} | tail -n 1
 
-AGGDIR="./test/aggregator"
+CHILD="child.${PARENT}"
+CHILDDIR="${PARENTDIR}/children"
+mkdir -pv ${CHILDDIR}
+CHILDKEY="${CHILDDIR}/${CHILD}.pem"
+bin/keyGen Ed25519 ${CHILDKEY} --pubkey | tail -n 1
+
+AGGDIR="${OUTDIR}/aggregator"
 mkdir -pv ${AGGDIR}
 AGGKEY="${AGGDIR}/Aggregator.pem"
 AGGPUB=$(key2pub ${AGGKEY})
 bin/keyGen Ed25519 ${AGGKEY} --pubkey | tail -n 1
 
-LOGGDIR="./test/logger"
+LOGGDIR="${OUTDIR}/logger"
 mkdir -pv ${LOGGDIR}
 LOGGKEY="${LOGGDIR}/Logger1.pem"
 LOGGPUB=$(key2pub ${LOGGKEY})
@@ -39,7 +46,7 @@ LOGSERVER="localhost:8090"
 
 TREE_ID=$(bin/createtree --admin_server=${LOGSERVER})
 
-CTDIR="./test/ct"
+CTDIR="${OUTDIR}/ct"
 mkdir -pv ${CTDIR}
 CTCONF="${CTDIR}/ct.conf"
 cat > ${CTCONF} << EOF
@@ -58,9 +65,9 @@ config {
 EOF
 CTSERVER="localhost:6966"
 
-ROOTS="./test/roots"
-DBDIR="./test/database"
-mkdir -pv ${ROOTS} "${DBDIR}/aggregator" "${DBDIR}/logger"
+ROOTS="${OUTDIR}/roots"
+DBDIR="${OUTDIR}/database"
+mkdir -pv ${ROOTS} "${DBDIR}/aggregator" "${DBDIR}/logger" "${DBDIR}/zoneManager"
 AGGCONF="${AGGDIR}/aggregator.json"
 cat > ${AGGCONF} << EOF
 {
@@ -126,6 +133,52 @@ cat > ${CACONF} <<EOF
 }
 EOF
 
+PARENTCONF="${PARENTDIR}/parent.json"
+cat > ${PARENTCONF} <<EOF
+{
+    "PrivateKeyAlgorithm": "Ed25519",
+    "PrivateKeyPath": "${PARENTKEY}",
+    "ZoneName":  "${PARENT}",
+    "CertificatePath": "${PARENTCERT}",
+    "ServerAddress" : "localhost:10005",
+    
+    "LogsName" :       ["localhost:50016"],
+    "LogsPubKeyPaths" :    ["${LOGGPUB}"],
+    
+    "AggregatorName" :  ["localhost:50050"],
+    "AggPubKeyPaths"  : ["${AGGPUB}"],
+    
+    "CAName" : "localhost:10000",
+    "CAServerAddr" : "localhost:10000",
+    "CACertificatePath" : "${CACERT}",
+    
+    "ChildrenKeyDirectoryPath" : "${CHILDDIR}",
+    "ParentDataBaseDirectory" : "${DBDIR}/zoneManager"
+}
+EOF
+
+CHILDCONF="${CHILDDIR}/child.json"
+cat > ${CHILDCONF} <<EOF
+{
+    "PrivateKeyAlgorithm": "Ed25519",
+    "PrivateKeyPath": "${CHILDKEY}",
+    "ParentServerAddr": "localhost:10005",
+    "ZoneName":  "${CHILD}",
+    
+    "LogsName" :       ["localhost:50016"],
+    "LogsPubKeyPaths"     : ["${LOGGPUB}"],
+    
+    "AggregatorName" :  ["localhost:50050"],
+    "AggPubKeyPaths"      : ["${AGGPUB}"]
+    
+    "CAName" : "localhost:10000",
+    "CAServerAddr" : "localhost:10000",
+    "CACertificatePath" : "${CACERT}"
+}
+
+EOF
+
+
 echo "Launching CT Server"
 bin/ct_server -log_config=${CTCONF} -log_rpc_server=${LOGSERVER} -http_endpoint=${CTSERVER} -logtostderr &
 CTPID=$!
@@ -145,12 +198,18 @@ echo "Launching CA"
 bin/ca --config=${CACONF} &
 CAPID=$!
 sleep 3
-cat <<EOF
-SETUP COMPLETE
-EOF
+echo "Launching parent zone Manager"
+bin/zoneManager RunParentServer --config=${PARENTCONF} &
+PZPID=$!
+sleep 3
+echo "Running delegation Request"
+bin/zoneManager RequestDeleg --config=${CHILDCONF} --zone=${CHILD} &
+CZPID=$!
+sleep 3
 
+echo "SETUP COMPLETE"
 
-wait -n $CTPID $AGGPID $LOGGPID $CAPID
+wait -n $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID
 echo "ERROR: a backpround process died"
-kill $CTPID $AGGPID $LOGGPID $CAPID
+kill $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID
 
