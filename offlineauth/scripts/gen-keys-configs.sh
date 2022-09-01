@@ -14,9 +14,9 @@ CACERT="./test/ca/CACert.pem"
 bin/certGen Ed25519 ${CAKEY} ${CACERT}
 
 mkdir -p test/aggregator
-AGG1="./test/aggregator/Aggregator1.pem"
-AGG1PUB=$(key2pub ${AGG1})
-bin/keyGen Ed25519 ${AGG1} --pubkey
+AGG="./test/aggregator/Aggregator.pem"
+AGGPUB=$(key2pub ${AGG})
+bin/keyGen Ed25519 ${AGG} --pubkey
 
 mkdir -p test/logger
 LOGG="./test/logger/Logger1.pem"
