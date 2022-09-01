@@ -145,11 +145,6 @@ echo "Launching CA"
 bin/ca --config=${CACONF} &
 CAPID=$!
 sleep 3
-for PID in $CTPID $AGGPID $LOGGPID $CAPID
-do
-    ps --no-headers -p ${PID} > /dev/null
-done
-
 cat <<EOF
 SETUP COMPLETE
 EOF
