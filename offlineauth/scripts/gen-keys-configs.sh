@@ -221,8 +221,8 @@ bin/ct_server -log_config=${CTCONF} -log_rpc_server=${LOGSERVER} -http_endpoint=
 CTPID=$!
 sleep 3
 echo "Creating a DT data structure"
-echo bin/aggregator AddTestDT --config=${AGGCONF} --parent=${PARENT} --certPath=${PARENTCERT}
-bin/aggregator AddTestDT --config=${AGGCONF} --parent=${PARENT} --certPath=${PARENTCERT}
+echo bin/aggregator AddTestDT --config=${AGGCONF} --parent="" --certPath=${ROOTCERT}
+bin/aggregator AddTestDT --config=${AGGCONF} --parent="" --certPath=${ROOTCERT}
 sleep 3
 echo "Launching Aggregator"
 bin/aggregator --config=${AGGCONF} &
@@ -241,12 +241,12 @@ bin/zoneManager RunParentServer --config=${ROOTCONF} &
 RZPID=$!
 sleep 3
 echo "Running delegation Request for parent"
-bin/zoneManager RequestDeleg --config=${PARENTCONF} --zone=${PARENT} --output="${PARENTCERTDIR}/${PARENT}.RHINE.pem" &
-PZPID1=$!
+bin/zoneManager RequestDeleg --config=${PARENTCONF} --zone=${PARENT} --output="${PARENTCERTDIR}/${PARENT}.RHINE.pem"
+kill $RZPID
 sleep 3
 echo "Launching parent zone Manager"
 bin/zoneManager RunParentServer --config=${PARENTCONF} &
-PZPID2=$!
+PZPID=$!
 sleep 3
 
 for CHILD in ${CHILDREN}
@@ -285,11 +285,11 @@ done
 sleep 3&
 CZPID=$!
 
-if ! wait -n $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID $RZPID $PZPID1 $PZPID2
+if ! wait -n $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID $RZPID $PZPID
 then
     echo "ERROR: a backpround process died"
 else
     echo "SETUP COMPLETE"
 fi
-kill $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID $RZPID $PZPID1 $PZPID2
+kill $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID $RZPID $PZPID 
 
