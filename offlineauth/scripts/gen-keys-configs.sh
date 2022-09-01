@@ -32,7 +32,7 @@ bin/keyGen Ed25519 ${AGGKEY} --pubkey
 
 LOGGDIR="./test/logger"
 mkdir -pv ${LOGGDIR}
-LOGGKEY="${LOGGERDIR}/Logger1.pem"
+LOGGKEY="${LOGGDIR}/Logger1.pem"
 LOGGPUB=$(key2pub ${LOGGKEY})
 DER=$(bin/keyGen RSA ${LOGGKEY} --pubkey | grep DER | grep -Eo "[^ ]*$")
 
