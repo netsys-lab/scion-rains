@@ -56,7 +56,7 @@ EOF
 
 ROOTS="./test/roots"
 DBDIR="./test/database"
-mkdir -p ${ROOTS} ${DBDIR}
+mkdir -pv ${ROOTS} "${DBDIR}/aggregator" "${DBDIR}/logger"
 AGGCONF="${AGGDIR}/aggregator.json"
 cat > ${AGGCONF} << EOF
 {
@@ -75,7 +75,7 @@ cat > ${AGGCONF} << EOF
       "CAServerAddr"        : "localhost:10000",
       "CAPubKeyPath"        : "${CAPUBKEY}",
 
-      "KeyValueDBDirectory" : "${DBDIR}"
+      "KeyValueDBDirectory" : "${DBDIR}/aggregator"
 }
 EOF
 
@@ -102,7 +102,7 @@ cat > ${LOGGCONF} <<EOF
     "CTAddress"           : "localhost:6966",
     "CTPrefix"            : "RHINE",
     
-    "KeyValueDBDirectory" : "${DBDIR}"
+    "KeyValueDBDirectory" : "${DBDIR}/logger"
 }
 EOF
 
