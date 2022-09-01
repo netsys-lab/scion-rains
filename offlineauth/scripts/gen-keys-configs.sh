@@ -27,7 +27,8 @@ cp -v ${CACERT} ${PARENTCERTDIR}
 
 CHILD="eleven.${PARENT}"
 CHILDDIR="${PARENTDIR}/children"
-mkdir -pv ${CHILDDIR}
+CHILDCERTDIR="${CHILDREN}/certs"
+mkdir -pv ${CHILDCERTDIR}
 CHILDKEY="${CHILDDIR}/${CHILD}.pem"
 bin/keyGen Ed25519 ${CHILDKEY} --pubkey | tail -n 1
 
@@ -204,7 +205,7 @@ bin/zoneManager RunParentServer --config=${PARENTCONF} &
 PZPID=$!
 sleep 3
 echo "Running delegation Request"
-bin/zoneManager RequestDeleg --config=${CHILDCONF} --zone=${CHILD} &
+bin/zoneManager RequestDeleg --config=${CHILDCONF} --zone=${CHILD} --output="${CHILDCERTDIR}/${CHILD}.RHINE.pem" &
 CZPID=$!
 sleep 3
 
