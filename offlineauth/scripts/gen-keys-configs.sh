@@ -8,7 +8,6 @@ function key2pub { echo "$(dirname ${1})/$(basename -s '.pem' ${1})_pub.pem"; }
 OUTDIR="./test" # TODO, change to $1 or something
 
 CERTDIR="${OUTDIR}/certificates"
-mkdir -pv ${CERTDIR}
 
 CADIR="${OUTDIR}/ca"
 mkdir -pv ${CADIR}
@@ -18,21 +17,10 @@ bin/keyGen Ed25519 ${CAKEY} --pubkey | tail -n 1
 CACERT="${CERTDIR}/CACert.pem"
 bin/certGen Ed25519 ${CAKEY} ${CACERT} | tail -n 1
 
-ROOT=""
-ROOTDIR="${OUTDIR}/ROOT"
-#ROOTCERTDIR="${ROOTDIR}/certs"
-ROOTCERTDIR=${CERTDIR}
-mkdir -pv ${ROOTDIR} 
-ROOTKEY="${ROOTDIR}/ROOT.pem"
-ROOTCERT="${ROOTCERTDIR}/ROOT.pem"
-bin/keyGen Ed25519 ${ROOTKEY} --pubkey | tail -n 1
-bin/certGenByCA Ed25519 ${ROOTKEY} ${CAKEY} ${CACERT} ${ROOTCERT} "" | tail -n 1
-
 PARENT="scion"
 PARENTDIR="${OUTDIR}/${PARENT}"
-#PARENTCERTDIR="${PARENTDIR}/certs"
+mkdir -pv ${PARENTDIR}
 PARENTCERTDIR=${CERTDIR}
-mkdir -pv ${PARENTDIR} 
 PARENTKEY="${PARENTDIR}/${PARENT}.pem"
 PARENTCERT="${PARENTCERTDIR}/${PARENT}.pem"
 bin/keyGen Ed25519 ${PARENTKEY} --pubkey | tail -n 1
@@ -76,7 +64,7 @@ CTSERVER="localhost:6966"
 
 ROOTS="${OUTDIR}/roots"
 DBDIR="${OUTDIR}/database"
-mkdir -pv ${ROOTS} "${DBDIR}/aggregator" "${DBDIR}/logger" "${DBDIR}/zoneManager1" "${DBDIR}/zoneManager2"
+mkdir -pv ${ROOTS} "${DBDIR}/aggregator" "${DBDIR}/logger" "${DBDIR}/zoneManager"
 AGGCONF="${AGGDIR}/aggregator.json"
 cat > ${AGGCONF} << EOF
 {
@@ -142,34 +130,6 @@ cat > ${CACONF} <<EOF
 }
 EOF
 
-CHILDDIR="${ROOTDIR}/children"
-ROOTCONF="${ROOTDIR}/ROOT.json"
-cat > ${ROOTCONF} <<EOF
-{
-    "PrivateKeyAlgorithm": "Ed25519",
-    "PrivateKeyPath": "${ROOTKEY}",
-    "ZoneName":  "${ROOT}",
-    "CertificatePath": "${ROOTCERT}",
-    "ServerAddress" : "localhost:10005",
-    
-    "LogsName" :       ["localhost:50016"],
-    "LogsPubKeyPaths" :    ["${LOGGPUB}"],
-    
-    "AggregatorName" :  ["localhost:50050"],
-    "AggPubKeyPaths"  : ["${AGGPUB}"],
-    
-    "CAName" : "localhost:10000",
-    "CAServerAddr" : "localhost:10000",
-    "CACertificatePath" : "${CACERT}",
-    
-    "ChildrenKeyDirectoryPath" : "${CHILDDIR}",
-    "ParentDataBaseDirectory" : "${DBDIR}/zoneManager1"
-}
-EOF
-
-
-
-
 CHILDDIR="${PARENTDIR}/children"
 PARENTCONF="${PARENTDIR}/parent.json"
 cat > ${PARENTCONF} <<EOF
@@ -191,38 +151,19 @@ cat > ${PARENTCONF} <<EOF
     "CACertificatePath" : "${CACERT}",
     
     "ChildrenKeyDirectoryPath" : "${CHILDDIR}",
-    "ParentDataBaseDirectory" : "${DBDIR}/zoneManager2"
+    "ParentDataBaseDirectory" : "${DBDIR}/zoneManager"
 }
 EOF
 
-PARENTCHILDCONF="${PARENTDIR}/parentchild.json"
-cat > ${PARENTCHILDCONF} <<EOF
-{
-    "PrivateKeyAlgorithm": "Ed25519",
-    "PrivateKeyPath": "${PARENTKEY}",
-    "ParentServerAddr": "localhost:10005",
-    "ZoneName":  "${PARENT}",
-    
-    "LogsName" :       ["localhost:50016"],
-    "LogsPubKeyPaths"     : ["${LOGGPUB}"],
-    
-    "AggregatorName" :  ["localhost:50050"],
-    "AggPubKeyPaths"      : ["${AGGPUB}"],
-    
-    "CAName" : "localhost:10000",
-    "CAServerAddr" : "localhost:10000",
-    "CACertificatePath" : "${CACERT}"
-}
 
-EOF
 
 echo "Launching CT Server"
 bin/ct_server -log_config=${CTCONF} -log_rpc_server=${LOGSERVER} -http_endpoint=${CTSERVER} -logtostderr &
 CTPID=$!
 sleep 3
 echo "Creating a DT data structure"
-echo bin/aggregator AddTestDT --config=${AGGCONF} --parent="" --certPath=${ROOTCERT}
-bin/aggregator AddTestDT --config=${AGGCONF} --parent="" --certPath=${ROOTCERT}
+echo bin/aggregator AddTestDT --config=${AGGCONF} --parent=${PARENT} --certPath=${PARENTCERT}
+bin/aggregator AddTestDT --config=${AGGCONF} --parent=${PARENT} --certPath=${PARENTCERT}
 sleep 3
 echo "Launching Aggregator"
 bin/aggregator --config=${AGGCONF} &
@@ -236,14 +177,6 @@ echo "Launching CA"
 bin/ca --config=${CACONF} &
 CAPID=$!
 sleep 3
-echo "Launching root zone Manager"
-bin/zoneManager RunParentServer --config=${ROOTCONF} &
-RZPID=$!
-sleep 3
-echo "Running delegation Request for parent"
-bin/zoneManager RequestDeleg --config=${PARENTCONF} --zone=${PARENT} --output="${PARENTCERTDIR}/${PARENT}.RHINE.pem"
-kill $RZPID
-sleep 3
 echo "Launching parent zone Manager"
 bin/zoneManager RunParentServer --config=${PARENTCONF} &
 PZPID=$!
@@ -251,9 +184,8 @@ sleep 3
 
 for CHILD in ${CHILDREN}
 do
-    CHILDCERTDIR="${CERTDIR}"
-    #CHILDCERTDIR="${CHILDDIR}/certs"
-    #mkdir -pv ${CHILDCERTDIR}
+    CHILDCERTDIR="${CHILDDIR}/certs"
+    mkdir -pv ${CHILDCERTDIR}
     CHILDKEY="${CHILDDIR}/${CHILD}.pem"
     bin/keyGen Ed25519 ${CHILDKEY} --pubkey | tail -n 1
 
@@ -285,11 +217,11 @@ done
 sleep 3&
 CZPID=$!
 
-if ! wait -n $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID $RZPID $PZPID
+if ! wait -n $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID
 then
     echo "ERROR: a backpround process died"
 else
     echo "SETUP COMPLETE"
 fi
-kill $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID $RZPID $PZPID 
+kill $CTPID $AGGPID $LOGGPID $CAPID $PZPID $CZPID
 
