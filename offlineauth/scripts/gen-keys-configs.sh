@@ -6,31 +6,35 @@ set -euo pipefail
 
 function key2pub { echo "$(dirname ${1})/$(basename -s '.pem' ${1})_pub.pem"; }
 
-mkdir -pv test/ca
-CAKEY="./test/ca/CAKey.pem"
+CADIR="./test/ca"
+mkdir -pv ${CADIR}
+CAKEY="${CADIR}/CAKey.pem"
 CAPUBKEY=$(key2pub ${CAKEY})
 bin/keyGen Ed25519 ${CAKEY} --pubkey
-CACERT="./test/ca/CACert.pem"
+CACERT="${CADIR}/CACert.pem"
 bin/certGen Ed25519 ${CAKEY} ${CACERT}
 
 PARENT="parent"
 PARENTDIR="./test/${PARENT}"
-mkdir -pv ${PARENTDIR}
+PARENTCERTDIR="${PARENTDIR}/certs"
+mkdir -pv ${PARENTCERTDIR}
 PARENTKEY="${PARENTDIR}/${PARENT}key.pem"
 PARENTPUB=$(key2pub ${PARENTKEY})
-PARENTCERT="${PARENTDIR}/${PARENT}cert.pem"
+PARENTCERT="${PARENTCERTDIR}/${PARENT}cert.pem"
 bin/keyGen Ed25519 ${PARENTKEY} --pubkey
 bin/certGenByCA Ed25519 ${PARENTKEY} ${CAKEY} ${CACERT} ${PARENTCERT} ${PARENT}
 
-mkdir -pv test/aggregator
-AGG="./test/aggregator/Aggregator.pem"
-AGGPUB=$(key2pub ${AGG})
-bin/keyGen Ed25519 ${AGG} --pubkey
+AGGDIR="./test/aggregator"
+mkdir -pv ${AGGDIR}
+AGGKEY="${AGGDIR}/Aggregator.pem"
+AGGPUB=$(key2pub ${AGGKEY})
+bin/keyGen Ed25519 ${AGGKEY} --pubkey
 
-mkdir -pv test/logger
-LOGG="./test/logger/Logger1.pem"
-LOGGPUB=$(key2pub ${LOGG})
-DER=$(bin/keyGen RSA ${LOGG} --pubkey | grep DER | grep -Eo "[^ ]*$")
+LOGGDIR="./test/logger"
+mkdir -pv ${LOGGDIR}
+LOGGKEY="${LOGGERDIR}/Logger1.pem"
+LOGGPUB=$(key2pub ${LOGGKEY})
+DER=$(bin/keyGen RSA ${LOGGKEY} --pubkey | grep DER | grep -Eo "[^ ]*$")
 
 TREE_ID=$(bin/createtree --admin_server=localhost:8090)
 
@@ -53,13 +57,13 @@ EOF
 ROOTS="./test/roots"
 DBDIR="./test/database"
 mkdir -p ${ROOTS} ${DBDIR}
-AGGCONF="./test/Aggregator1.conf"
+AGGCONF="${AGGDIR}/aggregator.json"
 cat > ${AGGCONF} << EOF
 {
       "PrivateKeyAlgorithm" : "Ed25519",
-      "PrivateKeyPath"      : "${AGG}",
+      "PrivateKeyPath"      : "${AGGKEY}",
       "ServerAddress"       : "localhost:50050",
-      "RootCertsPath"       : "${ROOTS}",
+      "RootCertsPath"       : "${PARENTCERTDIR}",
 
       "LogsName"            : ["localhost:50016"],
       "LogsPubKeyPaths"     : ["${LOGGPUB}"],
@@ -76,3 +80,57 @@ cat > ${AGGCONF} << EOF
 EOF
 
 bin/aggregator AddTestDT --config=${AGGCONF} --parent=${PARENT} --certPath=${PARENTCERT}
+
+LOGGCONF="${LOGGDIR}/logger.json"
+cat > ${LOGGCONF} <<EOF
+{
+    "PrivateKeyAlgorithm" : "RSA",
+    "PrivateKeyPath"      : "${LOGGKEY}",
+    "ServerAddress"       : "localhost:50016",
+    "RootCertsPath"       : "${PARENTCERTDIR}",
+    
+    "LogsName"            : ["localhost:50016"],
+    "LogsPubKeyPaths"     : ["${LOGGPUB}"],
+    
+    "AggregatorName"      : ["localhost:50050"],
+    "AggPubKeyPaths"      : ["${AGGPUB}"],
+    
+    "CAName"              : "localhost:10000",
+    "CAServerAddr"        : "localhost:10000",
+    "CAPubKeyPath"        : "${CAPUBKEY}",
+    
+    "CTAddress"           : "localhost:6966",
+    "CTPrefix"            : "RHINE",
+    
+    "KeyValueDBDirectory" : "${DBDIR}"
+}
+EOF
+
+CACONF="${CADIR}/ca.json"
+cat > ${CACONF} <<EOF
+{
+    "PrivateKeyAlgorithm" : "Ed25519",
+    "PrivateKeyPath"      : "${CAKEY}",
+    "CertificatePath"     : "${CACERT}",
+    "ServerAddress"       : "localhost:10000",
+    "RootCertsPath"       : "${PARENTCERTDIR}",
+    
+    "LogsName"            : ["localhost:50016"],
+    "LogsPubKeyPaths"     : ["${LOGGPUB}"],
+    
+    "AggregatorName"      : ["localhost:50050"],
+    "AggPubKeyPaths"      : ["${AGGPUB}"]
+}
+EOF
+
+
+cat <<EOF
+SETUP COMPLETE
+
+Now run, in order (and in different subshells):
+
+bin/aggregator --config=${AGGCONF}
+bin/log --config=${LOGGCONF}
+bin/ca --config=${CACONF}
+
+EOF

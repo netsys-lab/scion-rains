@@ -15,6 +15,16 @@ go build -v .
 cp aggregator ../../bin
 popd
 
+pushd cmd/log
+go build -v .
+cp log ../../bin
+popd
+
+pushd cmd/zoneManager
+go build -v .
+cp zoneManager ../../bin
+popd
+
 CTDIR="certificate-transparency-go/trillian/ctfe/ct_server/"
 if [ ! -d ${CTDIR} ]
 then
