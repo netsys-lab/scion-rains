@@ -12,19 +12,19 @@ mkdir -p ${CERTDIR}
 
 CADIR="${OUTDIR}/ca"
 mkdir -pv ${CADIR}
-CAKEY="${CADIR}/CAKey.pem"
+CAKEY="${CADIR}/ROOT_private.pem"
 CAPUBKEY=$(key2pub ${CAKEY})
 bin/keyGen Ed25519 ${CAKEY} --pubkey | tail -n 1
-CACERT="${CERTDIR}/CACert.pem"
+mv -v "${CAPUBKEY}" "${CADIR}/ROOT_public.pem"
+CACERT="${CERTDIR}/ROOT_cert.pem"
 bin/certGen Ed25519 ${CAKEY} ${CACERT} | tail -n 1
 
 PARENT="scion"
 PARENTDIR="${OUTDIR}/${PARENT}"
 mkdir -pv ${PARENTDIR}
-PARENTCERTDIR=${CERTDIR}
-PARENTKEY="${PARENTDIR}/${PARENT}.pem"
-PARENTCERT="${PARENTCERTDIR}/${PARENT}.pem"
-bin/keyGen Ed25519 ${PARENTKEY} --pubkey | tail -n 1
+PARENTKEY="${CERTDIR}/${PARENT}_private.pem"
+PARENTCERT="${CERTDIR}/${PARENT}_cert.pem"
+bin/keyGen Ed25519 ${PARENTKEY} | tail -n 1
 bin/certGenByCA Ed25519 ${PARENTKEY} ${CAKEY} ${CACERT} ${PARENTCERT} ${PARENT} | tail -n 1
 
 CHILDREN="eleven.${PARENT} twelve.${PARENT} thirteen.${PARENT} fourteen.${PARENT} fifteen.${PARENT}"
@@ -72,7 +72,7 @@ cat > ${AGGCONF} << EOF
       "PrivateKeyAlgorithm" : "Ed25519",
       "PrivateKeyPath"      : "${AGGKEY}",
       "ServerAddress"       : "localhost:50050",
-      "RootCertsPath"       : "${PARENTCERTDIR}/",
+      "RootCertsPath"       : "${CERTDIR}/",
 
       "LogsName"            : ["localhost:50016"],
       "LogsPubKeyPaths"     : ["${LOGGPUB}"],
@@ -95,7 +95,7 @@ cat > ${LOGGCONF} <<EOF
     "PrivateKeyAlgorithm" : "RSA",
     "PrivateKeyPath"      : "${LOGGKEY}",
     "ServerAddress"       : "localhost:50016",
-    "RootCertsPath"       : "${PARENTCERTDIR}/",
+    "RootCertsPath"       : "${CERTDIR}/",
     
     "LogsName"            : ["localhost:50016"],
     "LogsPubKeyPaths"     : ["${LOGGPUB}"],
@@ -121,7 +121,7 @@ cat > ${CACONF} <<EOF
     "PrivateKeyPath"      : "${CAKEY}",
     "CertificatePath"     : "${CACERT}",
     "ServerAddress"       : "localhost:10000",
-    "RootCertsPath"       : "${PARENTCERTDIR}/",
+    "RootCertsPath"       : "${CERTDIR}/",
     
     "LogsName"            : ["localhost:50016"],
     "LogsPubKeyPaths"     : ["${LOGGPUB}"],
@@ -138,7 +138,7 @@ cat > ${PARENTCONF} <<EOF
     "PrivateKeyAlgorithm": "Ed25519",
     "PrivateKeyPath": "${PARENTKEY}",
     "ZoneName":  "${PARENT}",
-    "CertificatePath": "${PARENTCERT}",
+    "CertificatePath": "${CERTDIR}",
     "ServerAddress" : "localhost:10005",
     
     "LogsName" :       ["localhost:50016"],
@@ -151,7 +151,7 @@ cat > ${PARENTCONF} <<EOF
     "CAServerAddr" : "localhost:10000",
     "CACertificatePath" : "${CACERT}",
     
-    "ChildrenKeyDirectoryPath" : "${CHILDDIR}",
+    "ChildrenKeyDirectoryPath" : "${CERTDIR}",
     "ParentDataBaseDirectory" : "${DBDIR}/zoneManager"
 }
 EOF
@@ -187,8 +187,8 @@ for CHILD in ${CHILDREN}
 do
     CHILDCERTDIR="${CHILDDIR}/certs"
     mkdir -pv ${CHILDCERTDIR}
-    CHILDKEY="${CHILDDIR}/${CHILD}.pem"
-    bin/keyGen Ed25519 ${CHILDKEY} --pubkey | tail -n 1
+    CHILDKEY="${CHILDDIR}/${CHILD}_private.pem"
+    bin/keyGen Ed25519 ${CHILDKEY} | tail -n 1
 
     CHILDCONF="${CHILDDIR}/${CHILD}.json"
     cat > ${CHILDCONF} <<EOF
@@ -212,7 +212,7 @@ do
 EOF
 
     echo "Running delegation Request for ${CHILD}"
-    bin/zoneManager RequestDeleg --config=${CHILDCONF} --zone=${CHILD} --output="${CERTDIR}/${CHILD}.RHINE.pem"
+    bin/zoneManager RequestDeleg --config=${CHILDCONF} --zone=${CHILD} --output="${CERTDIR}/${CHILD}_cert.pem"
 done
 
 sleep 3&

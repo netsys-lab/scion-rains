@@ -1,8 +1,14 @@
 scion://twelve.scion.:53 {
     root /share/conf/
     rhine zonefile twelve.scion. {
-        scion on
+         scion on
+    }
+    sign zonefile twelve.scion. {
+         rcert file twelve.scion
+         key file twelve.scion
+         directory .
     }
     log
 }
+
 
