@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/ed25519"
 	"crypto/rsa"
+	"path/filepath"
 	"time"
 
 	"encoding/json"
@@ -150,7 +151,7 @@ func NewLogManager(config LogConfig) *LogManager {
 	}
 
 	for _, file := range files {
-		pemfile, _ := ioutil.ReadFile(config.RootCertsPath + file.Name())
+		pemfile, _ := ioutil.ReadFile(filepath.Join(config.RootCertsPath, file.Name()))
 
 		if mylog.CertPool.AppendCertsFromPEM(pemfile) {
 			log.Println("Added " + file.Name() + " to trust root")

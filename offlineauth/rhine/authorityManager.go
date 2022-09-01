@@ -134,6 +134,7 @@ func NewCA(config CaConfig) *Ca {
 		pemfile, err := ioutil.ReadFile(filepath.Join(config.RootCertsPath, file.Name()))
 		if err != nil {
 			log.Printf("Skipping %s: %s", file.Name(), err)
+			continue
 		}
 
 		if myca.CertPool.AppendCertsFromPEM(pemfile) {
