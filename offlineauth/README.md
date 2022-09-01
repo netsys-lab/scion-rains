@@ -110,7 +110,7 @@ config {
 }
 
 ```
-In "cmd/log/data/configs" you can also find an example config for the personality. Paste in the log id from the createtree tool, the path to our CA certificate, and the DER hex string representing the logger private key, which will be used to sign Signed Certificate Timestamps. Now start the personality:
+In "cmd/log/configs" you can also find an example config for the personality. Paste in the log id from the createtree tool, the path to our CA certificate, and the DER hex string representing the logger private key, which will be used to sign Signed Certificate Timestamps. Now start the personality:
 ```bash
 # From the certificate-transperancy repo
 cd trillian/ctfe/ct_server
