@@ -130,7 +130,10 @@ func NewCA(config CaConfig) *Ca {
 	}
 
 	for _, file := range files {
-		pemfile, _ := ioutil.ReadFile(config.RootCertsPath + file.Name())
+		pemfile, err := ioutil.ReadFile(config.RootCertsPath + file.Name())
+		if err != nil {
+			log.Printf("Skipping %s: %s", file.Name(), err)
+		}
 
 		if myca.CertPool.AppendCertsFromPEM(pemfile) {
 			log.Println("Added " + file.Name() + " to trust root")
