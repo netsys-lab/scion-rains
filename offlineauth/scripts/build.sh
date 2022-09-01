@@ -15,7 +15,15 @@ go build -v .
 cp aggregator ../../bin
 popd
 
-git clone https://github.com/google/certificate-transparency-go.git
+CTDIR="certificate-transparency-go/trillian/ctfe/ct_server/"
+if [ ! -d ${CTDIR} ]
+then
+    git clone https://github.com/google/certificate-transparency-go.git
+else
+    pushd certificate-transparency-go
+    git pull
+    popd
+fi
 pushd certificate-transparency-go/trillian/ctfe/ct_server/
 go build -v .
 cp ct_server ../../../../bin/
