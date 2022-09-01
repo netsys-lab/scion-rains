@@ -3,6 +3,7 @@ package rhine
 import (
 	"crypto/ed25519"
 	"errors"
+	"strings"
 
 	"crypto/rsa"
 	"encoding/json"
@@ -217,7 +218,9 @@ func (zm *ZoneManager) VerifyChildCSR(rawcsr []byte) (*Csr, *Psr, []byte, error)
 	var privatekeyparent []byte
 	var pKey []byte
 	childName := csr.zone.Name
-	if childName == "example.ethz.ch" {
+	parentName = GetParentZone(childName)
+
+	if parentName == "scion" && strings.HasSuffix(childName, "."+parentName) {
 		// TODO This is a shortcut to keep the toy example test runnable
 		// Generate PSR
 		psr := zm.CreatePSR(csr, zm.privkey)
@@ -236,10 +239,12 @@ func (zm *ZoneManager) VerifyChildCSR(rawcsr []byte) (*Csr, *Psr, []byte, error)
 			}
 		*/
 	} else {
-		var childkeyPrefix = "CHILDPK_"
-		var parentKeyPrefix = "PARENTSK_"
-		var parentCertPrefix = "PARENTCERT_"
-		var err error
+		var (
+			childkeyPrefix   = "CHILDPK_"
+			parentKeyPrefix  = "PARENTSK_"
+			parentCertPrefix = "PARENTCERT_"
+			err              error
+		)
 		parentName = GetParentZone(childName)
 		// Get pcert
 		log.Printf("looking up %s", parentCertPrefix+parentName)
