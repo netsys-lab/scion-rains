@@ -1,54 +1,96 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -euxo pipefail
 
 /usr/bin/env bash --version | grep -E "version [456789]" || echo "need at least bash version 4" 
 
-function key2pub { echo "$(dirname ${1})/$(basename -s '.pem' ${1})_pub.pem"; }
-
 OUTDIR="./test" # TODO, change to $1 or something
 
-CERTDIR="${OUTDIR}/certificates"
-mkdir -p ${CERTDIR}
+DATADIR="${OUTDIR}/data"
+mkdir -p ${DATADIR}
 
-CADIR="${OUTDIR}/ca"
-mkdir -pv ${CADIR}
-CAKEY="${CERTDIR}/ROOT_private.pem"
+CONFDIR="${OUTDIR}/configs"
+mkdir -p ${CONFDIR}
+
+
+function key2pub { echo "$(dirname ${1})/$(basename -s '.pem' ${1})_pub.pem"; }
+
+function corefiles {
+    DIR=$1
+    ZONE=$2
+    BIN=$(realpath bin/coredns-keygen)
+    pushd "${DIR}"
+    SIGNINGK=$(${BIN} "${ZONE}")
+    cat > Coresign <<EOF
+${ZONE}.:0 {
+    root .
+    sign zonefile ${ZONE}. {
+        rcert file ${ZONE}
+        key file ${SIGNINGK}
+        directory .
+    }
+}
+EOF
+    cat > Corefile <<EOF
+scion://${ZONE}.:53 {
+    root /share/conf
+    rhine db.${ZONE}.signed ${ZONE}. {
+        scion on
+    }
+    log
+}
+EOF
+    popd
+}
+
+function confdir {
+    DIR=${CONFDIR}/${1}
+    mkdir -p "${DIR}"
+    echo "${DIR}"
+}
+
+function datadir {
+    DIR=${DATADIR}/${1}
+    mkdir -p "${DIR}"
+    echo "${DIR}"
+}
+
+CADIR=$(confdir "ROOT")
+CADATA=$(datadir "ROOT")
+CAKEY="${CADATA}/ROOT_private.pem"
 CAPUBKEY=$(key2pub ${CAKEY})
 bin/keyGen Ed25519 ${CAKEY} --pubkey | tail -n 1
-mv -v "${CAPUBKEY}" "${CERTDIR}/ROOT_public.pem"
-CACERT="${CERTDIR}/ROOT_cert.pem"
+mv -v "${CAPUBKEY}" "${CADATA}/ROOT_public.pem"
+CAPUBKEY="${CADATA}/ROOT_public.pem"
+CACERT="${CADATA}/ROOT_cert.pem"
 bin/certGen Ed25519 ${CAKEY} ${CACERT} | tail -n 1
 
 PARENT="scion"
-PARENTDIR="${OUTDIR}/${PARENT}"
-mkdir -pv ${PARENTDIR}
-
-PARENTKEY="${CERTDIR}/${PARENT}_private.pem"
-PARENTCERT="${CERTDIR}/${PARENT}_cert.pem"
+PARENTDIR=$(confdir ${PARENT})
+PARENTDATA=$(datadir ${PARENT})
+PARENTKEY="${PARENTDATA}/${PARENT}_private.pem"
+PARENTCERT="${PARENTDATA}/${PARENT}_cert.pem"
 bin/keyGen Ed25519 ${PARENTKEY} | tail -n 1
 bin/certGenByCA Ed25519 ${PARENTKEY} ${CAKEY} ${CACERT} ${PARENTCERT} ${PARENT} | tail -n 1
+corefiles ${PARENTDATA} ${PARENT}
 
 CHILDREN="eleven.${PARENT} twelve.${PARENT} thirteen.${PARENT} fourteen.${PARENT} fifteen.${PARENT}"
 
-AGGDIR="${OUTDIR}/aggregator"
-mkdir -pv ${AGGDIR}
+AGGDIR=$(confdir "aggregator")
 AGGKEY="${AGGDIR}/Aggregator.pem"
 AGGPUB=$(key2pub ${AGGKEY})
 bin/keyGen Ed25519 ${AGGKEY} --pubkey | tail -n 1
 
-LOGGDIR="${OUTDIR}/logger"
-mkdir -pv ${LOGGDIR}
+LOGGDIR=$(confdir "logger")
 LOGGKEY="${LOGGDIR}/Logger1.pem"
 LOGGPUB=$(key2pub ${LOGGKEY})
 DER=$(bin/keyGen RSA ${LOGGKEY} --pubkey | grep DER | grep -Eo "[^ ]*$") 
-LOGSERVER="localhost:8090"
 
+LOGSERVER="localhost:8090"
 TREE_ID=$(bin/createtree --admin_server=${LOGSERVER})
 
-CTDIR="${OUTDIR}/ct"
-mkdir -pv ${CTDIR}
-CTCONF="${CTDIR}/ct.conf"
-cat > ${CTCONF} << EOF
+CTDIR=$(confdir "ct")
+CTCONF="${CTDIR}/config"
+cat > ${CTCONF} <<EOF
 config {
       log_id: ${TREE_ID}
       prefix: "RHINE"
@@ -64,16 +106,15 @@ config {
 EOF
 CTSERVER="localhost:6966"
 
-ROOTS="${OUTDIR}/roots"
-DBDIR="${OUTDIR}/database"
-mkdir -pv ${ROOTS} "${DBDIR}/aggregator" "${DBDIR}/logger" "${DBDIR}/zoneManager"
+DBDIR=$(confdir "database")
+mkdir -pv "${DBDIR}/aggregator" "${DBDIR}/logger" "${DBDIR}/zoneManager"
 AGGCONF="${AGGDIR}/aggregator.json"
 cat > ${AGGCONF} << EOF
 {
       "PrivateKeyAlgorithm" : "Ed25519",
       "PrivateKeyPath"      : "${AGGKEY}",
       "ServerAddress"       : "localhost:50050",
-      "RootCertsPath"       : "${CERTDIR}/",
+      "RootCertsPath"       : "${CADATA}/",
 
       "LogsName"            : ["localhost:50016"],
       "LogsPubKeyPaths"     : ["${LOGGPUB}"],
@@ -96,7 +137,7 @@ cat > ${LOGGCONF} <<EOF
     "PrivateKeyAlgorithm" : "RSA",
     "PrivateKeyPath"      : "${LOGGKEY}",
     "ServerAddress"       : "localhost:50016",
-    "RootCertsPath"       : "${CERTDIR}/",
+    "RootCertsPath"       : "${CADATA}/",
     
     "LogsName"            : ["localhost:50016"],
     "LogsPubKeyPaths"     : ["${LOGGPUB}"],
@@ -122,7 +163,7 @@ cat > ${CACONF} <<EOF
     "PrivateKeyPath"      : "${CAKEY}",
     "CertificatePath"     : "${CACERT}",
     "ServerAddress"       : "localhost:10000",
-    "RootCertsPath"       : "${CERTDIR}/",
+    "RootCertsPath"       : "${CADATA}/",
     
     "LogsName"            : ["localhost:50016"],
     "LogsPubKeyPaths"     : ["${LOGGPUB}"],
@@ -132,7 +173,7 @@ cat > ${CACONF} <<EOF
 }
 EOF
 
-CHILDDIR="${PARENTDIR}/children"
+CHILDRENDATA=$(datadir "children")
 PARENTCONF="${PARENTDIR}/parent.json"
 cat > ${PARENTCONF} <<EOF
 {
@@ -152,7 +193,7 @@ cat > ${PARENTCONF} <<EOF
     "CAServerAddr"             : "localhost:10000",
     "CACertificatePath"        : "${CACERT}",
     
-    "ChildrenKeyDirectoryPath" : "${CHILDDIR}",
+    "ChildrenKeyDirectoryPath" : "${CHILDRENDATA}",
     "ParentDataBaseDirectory"  : "${DBDIR}/zoneManager"
 }
 EOF
@@ -184,11 +225,12 @@ sleep 3
 
 for CHILD in ${CHILDREN}
 do
-    CHILDCERTDIR="${CHILDDIR}/certs"
-    mkdir -pv ${CHILDCERTDIR}
-    CHILDKEY="${CHILDDIR}/${CHILD}_private.pem"
-    bin/keyGen Ed25519 ${CHILDKEY} | tail -n 1
-
+    CHILDDIR=$(confdir ${CHILD})
+    CHILDDATA=$(datadir ${CHILD})
+    CHILDKEY="${CHILDDATA}/${CHILD}_private.pem"
+    bin/keyGen Ed25519 ${CHILDKEY} --pubkey | tail -n 1
+    mv -v "$(key2pub ${CHILDKEY})" "${CHILDRENDATA}/${CHILD}_pub.pem"
+    
     CHILDCONF="${CHILDDIR}/${CHILD}.json"
     cat > ${CHILDCONF} <<EOF
 {
@@ -211,7 +253,9 @@ do
 EOF
 
     echo "Running delegation Request for ${CHILD}"
-    bin/zoneManager RequestDeleg --config=${CHILDCONF} --zone=${CHILD} --output="${CERTDIR}/${CHILD}_cert.pem"
+    
+    bin/zoneManager RequestDeleg --config=${CHILDCONF} --zone=${CHILD} --output="${CHILDDATA}/${CHILD}_cert.pem"
+    
 done
 
 sleep 3&
