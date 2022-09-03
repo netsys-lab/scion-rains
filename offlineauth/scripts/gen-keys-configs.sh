@@ -63,6 +63,8 @@ mv -v "${CAPUBKEY}" "${CADATA}/ROOT_public.pem"
 CAPUBKEY="${CADATA}/ROOT_public.pem"
 CACERT="${CADATA}/ROOT_cert.pem"
 bin/certGen Ed25519 ${CAKEY} ${CACERT} | tail -n 1
+corefiles ${CADATA} ""
+
 
 PARENT="scion"
 PARENTDIR=$(confdir ${PARENT})
@@ -255,7 +257,8 @@ EOF
     echo "Running delegation Request for ${CHILD}"
     
     bin/zoneManager RequestDeleg --config=${CHILDCONF} --zone=${CHILD} --output="${CHILDDATA}/${CHILD}_cert.pem"
-    
+
+    corefiles ${CHILDDATA} ${CHILD}
 done
 
 sleep 3&
