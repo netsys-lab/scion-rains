@@ -8,6 +8,3 @@
 [submodule "scion-sdns"]
 	path = scion-sdns
 	url = https://github.com/netsys-lab/scion-sdns.git
-[submodule "scion-docker-compose"]
-	path = scion-docker-compose
-	url = git@github.com:netsys-lab/scion-docker-compose.git
