@@ -2,32 +2,41 @@
 
 set -euo pipefail
 
-pushd cmd/keyManager
+# find repo root
+ROOT="$(git rev-parse --show-toplevel)"
+BUILDDIR="${ROOT}/build"
+mkdir -p "${BUILDDIR}"
+
+WORKDIR="${ROOT}/offlineauth/cmd"
+
+# change to workdir
+pushd "${WORKDIR}"
+
+pushd keyManager
 go build -v keyGen.go
 go build -v certGen.go
 go build -v certGenByCA.go
-mkdir -p ../../bin
-cp certGen certGenByCA keyGen ../../bin/
+cp certGen certGenByCA keyGen "${BUILDDIR}"
 popd
 
-pushd cmd/aggregator
+pushd aggregator
 go build -v .
-cp aggregator ../../bin
+cp aggregator "${BUILDDIR}"
 popd
 
-pushd cmd/log
+pushd log
 go build -v .
-cp log ../../bin
+cp log "${BUILDDIR}"
 popd
 
-pushd cmd/zoneManager
+pushd zoneManager
 go build -v .
-cp zoneManager ../../bin
+cp zoneManager "${BUILDDIR}"
 popd
 
-pushd cmd/ca
+pushd ca
 go build -v .
-cp ca ../../bin
+cp ca "${BUILDDIR}"
 popd
 
 CTDIR="certificate-transparency-go/trillian/ctfe/ct_server/"
@@ -41,9 +50,11 @@ else
 fi
 pushd certificate-transparency-go/trillian/ctfe/ct_server/
 go build -v .
-cp ct_server ../../../../bin/
+cp ct_server "${BUILDDIR}"
 popd
 
-pushd bin
+pushd "${BUILDDIR}"
 go build -v github.com/google/trillian/cmd/createtree/
+popd
+
 popd

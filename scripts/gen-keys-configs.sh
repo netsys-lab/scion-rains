@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
+# find repo root
+ROOT="$(git rev-parse --show-toplevel)"
+BUILDDIR="${ROOT}/build"
+pushd "${BUILDDIR}"
+
 /usr/bin/env bash --version | grep -E "version [456789]" || echo "need at least bash version 4" 
 
 OUTDIR="./test" # TODO, change to $1 or something
@@ -11,9 +16,10 @@ mkdir -p ${DATADIR}
 CONFDIR="${OUTDIR}/configs"
 mkdir -p ${CONFDIR}
 
-
+# return the matching public key file that genKey generates with the --pubkey flag
 function key2pub { echo "$(dirname ${1})/$(basename -s '.pem' ${1})_pub.pem"; }
 
+# generate two core files, one for signing, and the other for running the zone
 function corefiles {
     DIR=$1
     ZONE=$2
