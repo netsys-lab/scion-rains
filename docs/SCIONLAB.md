@@ -166,4 +166,12 @@ There are several possible causes:
   can be reached under its address via `scion ping
   "19-ffaa:1:fe4,127.0.0.1"`.
 
+If you get the following error:
+```
+2022/09/19 16:57:52 no path to 19-ffaa:1:140
+```
 
+There are two possibilities:
+
+- The echo server might be offline
+- Your scion host has no connection to SCIONLab
