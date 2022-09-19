@@ -59,5 +59,4 @@ Finally, we will implement SCION (QUIC) transport for RAINS and deploy test name
   - [X] [authoritative name server](https://github.com/netsys-lab/scion-coredns/tree/rhine)
   - [X] [rdig](https://github.com/netsys-lab/scion-rdig)
 - [X] [Operate test RAINS servers in SCIONLab](docs/SCIONLAB.md)
-- [ ] Test suite for the new approach based on docker-compose 
-  - [X] Additionally, source code, specifactions, documentation and other results will be provided
+  - [X] [Video demo of name resolution between two SCIONLab hosts](https://cloud.ovgu.de/s/qLLK3HFizPLMDSf/download/demo.mkv)
