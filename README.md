@@ -62,3 +62,7 @@ Finally, we will implement SCION (QUIC) transport for RAINS and deploy test name
   - [X] Additionally, source code, specifactions, documentation and other results will be provided
 - [X] [Operate test RAINS servers in SCIONLab](docs/SCIONLAB.md)
   - [X] [Video demo of name resolution between two SCIONLab hosts](https://cloud.ovgu.de/s/HBqWCcsbtp2m2Ap/download/demo.mkv)
+
+
+Further information:
+- [ ] Official release, marking the completion of Task 4.
