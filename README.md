@@ -65,4 +65,4 @@ Finally, we will implement SCION (QUIC) transport for RAINS and deploy test name
 
 
 Further information:
-- [x] Official release, marking the completion of Task 4.
+- [x] [Official release](https://github.com/netsys-lab/scion-rains/releases/tag/v0.6.0), marking the completion of Task 4.
