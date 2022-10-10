@@ -24,13 +24,19 @@ function corefiles {
     DIR=$1
     ZONE=$2
     BIN=$(realpath bin/coredns-keygen)
+    if [[ -z ${ZONE} ]]
+    then
+        ZONEFILE="ROOT"
+    else
+        ZONEFILE=${ZONE}
+    fi
     pushd "${DIR}"
     SIGNINGK=$(${BIN} "${ZONE}")
     cat > Coresign <<EOF
 ${ZONE}.:0 {
     root .
     sign zonefile ${ZONE}. {
-        rcert file ${ZONE}
+        rcert file ${ZONEFILE}
         key file ${SIGNINGK}
         directory .
     }

@@ -140,7 +140,7 @@ There are [Bandwidth Testers](https://docs.scionlab.org/content/apps/bwtester.ht
 - `bwtester.ku.korea.scionlab`
 
 They are all reachable under port 30100. You will need to specify the
-parameters for each bandwidth experiment. For demonstration purposes, the following might suffice:
+parameters for each bandwidth experiment. For demonstration purposes, something like the following might suffice:
 
 ```
 scion-bwtestclient -s bwtester.frankfurt.aws.scionlab:30100 -cs 1,1000,125,1Mbps -sc 1,1000,125,1Mbps
