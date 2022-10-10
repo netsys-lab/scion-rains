@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
+# set up parent and child zone names
+PARENT="scion"
+CHILDREN="eleven.${PARENT} twelve.${PARENT} thirteen.${PARENT} fourteen.${PARENT} fifteen.${PARENT}"
+
 # find repo root
 ROOT="$(git rev-parse --show-toplevel)"
 BUILDDIR="${ROOT}/build"
@@ -78,7 +82,7 @@ bin/certGen Ed25519 ${CAKEY} ${CACERT} | tail -n 1
 corefiles ${CADATA} ""
 
 
-PARENT="scion"
+
 PARENTDIR=$(confdir ${PARENT})
 PARENTDATA=$(datadir ${PARENT})
 PARENTKEY="${PARENTDATA}/${PARENT}_private.pem"
@@ -87,7 +91,7 @@ bin/keyGen Ed25519 ${PARENTKEY} | tail -n 1
 bin/certGenByCA Ed25519 ${PARENTKEY} ${CAKEY} ${CACERT} ${PARENTCERT} ${PARENT} | tail -n 1
 corefiles ${PARENTDATA} ${PARENT}
 
-CHILDREN="eleven.${PARENT} twelve.${PARENT} thirteen.${PARENT} fourteen.${PARENT} fifteen.${PARENT}"
+
 
 AGGDIR=$(confdir "aggregator")
 AGGKEY="${AGGDIR}/Aggregator.pem"

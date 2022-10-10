@@ -1,8 +1,0 @@
-scion://fourteen.scion.:53 {
-    root /share/conf/
-    rhine zonefile fourteen.scion. {
-        scion on
-    }
-    log
-}
-
