@@ -66,3 +66,13 @@ Finally, we will implement SCION (QUIC) transport for RAINS and deploy test name
 
 Further information:
 - [x] [Official release](https://github.com/netsys-lab/scion-rains/releases/tag/v0.6.0), marking the completion of Task 4.
+
+## [Task 5.](https://github.com/netsys-lab/scion-rains/projects/6) Enhanced test deployment
+
+We will enhance the SCION-RAINS test deployment within SCIONLab by adding support and deploying a second name server and by making the deployment permanent as well as fixing bugs, enhancing documentation and up-streaming our code to the parent projects.
+
+### Milestones
+- [ ] Enhance test deployment
+
+Further information:
+- [ ] [Official release](https://github.com/netsys-lab/scion-rains/releases/tag/v0.7.0), marking the completion of Task 5.
