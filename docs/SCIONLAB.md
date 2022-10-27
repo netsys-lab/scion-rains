@@ -1,6 +1,6 @@
 # Test RAINS server in SCIONLAB
 
-There is now an authoritative [scion-coredns](https://github.com/netsys-lab/scion-coredns/tree/rhine) RAINS test server running in [SCIONLab](https://www.scionlab.org/), under `19-ffaa:1:fe4,127.0.0.1` (port 53).
+There are now two authoritative [scion-coredns](https://github.com/netsys-lab/scion-coredns/tree/rhine) RAINS test server running in [SCIONLab](https://www.scionlab.org/), under `19-ffaa:1:fe4,127.0.0.1` (port 53) and under `17-ffaa:1:1008,127.0.0.1` (also port 53) respectively.
 
 For details on how to set up a SCIONLab user AS, see
 [here](https://docs.scionlab.org/).
@@ -25,6 +25,7 @@ cacertificatefile = "/path/to/CACert.pem"
 
 # Root zone SCION servers
 rootscionservers = [
+"17-ffaa:1:1008,127.0.0.1:53",
 "19-ffaa:1:fe4,127.0.0.1:53"
 ]
 
