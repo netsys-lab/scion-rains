@@ -76,7 +76,7 @@ We will enhance the SCION-RAINS test deployment within SCIONLab by adding suppor
   - [x] Server in Magdeburg (Germany) operating at `19-ffaa:1:fe4,127.0.0.1` (port 53)
   - [x] Server in Zürich (Switzerland) operating at `17-ffaa:1:1008,127.0.0.1` (port 53)
 - [x] [Systemd unit](scripts/scion-coredns.service) for automatic startup and restart upon failure
-- [x] [Upstream support](https://github.com/netsec-ethz/scion-apps/pull/230) for name resolution added to [SCION Apps](https://github.com/netsys-lab/scion-app)
+- [x] [Upstream support](https://github.com/netsec-ethz/scion-apps/pull/230) for name resolution added to [SCION Apps](https://github.com/netsys-lab/scion-apps)
 - [x] [Documentation](docs/SCIONLAB.md) updated to reflect these enhancements
 
 Further information:
