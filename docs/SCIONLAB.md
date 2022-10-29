@@ -94,12 +94,9 @@ rains.scionlab.         3600    IN      RRSIG   TXT 13 2 3600 20221011143250 202
 
 ## DNS-enabled SCION apps
 
-A DNS-enabled fork of the SCION apps can be found
-[here](https://github.com/netsys-lab/scion-apps). Check out the repo
-and run `make -j build` to build the binaries. They will be found
-under `bin/`. It is expected that the relevant changes [will be
-merged](https://github.com/netsec-ethz/scion-apps/pull/230) to the
-upstream SCION apps soon.
+With the merging of [PR #230](https://github.com/netsec-ethz/scion-apps/pull/230), the DNS-enabled SCION apps can now directly be built from the [upstream repository](https://github.com/netsec-ethz/scion-apps) via `make -j build`.
+
+(Our own fork of the SCION apps can still be found [here](https://github.com/netsys-lab/scion-apps).)
 
 ## Demo Services
 

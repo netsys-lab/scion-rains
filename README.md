@@ -51,7 +51,7 @@ Further information:
 
 ## [Task 4.](https://github.com/netsys-lab/scion-rains/projects/5) Implementation, integration, and testing
 
-Finally, we will implement SCION (QUIC) transport for RAINS and deploy test name servers to the SCIONLab network.
+We will implement SCION (QUIC) transport for RAINS and deploy test name servers to the SCIONLab network.
 
 ### Milestones
 - [x] RAINS servers and `rdig` with SCION transport option
@@ -72,7 +72,12 @@ Further information:
 We will enhance the SCION-RAINS test deployment within SCIONLab by adding support and deploying a second name server and by making the deployment permanent as well as fixing bugs, enhancing documentation and up-streaming our code to the parent projects.
 
 ### Milestones
-- [ ] Enhance test deployment
+- [x] Deployment of redundant root servers
+  - [x] Server in Magdeburg (Germany) operating at `19-ffaa:1:fe4,127.0.0.1` (port 53)
+  - [x] Server in Zürich (Switzerland) operating at `17-ffaa:1:1008,127.0.0.1` (port 53)
+- [x] [Systemd unit](scripts/scion-coredns.service) for automatic startup and restart upon failure
+- [x] [Upstream support](https://github.com/netsec-ethz/scion-apps/pull/230) for name resolution added to [SCION Apps](https://github.com/netsys-lab/scion-app)
+- [x] [Documentation](docs/SCIONLAB.md) updated to reflect these enhancements
 
 Further information:
-- [ ] [Official release](https://github.com/netsys-lab/scion-rains/releases/tag/v0.7.0), marking the completion of Task 5.
+- [x] [Official release](https://github.com/netsys-lab/scion-rains/releases/tag/v0.7.0), marking the completion of Task 5.
